@@ -2,13 +2,20 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 import os
+import time
+import requests
 from anthropic import Anthropic
 from pydantic import BaseModel
-import pinecone
+from pinecone import Pinecone
 from typing import List
 from supabase import create_client
 from datetime import datetime
 import uuid
+import logging
+
+# Set up logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 load_dotenv()
 
@@ -38,63 +45,111 @@ app.add_middleware(
 # Initialize clients
 try:
     anthropic_client = Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
-    pinecone.init(
-        api_key=os.getenv("PINECONE_API_KEY"),
-        environment="gcp-starter"  # Using default starter environment
-    )
-    index = pinecone.Index("plasticlist")
+    voyage_api_key = os.getenv("VOYAGE_API_KEY")
+    voyage_url = "https://api.voyageai.com/v1/embeddings"
     
-    # Initialize Supabase with error handling
+    # Initialize Pinecone with new class-based approach
+    pc = Pinecone(api_key=os.getenv("PINECONE_API_KEY"))
+    
+    # Debug: List all indexes
+    indexes = pc.list_indexes()
+    logger.info(f"Available Pinecone indexes: {indexes}")
+    
+    index = pc.Index("plasticlist2")
+    # Debug: Get index stats
+    stats = index.describe_index_stats()
+    logger.info(f"Index stats: {stats}")
+    
     supabase_url = os.getenv("SUPABASE_URL")
     supabase_key = os.getenv("SUPABASE_KEY")
     supabase = create_client(supabase_url, supabase_key)
 except Exception as e:
-    print(f"Error initializing clients: {str(e)}")
+    logger.error(f"Error initializing clients: {str(e)}")
     raise
 
 class Query(BaseModel):
     question: str
 
-async def get_relevant_context(query: str) -> List[str]:
-    """Get relevant context from Pinecone"""
-
-    return [] # TODO
-
+async def get_embedding(text: str) -> List[float]:
+    """Get embeddings from Voyage AI."""
+    logger.debug(f"Getting embedding for text of length {len(text)}")
+    
+    if len(text) > 8192:
+        logger.warning("Text too long for embedding, truncating...")
+        text = text[:8192]
+    
+    headers = {
+        "Authorization": f"Bearer {voyage_api_key}",
+        "Content-Type": "application/json"
+    }
+    data = {
+        "model": "voyage-3-large",
+        "input": text
+    }
+    
     try:
-        print("Getting embedding from Anthropic...")
-        # Get query embedding
-        embedding = await anthropic_client.embeddings.create(
-            model="claude-3-opus-20240229",
-            input=query
-        )
+        # Add a small delay between requests to respect rate limits
+        time.sleep(0.05)
         
-        print("Searching Pinecone...")
-        # Search Pinecone
+        logger.debug("Sending request to Voyage AI")
+        response = requests.post(voyage_url, headers=headers, json=data)
+        
+        if response.status_code != 200:
+            logger.error(f"Voyage API error: {response.status_code} - {response.text}")
+            response.raise_for_status()
+        
+        response_data = response.json()
+        logger.debug("Successfully got response from Voyage AI")
+        
+        if 'data' in response_data and len(response_data['data']) > 0 and 'embedding' in response_data['data'][0]:
+            logger.debug("got embedding")
+            return response_data['data'][0]['embedding']
+        else:
+            logger.error(f"Unexpected response format: {response_data}")
+            raise Exception("Could not find embeddings in response")
+            
+    except Exception as e:
+        logger.error(f"Error in get_embedding: {str(e)}")
+        raise
+
+async def get_relevant_context(query: str) -> str:
+    """Get relevant context from Pinecone"""
+    try:
+        logger.info("Getting embedding from Voyage AI...")
+        query_embedding = await get_embedding(query)
+        logger.info(f"Embedding dimension: {len(query_embedding)}")
+        
+        logger.info("Searching Pinecone...")
+        # Search Pinecone with lower score threshold
         results = index.query(
-            vector=embedding.embeddings[0],
-            top_k=5,
-            include_metadata=True
+            vector=query_embedding,
+            top_k=3,
+            include_metadata=True,
+            score_threshold=0.0,
+            namespace="default"
         )
         
-        # Extract text from results
-        contexts = [match.metadata['text'] for match in results.matches]
-        print(f"Found {len(contexts)} matching contexts")
-        return contexts
+        # Debug log the entire results
+        logger.info(f"Pinecone results: {results}")
+        
+        # Check if we have matches in the results
+        matches = results.get('matches', []) if isinstance(results, dict) else results.matches
+        
+        # Debug log individual matches
+        for match in matches:
+            logger.info(f"Match score: {match.get('score', 'N/A')}, ID: {match.get('id', 'N/A')}")
+            
+        # Construct context string
+        context = "\n\n".join([
+            f"Content from {match['id']}:\n{match['metadata']['text']}"
+            for match in matches
+        ])
+        logger.info(f"Found {len(matches)} matching contexts")
+        return context
         
     except Exception as e:
-        print(f"Error in get_relevant_context: {str(e)}")
+        logger.error(f"Error in get_relevant_context: {str(e)}")
         raise
-    
-    # Search Pinecone
-    results = index.query(
-        vector=embedding.embeddings[0],
-        top_k=5,
-        include_metadata=True
-    )
-    
-    # Extract text from results
-    contexts = [match.metadata['text'] for match in results.matches]
-    return contexts
 
 @app.post("/api/query")
 async def process_query(query: Query):
@@ -102,7 +157,7 @@ async def process_query(query: Query):
         # Generate unique ID for the query
         query_id = str(uuid.uuid4())
         
-        print(f"Processing query: {query.question}")
+        logger.info(f"Processing query: {query.question}")
         
         # Store initial query in Supabase
         query_data = {
@@ -113,29 +168,31 @@ async def process_query(query: Query):
         }
         
         try:
-            print("Storing query in Supabase...")
+            logger.info("Storing query in Supabase...")
             supabase.table("queries").insert(query_data).execute()
         except Exception as e:
-            print(f"Supabase insert error: {str(e)}")
+            logger.error(f"Supabase insert error: {str(e)}")
             raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
         
         try:
             # Get relevant context
-            print("Getting context from Pinecone...")
-            contexts = await get_relevant_context(query.question)
-            print(f"Found {len(contexts)} context chunks")
+            logger.info("Getting context from Pinecone...")
+            context = await get_relevant_context(query.question)
             
             # Create prompt with context
-            prompt = f"""You are an expert on PlasticList data and findings. Use the following context to answer the question. 
-Be specific and cite data when possible. If you can't answer based on the context, say so.
-Context:
-{' '.join(contexts)}
-Question: {query.question}"""
+            prompt = f"""Here is some context about PlasticList:
+
+{context}
+
+Based on this context, please answer the following question:
+{query.question}
+
+If the context doesn't contain enough information to answer the question fully, please say so."""
             
-            print("Sending request to Claude...")
+            logger.info("Sending request to Claude...")
             # Get response from Claude
             response = anthropic_client.beta.messages.create(
-                model="claude-3-opus-20240229",
+                model="claude-3-sonnet-20240229",
                 max_tokens=1000,
                 messages=[{
                     "role": "user",
@@ -144,10 +201,10 @@ Question: {query.question}"""
             )
             
             response_text = response.content[0].text
-            print("Got response from Claude")
+            logger.info("Got response from Claude")
             
             # Update query with response
-            print("Updating Supabase with response...")
+            logger.info("Updating Supabase with response...")
             supabase.table("queries").update({
                 "status": "completed",
                 "response": response_text,
@@ -160,7 +217,7 @@ Question: {query.question}"""
             }
             
         except Exception as e:
-            print(f"Error during processing: {str(e)}")
+            logger.error(f"Error during processing: {str(e)}")
             # Update query with error
             try:
                 supabase.table("queries").update({
@@ -169,7 +226,7 @@ Question: {query.question}"""
                     "completed_at": datetime.utcnow().isoformat()
                 }).eq("id", query_id).execute()
             except Exception as db_error:
-                print(f"Failed to update error in database: {str(db_error)}")
+                logger.error(f"Failed to update error in database: {str(db_error)}")
             raise HTTPException(status_code=500, detail=str(e))
             
     except Exception as e:
