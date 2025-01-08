@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 load_dotenv()
 
 class SimpleRAG:
-    def __init__(self, index_name: str = "plasticlist"):
+    def __init__(self, index_name: str = "plasticlist2"):
         logger.info("Initializing SimpleRAG...")
         
         # Initialize API keys
@@ -34,8 +34,8 @@ class SimpleRAG:
         
         # Initialize text splitter
         self.text_splitter = RecursiveCharacterTextSplitter(
-            chunk_size=500,
-            chunk_overlap=50,
+            chunk_size=4000,
+            chunk_overlap=200,
             length_function=len,
             add_start_index=True,
         )
@@ -67,13 +67,13 @@ class SimpleRAG:
             "Content-Type": "application/json"
         }
         data = {
-            "model": "voyage-large-2",
+            "model": "voyage-3-large",
             "input": text
         }
         
         try:
             # Add a small delay between requests to respect rate limits
-            time.sleep(0.5)
+            time.sleep(0.05)
             
             logger.debug("Sending request to Voyage AI")
             response = requests.post(self.voyage_url, headers=headers, json=data)
@@ -167,23 +167,65 @@ class SimpleRAG:
             logger.error(f"Error in process_text_file: {e}")
             raise
 
+    def save_vectors(self, vectors: List[Dict], filepath: str = "utils/embeddings.txt"):
+        """Save vectors to a file."""
+        import json
+        logger.info(f"Saving {len(vectors)} vectors to {filepath}")
+        
+        # Create directory if it doesn't exist
+        os.makedirs(os.path.dirname(filepath), exist_ok=True)
+        
+        try:
+            with open(filepath, 'w') as f:
+                json.dump(vectors, f)
+            logger.info("Vectors saved successfully")
+        except Exception as e:
+            logger.error(f"Error saving vectors: {e}")
+            raise
+
+    def load_vectors(self, filepath: str = "utils/embeddings.txt") -> List[Dict]:
+        """Load vectors from a file."""
+        import json
+        
+        if not os.path.exists(filepath):
+            logger.info(f"No existing vectors file found at {filepath}")
+            return None
+            
+        try:
+            with open(filepath, 'r') as f:
+                vectors = json.load(f)
+            logger.info(f"Loaded {len(vectors)} vectors from file")
+            return vectors
+        except Exception as e:
+            logger.error(f"Error loading vectors: {e}")
+            return None
+
     def ingest_files(self, data_dir: str = "data/raw"):
         """Ingest all .txt files from the data directory."""
         logger.info(f"Starting file ingestion from {data_dir}")
-        data_path = Path(data_dir)
         
-        # Process only .txt files
-        all_vectors = []
-        for filepath in data_path.glob("*.txt"):
-            logger.info(f"Found file: {filepath.name}")
-            try:
-                vectors = self.process_text_file(filepath)
-                all_vectors.extend(vectors)
-                logger.info(f"Successfully processed {filepath.name}")
-            except Exception as e:
-                logger.error(f"Error processing {filepath.name}: {e}")
-                continue
+        # Try to load existing vectors
+        all_vectors = self.load_vectors()
+        
+        if all_vectors is None:
+            data_path = Path(data_dir)
+            all_vectors = []
             
+            # Process only .txt files
+            for filepath in data_path.glob("*.txt"):
+                logger.info(f"Found file: {filepath.name}")
+                try:
+                    vectors = self.process_text_file(filepath)
+                    all_vectors.extend(vectors)
+                    logger.info(f"Successfully processed {filepath.name}")
+                except Exception as e:
+                    logger.error(f"Error processing {filepath.name}: {e}")
+                    continue
+            
+            # Save vectors to file
+            if all_vectors:
+                self.save_vectors(all_vectors)
+        
         # Batch upsert all vectors
         if all_vectors:
             try:
@@ -202,53 +244,53 @@ class SimpleRAG:
                 raise
 
     def query(self, question: str, k: int = 3) -> str:
-        """Query the RAG system."""
-        logger.info(f"Processing query: {question}")
-        
-        # Get embedding for the question
-        query_embedding = self.get_embedding(question)
-        
-        # Search Pinecone
-        results = self.index.query(
-            vector=query_embedding,
-            top_k=k,
-            include_metadata=True,
-            namespace="default"
-        )
-        
-        # Construct prompt with context
-        context_parts = []
-        for match in results.matches:
-            source = match.metadata.get('source', 'Unknown')
-            chunk_index = match.metadata.get('chunk_index', 0)
-            total_chunks = match.metadata.get('total_chunks', 1)
-            context_parts.append(
-                f"Content from {source} (part {chunk_index + 1}/{total_chunks}):\n{match.metadata['text']}"
+            """Query the RAG system."""
+            logger.info(f"Processing query: {question}")
+            
+            # Get embedding for the question
+            query_embedding = self.get_embedding(question)
+            
+            # Search Pinecone
+            results = self.index.query(
+                vector=query_embedding,
+                top_k=k,
+                include_metadata=True,
+                namespace="default"
             )
-        
-        context = "\n\n".join(context_parts)
-        
-        prompt = f"""Here is some context about PlasticList:
+            
+            # Construct prompt with context
+            context_parts = []
+            for match in results.matches:
+                source = match.metadata.get('source', 'Unknown')
+                chunk_index = match.metadata.get('chunk_index', 0)
+                total_chunks = match.metadata.get('total_chunks', 1)
+                context_parts.append(
+                    f"Content from {source} (part {chunk_index + 1}/{total_chunks}):\n{match.metadata['text']}"
+                )
+            
+            context = "\n\n".join(context_parts)
+            
+            prompt = f"""Here is some context about PlasticList:
 
-{context}
+    {context}
 
-Based on this context, please answer the following question:
-{question}
+    Based on this context, please answer the following question:
+    {question}
 
-If the context doesn't contain enough information to answer the question fully, please say so.
-"""
-        
-        # Get response from Claude
-        response = self.anthropic.messages.create(
-            model="claude-3-sonnet-20240229",
-            max_tokens=1000,
-            messages=[{
-                "role": "user",
-                "content": prompt
-            }]
-        )
-        
-        return response.content[0].text
+    If the context doesn't contain enough information to answer the question fully, please say so.
+    """
+            
+            # Get response from Claude
+            response = self.anthropic.beta.messages.create(
+                model="claude-3-sonnet-20240229",
+                max_tokens=1000,
+                messages=[{
+                    "role": "user",
+                    "content": prompt
+                }]
+            )
+            
+            return response.content[0].text
 
 def main():
     """Test the RAG system."""
