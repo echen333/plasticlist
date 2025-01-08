@@ -30,7 +30,7 @@ export default function HomePage() {
       
       // Only redirect if we get a valid ID back
       if (data.id) {
-        router.push(`/api/query/${data.id}`);
+        router.push(`/query/${data.id}`);
       }
     } catch (err) {
       console.error('Error:', err);

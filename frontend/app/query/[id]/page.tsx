@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
 import { 
   Button,
@@ -28,7 +28,7 @@ function BackButton() {
     <Button 
       variant="contained" 
       color="primary"
-      onClick={() => router.push('/query')}
+      onClick={() => router.push('/')}
     >
       Ask Another Question
     </Button>
@@ -54,7 +54,12 @@ function LoadingSkeleton() {
   );
 }
 
-export default function QueryPage({ params }: { params: { id: string } }) {
+interface PageParams {
+  params: Promise<{ id: string }> // Change to Promise type
+}
+
+export default function QueryPage({ params }: PageParams) {
+  const resolvedParams = use(params) as { id: string };  // Add type assertion
   const [result, setResult] = useState<QueryResult | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -62,7 +67,7 @@ export default function QueryPage({ params }: { params: { id: string } }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`/api/query/${params.id}`);
+        const response = await fetch(`/api/query/${resolvedParams.id}`);  // Use resolvedParams.id
         if (!response.ok) throw new Error('Failed to fetch results');
         const data = await response.json();
         setResult(data);
@@ -74,7 +79,7 @@ export default function QueryPage({ params }: { params: { id: string } }) {
     };
 
     fetchData();
-  }, [params.id]);
+  }, [resolvedParams.id]);
 
   if (loading) {
     return (
@@ -112,6 +117,7 @@ export default function QueryPage({ params }: { params: { id: string } }) {
               Query Results
             </Typography>
           </Box>
+          
           <Box sx={{ mb: 3 }}>
             <Typography variant="subtitle1" sx={{ mb: 1 }}>
               Question:
@@ -120,6 +126,7 @@ export default function QueryPage({ params }: { params: { id: string } }) {
               {result.question}
             </Typography>
           </Box>
+
           <Box sx={{ mb: 3 }}>
             <Typography variant="subtitle1" sx={{ mb: 1 }}>
               Response:
@@ -128,6 +135,7 @@ export default function QueryPage({ params }: { params: { id: string } }) {
               {result.response}
             </Typography>
           </Box>
+
           <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
             <BackButton />
           </Box>
