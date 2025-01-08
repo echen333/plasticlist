@@ -1,0 +1,831 @@
+PlasticList Report
+Published 2024-12-27, last updated 2024-12-31
+Six months ago, we launched what seemed like a quick and easy project: to test 100 everyday foods for the presence of plastic chemicals. Sounds like fun, right? Maybe a two-week project? That's what we thought, too.
+
+Nat's tweet that started it all
+Nat's tweet that started it all
+Our interest was sparked by recent discussion of Endocrine Disrupting Chemicals (EDCs):
+
+Minderoo 2024 Plastic Health Umbrella Review
+Count Down: How Our Modern World Is Threatening Sperm Counts, Altering Male and Female Reproductive Development, and Imperiling the Future of the Human Race
+Slow Death by Rubber Duck: The Secret Danger of Everyday Things
+Consumer Reports: The Plastic Chemicals Hiding in Your Food
+Endocrine Disrupting Chemicals: Threats to Human Health
+Dr. Shanna Swan on the Joe Rogan show
+Our chemicals of interest are used to improve the performance of plastic. One class is phthalates, used to make plastics softer and more flexible, and another class is bisphenols, used to make plastics harder (e.g. BPA). They aren't intentionally added to food, but they can end up in food during production or by leaching from packaging. What makes these chemicals interesting is that some of them are known to be hormonally active in humans and believed to affect developing embryos and adults in different ways.
+
+We were, like many others, asking ourselves if plastic chemicals would turn out to be the next public health crisis for humanity to overcome. We realized it was important to try and get closer to the true answer. Finding out how many plastic chemicals all of us really eat seemed like a good point to start, because (1) we could test that with precision and (2) if it turned out we don’t eat plastic chemicals, then maybe we shouldn’t care about their alleged health harms. So we got to work.
+
+We formed a team of four people, learned how this kind of chemical testing is performed, called more than 100 labs to find one that had the experience, quality standards, and turnaround time that we needed, collected hundreds of samples, shipped them, had them tested, painstakingly validated the results, and prepared them to share with you. Over time our effort expanded to nearly 300 food products. It took half a year and cost about $500,000.
+
+PlasticList team, full of pep, assembling our desks in late May
+PlasticList team, full of pep, assembling our desks in late May
+We were lucky to find a lab with extensive experience in food testing, and to secure the assistance of excellent analytical chemists and epidemiologists, who educated us and tried to ensure that our work met a high bar of accuracy and transparency. Today, in addition to publishing our results, we're also sharing what we learned about the process, so that anyone else struck by a similar impulse in the future doesn't have to figure everything out from scratch like we did.
+
+An important disclaimer: we have refrained from drawing high-confidence conclusions from these results, and we think that you should, too. Consider this a snapshot of our raw test results, suitable as a starting point and inspiration for further work, but not solid enough on its own to draw conclusions or make policy recommendations or even necessarily to alter your personal purchasing decisions. These results represent point-in-time results of a small number of product samples and may not be representative of actual product contents. These tests, like all tests, have inherent uncertainties, and different testing methodologies are likely to yield different results. And the existence of a chemical in a food doesn't necessarily imply a safety issue. We'd be thrilled to see serious efforts to replicate our results and we are open to any corrections you may have.
+
+What we learned
+Are plastic chemicals in our food?
+We collected 775 samples of 312 foods and sent them to our chosen lab. Our lab is ISO/IEC 17025-accredited, meaning they've been independently evaluated and proven to have the technical expertise and quality systems in place to consistently deliver accurate test results. The lab has asked not to be named which, to our surprise, is pretty standard for labs that also work with food companies directly. The lab was able to test 705 samples which came from 296 different food products (the other 70 samples broke in transit). We tested each sample for 18 different chemicals, also called analytes. Besides a handful of personal meals we tested for friends, we’re making all of our results public today, along with a lot of detail about the methodology we used.
+
+Our goal was to test the foods that our friends in the Bay Area eat: common items like fast food, sodas, water, milk, yogurt, produce, and snack bars, but also some local bougie favorites like Blue Bottle coffee, Salt & Straw ice cream, La Croix, Fairlife Core Power protein drinks, and Tartine sourdough bread. We ran a survey, received 7,500 votes for over 700 unique products, and combined those votes with suggestions from X and from our friends to make our final list.
+
+We also had to select which chemicals to look for. Note that our focus was on plastics-related chemicals at molecular scale; this is different from testing for microplastics, which are small pieces of plastic that have broken off and which people sometimes ingest. We focused on EDCs instead of microplastics because the body of evidence for the harms of EDCs is larger than for microplastics; microplastics themselves can contain EDCs which leach into your body, and so EDCs can be downstream of microplastics.
+
+The PlastChem project maintains a list of over 20,000 plastic-related chemicals with varying levels of human exposure and health hazards. Testing for each chemical can require a different process, which adds cost. In the end, we selected 18 plastic-related chemicals that we believed to be widely used, and which have been linked to or suspected of adverse health effects in humans. Below are the chemicals we chose; you can click on the names to read more.
+
+
+Phthalates
+
+Di-2-ethylhexyl phthalate (DEHP)
+
+Di-n-butyl phthalate (DBP)
+
+Benzylbutyl phthalate (BBP)
+
+Di-isononyl phthalate (DINP)
+
+Di-isodecyl phthalate (DIDP)
+
+Diethyl phthalate (DEP)
+
+Dimethyl phthalate (DMP)
+
+Diisobutyl phthalate (DIBP)
+
+Di-n-hexyl phthalate (DNHP)
+
+Dicyclohexyl phthalate (DCHP)
+
+Di-n-octyl phthalate (DNOP)
+
+Bisphenols
+
+Bisphenol A (BPA)
+
+Bisphenol S (BPS)
+
+Bisphenol F (BPF)
+
+Phthalate substitutes
+
+Di-2-ethylhexyl terephthalate (DEHT)
+
+Adipate (DEHA)
+
+1,2-Cyclohexane dicarboxylic acid diisononyl ester (DINCH)
+
+Diisodecyl adipate (DIDA)
+Phthalates and bisphenols have both been in use to improve plastic performance for almost 100 years. There was a major push starting in the 1990s to replace phthalates with safer alternatives, and phthalate substitutes were adopted in medical devices, children's toys, and food contact applications; we decided to test foods for the substitutes in addition to the original phthalates to see how effective this push has been.
+
+We detected plastic chemicals in 86% of the foods we tested.
+
+At least one of the 18 chemicals was found in every baby food, prenatal supplement, human breast milk, yogurt, and ice cream product that we tested, to name only a few categories. We also found plastic chemicals in all the products we tested from Starbucks, Gerber, Chobani, Straus, Celsius, Blue Bottle, RXBAR, Coca-Cola, Tartine, and Ghirardelli.
+
+Plastic chemicals were also in practically all the upscale and healthy products we tested; we tested raw milk and beef straight from the farm, 22 organic foods, and 20 healthy groceries from Whole Foods. Apart from O Organics eggs, all of those products contained plastic chemicals.
+
+Our test results showed phthalates in most baby foods and prenatal vitamins. We also saw that less-processed foods contain fewer chemicals than highly processed ones; water in glass and plastic water bottles have surprisingly similar levels of chemical content; and hot foods which spend 45 minutes in takeout containers have 34% higher levels of plastic chemicals than the same dishes tested directly from the restaurant.
+
+All in all, we detected phthalates in 73% of the products we tested, phthalate substitutes in 73%, and bisphenols in 22%.
+
+Samples of 22 products, from vendors ranging from Starbucks to Shake Shack to Whole Foods, exceeded the European Food Safety Authority (EFSA) intake limits for Bisphenol A. The excess amounts ranged from 450% to 32,571% of EFSA limits for a 70 kg (154 lb) person. Additionally, for 2 bottled water brands, one of the samples exceeded the FDA limit for DEHP phthalate (by 217% and 283% respectively), although all other samples of those brands were under the limit.
+
+Here's a complete list of all the presently-available food samples (excluding vintage foods) we tested that exceeded a published daily intake limit for any of the chemicals we tested:
+
+Sample ID	
+Product
+% Limit	Chemical	Source
+7172301	Boba Guys Black Tea Pearls	32,571.4%	BPA	EFSA, 2023
+8050203	Tap Water with Aquatabs Purification Tablets (after 30min)	16,989.3%	BPA	EFSA, 2023
+7172303	Boba Guys Fruity Flavored Tea	14,800%	BPA	EFSA, 2023
+7213502	Wild Planet Albacore Wild Tuna	12,171.4%	BPA	EFSA, 2023
+7213503	Wild Planet Albacore Wild Tuna	12,171.4%	BPA	EFSA, 2023
+7212303	Boba Guys Fruity Flavored Tea	11,892.9%	BPA	EFSA, 2023
+8050201	Tap Water with Aquatabs Purification Tablets (after 30min)	10,903.6%	BPA	EFSA, 2023
+7172302	Boba Guys Black Tea Juice	10,042.9%	BPA	EFSA, 2023
+7213501	Wild Planet Albacore Wild Tuna	9,940%	BPA	EFSA, 2023
+7302903	Spam Canned Meat	8,000%	BPA	EFSA, 2023
+7180801	Annie's Organic Classic Cheddar Mac and Cheese	7,100%	BPA	EFSA, 2023
+7302902	Spam Canned Meat	6,800%	BPA	EFSA, 2023
+7302901	Spam Canned Meat	6,800%	BPA	EFSA, 2023
+7212302	Boba Guys Black Tea Pearls	6,514.3%	BPA	EFSA, 2023
+7212301	Boba Guys Black Tea Juice	6,342.9%	BPA	EFSA, 2023
+8050202	Tap Water with Aquatabs Purification Tablets (after 30min)	6,339.3%	BPA	EFSA, 2023
+7301801	Stanford University Dining Meal (Beans, Chicken, Rice, Cauliflower)	5,417.1%	BPA	EFSA, 2023
+7122303	Boba Guys Fruity Flavored Tea	5,285.7%	BPA	EFSA, 2023
+7172001	Starbucks Medium Roast Black Coffee from Palo Alto	4,740%	BPA	EFSA, 2023
+7122301	Boba Guys Black Tea Juice	4,228.6%	BPA	EFSA, 2023
+7301803	Stanford University Dining Meal (Beans, Chicken, Rice, Cauliflower)	3,724.3%	BPA	EFSA, 2023
+7213306	Shake Shack Cheeseburger	3,598.6%	BPA	EFSA, 2023
+7172002	Verve Medium Roast Black Coffee from Palo Alto	3,555%	BPA	EFSA, 2023
+7211401	Almond Breeze Original Almond Milk Unsweetened in Carton	3257.1%	BPA	EFSA, 2023
+8030401	Ito En Oi Ocha Unsweetened Green Tea	3171.4%	BPA	EFSA, 2023
+7203327	Dominos Pacific Veggie Pizza	2184.3%	BPA	EFSA, 2023
+7212702	Ben & Jerry's Phish Food Ice Cream	1838.6%	BPA	EFSA, 2023
+7122302	Boba Guys Black Tea Pearls	1737.1%	BPA	EFSA, 2023
+8294701	Whole Foods Farm Raised Atlantic Salmon	1452.9%	BPA	EFSA, 2023
+8294704	Whole Foods Wild Caught Salmon	1210.7%	BPA	EFSA, 2023
+7301501	Whole Foods Organic Boneless Beef Ribeye Steak Grass Fed	1032.1%	BPA	EFSA, 2023
+8294705	Whole Foods Wild Caught Salmon	968.6%	BPA	EFSA, 2023
+8294702	Whole Foods Farm Raised Atlantic Salmon	887.9%	BPA	EFSA, 2023
+8294706	Whole Foods Wild Caught Salmon	887.9%	BPA	EFSA, 2023
+7181802	RXBAR 12g Protein Bar Blueberry	817.1%	BPA	EFSA, 2023
+7181803	RXBAR 12g Protein Bar Strawberry	705.7%	BPA	EFSA, 2023
+7301502	Whole Foods Boneless Beef Ribeye Steak Pasture Raised	667.9%	BPA	EFSA, 2023
+8294709	Whole Foods Cold Smoked Atlantic Salmon	529.3%	BPA	EFSA, 2023
+8294708	Whole Foods Cold Smoked Atlantic Salmon	447.9%	BPA	EFSA, 2023
+7190101	Fiji Natural Artesian Water	283.3%	DEHP	FDA, 2012
+7190102	Mountain Valley Spring Water	216.7%	DEHP	FDA, 2012
+The EFSA sets its limits per kilogram body weight per day, so the EFSA percentages are based on one serving of food for a 70 kg (154 lb) human. The FDA sets its limits in ng/g, so the percentages simply compare the chemical concentration per gram relative to the FDA limit.
+
+At the top of this list is Boba tea from Boba Guys (tea and pearls), which vastly exceeds the EFSA limit for daily BPA consumption: one Boba Tea equals 1.2 years of safe BPA consumption, according to the EFSA.
+
+No product images available
+Boba Guys black tea
+Note that your daily phthalate exposure comes from multiple sources – food, cosmetics, lotions, air, and other products - not just a single serving of a single food. Additionally, acid in foods may break down the phthalate diesters we measured into monoesters, which our testing didn't detect. This means actual phthalate levels could be higher than reported.
+
+That said, with the 24 exceptions above, all of the foods we tested are safe to eat according to the FDA, EPA, and EFSA standards for chemical content in foods. So the question of plastic chemical safety in food comes down largely to whether you believe those organizations have set intake limits correctly.
+
+Below are the safety limits we found and referenced. They were published by the EPA and the FDA in the US and by the EFSA in the EU. The EPA and EFSA provide the most comprehensive chemical safety limits. Unlike the FDA, which mainly regulates chemicals in food production and packaging but rarely sets specific intake thresholds, the EPA and EFSA have established numeric limits for roughly half of our tested chemicals. Although the EPA doses weren't specifically designed for food safety, they are intended to find safety thresholds for human exposure and correlate with EFSA limits fairly well. For these reasons, we primarily referenced the EPA reference doses (RfDs) and the EFSA tolerable daily intake (TDIs).
+
+Chemical	EPA Limit (ng/kg bw/day)	EPA Limit Basis	EPA Source	EFSA Limit (ng/kg bw / day)	EFSA Limit Basis	EFSA Source	FDA Limit (ng/g)	FDA Source
+DEHP	20,000	Increased relative liver weight in guinea pigs. Probable human carcinogen based on sufficient evidence of carcinogenicity in animals.	EPA, 1987	50,000	Testicular toxicity (atrophy), reproduction toxicity (smaller testes and prostate), developmental toxicity, body weight reduction in rats	EFSA, 2019	6 ng/g in bottled water	FDA, 2012
+DBP	100,000	Increased mortality in rats.	EPA, 1987	10,000	Reproduction toxicity, developmental toxicity (reduced spermatocyte development, effects on the mammary gland) in rats	EFSA, 2019		
+BBP	200,000	Significantly increased liver-to-body weight and liver-to-brain weight ratios in rats. Possible human carcinogen.	EPA, 1989	500,000	Reproduction toxicity, developmental toxicity (reduced anogenital distance) in rats	EFSA, 2019		
+DINP	Not set			150,000	Liver lesions (spongiosis hepatis), kidney toxicity (dilated renal pelvis and hydroureter), reproductive toxicity (transient decrease of fetal testosterone production) in rats	EFSA, 2019		
+DIDP	Not set			150,000	Liver changes in dogs, newborn mortality in rats	EFSA, 2019		
+DEP	800,000	Decreased growth rate, food consumption, and altered organ weights in rats.	EPA, 1987	Not set	More migration or toxicology data needed (SFC List 7)	EFSA, 2004		
+DMP	Not set		EPA	Not set	More migration or toxicology data needed (SFC List 7)	EFSA, 2004		
+DIBP	Not set			Not set	More migration or toxicology data needed (SFC List 7)	EFSA, 2004		
+DNHP	Not set			Not set				
+DCHP	Not set			Not set	More migration or toxicology data needed (SFC List 7)	EFSA, 2004		
+DNOP	Not set			Not set	More migration or toxicology data needed (SFC List 7)	EFSA, 2004		
+BPA	50,000	Reduced mean body weight in rats	EPA, 1988	0.2	Immune system dysregulation in mice	EFSA, 2023		
+BPS	Not set			Not set	Present use accepted due to low migration or limited toxicology data (SFC List 3)	EFSA, 2020		
+BPF	Not set			Not set	Present use accepted due to low migration or limited toxicology data (SFC List 3)	EFSA, 2009		
+DEHT	Not set			1,000,000	Retinal and nasal turbinate changes, reduced maternal body weight and increased liver weight in rats	EFSA, 2008		
+DEHA	600,000	Changes in body and liver weight, reduced ossification and slightly dilated ureters in fetuses, reduced offspring weight gain, total litter weight, and litter size in rats. Possible human carcinogen.	EPA, 1992	300,000	Fetal development toxicity in rats	EFSA, 2005		
+DINCH	Not set			1,000,000	Kidney toxicity (increased occurrence of blood and degenerated transitional epithelial cells in urine) in rats	EFSA, 2006		
+DIDA	Not set			Not set				
+DEHP Equivalents: 0.1 BBP + 5 DBP + 1 DEHP + 0.3 DINP	Not set			50,000	Plausible common mechanism for reproductive toxicity (reduction in fetal testosterone) in rats	EFSA, 2019		
+Are the intake limits correct?
+Given how few of the foods we tested exceed publishing safety limits, the correctness of those limits is the key question in evaluating our results. A lot of careful and conservative science goes into their work, and governments have a duty to protect the public which they take seriously; so surely the limits are correct?
+
+On the other hand, some of these limits have been lowered dramatically in the past: for example, the safe daily limit for BPA (Bisphenol A) was lowered by 20,000x by the EFSA last year. This was by no means an undisputed update; while it was openly supported by a group of endocrinologists and toxicologists, it was opposed by the EMA and the BfR. But it raised our eyebrows and made us question how solid all the other existing limits are. So we spent some time digging into the various regulations and literature. Here is what we found.
+
+Inconsistent, patchwork regulations
+On BPA in particular, just 10 years ago, the US EPA and the EU EFSA had the same limit. Then the EFSA lowered their limit several times, resulting in a 250,000x difference in the limits. But the EPA Iris site to this day says that, no, the limit they last revised in 1988 is still correct. This is an important difference if you want to interpret PlasticList results. Remember the Boba Guys tea that contains 1.2 years of safe BPA consumption according to the EFSA? According to the EPA, it’s well under the limit.
+
+There are also inconsistencies between the safety limits set by different regulatory agencies inside the US. For example, take DIBP: the US Consumer Product Safety Commission banned it in children's toys and child care articles in 2017 on evidence it could harm male reproductive development. The EU has also banned DIBP in cosmetics, electronics, and anything that touches food. But neither the FDA, the EPA, nor the EFSA (European Food Safety Agency) set a limit for safe daily exposure to DIBP.
+
+So, a chemical found too risky for children to touch in toys has no safety limit for children's food. PlasticList testing detected DIBP in Starbucks coffee, Celsius energy drink, butter chicken from a local Indian restaurant, and even in baby formula. This shows our safety rules evolved piecemeal, and each agency seems to run on different logic and timelines. The lack of FDA, EPA, and EFSA limits for a chemical doesn't seem to mean that the US and EU categorically believe this chemical to be safe for people.
+
+Or look at DEHP, the second-most widespread chemical in Bay Area foods. The FDA issued a statement urging pharma manufacturers to avoid using DEHP (we found in 69% of the products we tested) and DBP (we found in 50% of the products), saying things like:
+
+These phthalates are endocrine-disrupting chemicals in animals and may interfere with the production, secretion, transportation, metabolism, receptor binding, mediation of effects, and excretion of natural hormones that regulate developmental processes and support endocrine homeostasis in the organism. These same phthalates are suspected of being endocrine-disrupting in humans, and effects would depend on the systemic exposure (Jurewicz and Hanke 2011).
+
+The same FDA allows small amounts of DEHP in drinking water, and doesn’t limit DBP at all.
+
+Limits based on small amounts of old data
+Today’s safety limits are mostly based on old studies and even older papers. The EFSA and EPA set the most comprehensive limits we could find – unlike the FDA which mostly issues bans or guidelines, collectively these two agencies have established concrete numeric safety limits for a little over a half of the chemicals we tested. But these safety limits are decades old. Aside from the BPA updates, the EFSA set its limits for the major plastic chemicals in the mid-2000s, and the EPA set most of theirs in the late 1980s. The EFSA reviewed its limits for DEHP and a few others in 2019, and they concluded that future limit recalculation needs a variety of updates, but didn’t actually recalculate the limits. There have been many advancements since the 1980s and the 2000s which today’s limits don’t take into account.
+
+In the past, people would look at the available studies and essentially say "Well, this is the lowest dose that didn't cause problems, so let's call that our point of departure for the safety limit." This approach to finding the safety threshold is called NOAEL (No Observed Adverse Effect Level). One challenge with NOAELs is that they depend heavily on the range of studies you have available. There may be a safe dose above the NOAEL which was never tested, making the NOAEL too strict. Or, if your studies only test high doses, the NOAEL may be too lenient and not capture adverse effects at low doses, particularly if the dose-response curve is non-monotonic (more on that below).
+
+Ideally, you want to model the relationship between chemical dose and health response in high resolution, from high to very low doses. Given enough study data with a high enough dynamic range of doses, if we want to find the point of departure for a safety limit, we can define exactly what health response we want to prevent (like a 10% drop in testosterone levels), fit a dose-response curve to the study data, and pinpoint the exact dose that would cause the health response, called BMD (Benchmark Dose). BMD is much more precise than NOAEL and lets us fill in the blind spots on the dose-response curve where study data is not available.
+
+In the last 20-40 years, we have generated a lot more data which we can use to build better dose-response models:
+
+Published articles per chemicals class over time from https://doi.org/10.1016/j.envint.2023.108225
+Published articles per chemicals class over time from https://doi.org/10.1016/j.envint.2023.108225
+Yet almost all of today’s safety limits for the chemicals we tested are based on old NOAELs. For example, the EPA safety limit for DEHP in 2024 is based on a 1953 study. You can see there were way fewer studies back then, because on the graph above the year 1953 is before the X axis began.
+
+Having more data would likely reduce the uncertainty baked into the safety limits today. Since the point of departure (POD) like NOAEL or BMD is based on an estimation and is not necessarily correct, the final intake limit is usually calculated by dividing the POD by a fudge factor called the uncertainty factor (UF). For example, if tests show a POD of 15 mg per kilogram of body weight and the UF is set at 100, the agency would set the safe limit at 15 / 100 = 0.15 mg per kilogram.
+
+One way to think of an uncertainty factor is as a substitute for a concrete conversion factor which we don’t know. For example, since most safety studies are done in animals, agencies apply an inter-species UF. Ideally, we would have the exact conversion factor between the animal in the study (usually rats or mice) and humans that would account for the fact that different species metabolize and react to chemicals differently. But for many of these chemicals, we don’t yet know what the factor is. In the absence of a specific conversion factor, a standard inter-species UF of 10 is applied, meaning the POD is divided by 10.
+
+The good news is that in the last 20 years we generated more data that we can use to find the true conversion factors, including for inter-species differences If you look at EFSA’s recent BPA reassessment, they estimate a Human Equivalent Dose Factor (HEDF) based on the toxicokinetic (how the chemical is absorbed, distributed, metabolized, and excreted in the body) differences between test animals and humans. For example the HEDF for rat studies is estimated to be 0.1656, meaning that, to show comparable toxicokinetics, humans need just 16% of the dose that rats get. Having toxicokinetic HEDFs for the different endpoints lets them use a lower inter-species uncertainty factor to account for the remaining toxicodynamic (how the chemical affects the body) differences – 2.5 instead of 10 used by BPA risk assessments of the past.
+
+There are many more flavors for uncertainty factors, and each of them can be reduced by the true conversion factors that we can estimate from new studies. Here are just some examples of other UFs: To account for human differences in age, genetics, and health, the agencies apply an intra-species UF. UFs are set highest for infants and children, and lowest for adult men. If they only know the LOAEL (Lowest Observed Adverse Effect Level) but not the NOAEL, a LOAEL-to-NOAEL UF is applied. To extrapolate from short-term studies to lifetime exposure, they apply the subchronic-to-chronic UF. And when a subset of safety studies is missing, like if there is not enough data on neurological or developmental toxicity, the agencies apply a database deficiency UF. In each case, the hope is that setting the limit at POD / UF leaves enough margin for safe human exposure. The size of the UF depends on how confident the agencies are about the POD and the chemical's effects on humans.
+
+With more data available, we could set a more accurate point of departure, apply fewer uncertainty factors, and find the real safety threshold with higher precision.
+
+Low-dose effects
+Furthermore, studies have found that endocrine disrupting chemicals can have low-dose effects, where very small amounts of these chemicals can affect hormone systems in ways that don't follow the traditional toxicology principle of “the dose makes the poison.” In these cases, smaller amounts of these chemicals can have different — and sometimes more significant — effects than larger doses. When this happens, EDCs interfere with delicate hormonal systems even at minimal levels, resulting in non-monotonic dose responses (NMDRs).
+
+Still, as of 2023 we didn't have an agreed upon way to find out whether a chemical has an NMDR that affects its risk assessment:
+
+Although methodologies to assess NMDR in toxicological studies have been proposed (Beausoleil et al., 2016; Badding et al., 2019), there is currently no consensus on these methods and different approaches of varying robustness, ranging from visual inspection to fitting any non-linear curve through data, have been applied by different researchers.
+
+Cumulative effects
+There’s also a potential problem with considering these chemicals one at a time. In the real world humans are exposed to many phthalates, bisphenols, pesticides, and other chemicals at the same time, so the health effects are cumulative.
+
+We found only one safety limit for a mixture of chemicals. The EFSA considers DEHP, DBP, BBP, and DINP to be “DEHP equivalents” because of their cumulative effects on the reproductive system. In 2019, the EFSA set a group limit of 50,000 ng / kg body weight / day for these chemicals:
+
+Based on a plausible common mechanism (i.e. reduction in fetal testosterone) underlying the reproductive effects of DEHP, DBP and BBP, the Panel considered it appropriate to establish a group-TDI for these phthalates, taking DEHP as index compound as a basis for introducing relative potency factors.
+
+The limit is calculated as a weighted sum of the chemical levels based on their potency relative to DEHP. DEHP potency is 1, DBP is 5, BBP is 0.1, and DINP is 0.3.
+
+There are newer studies that test real-world mixtures of chemicals, but we didn’t see any other safety limits that would try to figure out the safe dose in the real-world context. The new limits don’t necessarily have to be for chemical mixtures; for instance, we could keep individual limits for their convenience but calculate them based on real-world exposure patterns that include chemical mixtures.
+
+Regulatory approach is changing
+Regulators recognize that today’s limits need to be improved on all of these dimensions. Here is how the EFSA concluded its 2019 reassessment of the major phthalate limits:
+
+Having considered the limitations and uncertainties related to this assessment, the CEP Panel identified several recommendations that should be taken into account for a future reassessment of these five phthalates:
+
+… endpoints other than reproduction, i.e. immunotoxic, metabolic and neurotoxic effects, also in relation to the endocrine-disrupting properties, should be investigated, since they could be more sensitive …
+
+… for the derivation of PoD as the basis for setting TDI(s), instead of the NOAEL approach, the BMD approach should be used. Consequently, the raw data for each of the critical studies should be obtained, in order to allow the modelling of the benchmark dose …
+
+… the question on co-exposure to other phthalates either authorised or not authorised for use in plastic FCM, e.g. DIBP, with potential reproductive and/or other relevant effects, should be included …
+
+The existence of low-dose and cumulative effects raises important questions about how we set safety limits. The approach often taken by regulators, of finding the highest safe dose and setting a threshold there, may not apply to non-monotonic dose responses. Earlier this year, Frederick vom Saal et al. published a convincing list of the various ways the traditional approach to risk assessments does not apply to EDCs, where they mention both low-dose and cumulative effects.
+
+All in all, it seems likely that if the safe intake limits for these plastic chemicals were newly calculated today using modern science and data, they would be more consistent and lower, although it is possible most of them would still be above the levels that humans eat.
+
+Bad for babies?
+The strongest evidence for human harm that we could find is a set of studies showing that EDCs may mess up fetus and baby development.
+
+In 2005, Swan et al. examined 85 boys aged 2-36 months, and corroborated that “prenatal phthalate exposure at environmental levels can adversely affect male reproductive development in humans.” They measured:
+
+Anogenital distance (AGD): distance from center of anus to base of penis
+Anogenital index (AGI): AGD normalized by weight
+Other genital parameters: testicular descent, penile volume, scrotal parameters
+Phthalate metabolites in maternal prenatal urine, measured in late pregnancy (n=85 subset)
+Why are we interested in ano-genital distance? Because it is a measure of sexual differentiation. In humans, male AGD is typically about twice as long as female AGD. This difference is due to higher prenatal testosterone, and so AGD is used as a biomarker of androgen action and sexual differentiation in both humans and animal models.
+
+The results showed clear dose-response relationships between maternal phthalate exposure and reduced anogenital measurements. Maternal phthalate exposure is assessed by measuring the levels of phthalate metabolites in urine, the monoester rather than the diesters. For example, in our study we measured DBP, but in humans that chemical is converted to MBP very quickly.
+
+Comparing boys with prenatal MBP concentration in the highest quartile with those in the lowest quartile, the odds ratio for a shorter than expected AGI was 10.2 (95% confidence interval, 2.5 to 42.2). The corresponding odds ratios for MEP, MBzP, and MiBP were 4.7, 3.8, and 9.1, respectively.
+
+MBP, MEP, MBzP, and MiBP are the metabolites for DBP, DEP, BBP, and DIBP, common phthalates that we detected in 47% of foods.
+
+This relationship held up across multiple phthalate metabolites and was strengthened by evidence of a "phthalate syndrome" encompassing other androgen-sensitive endpoints:
+
+Boys with short AGI had a higher rate of incomplete testicular descent (20% vs 8% in other boys) and were more likely to have a small and indistinct scrotum.
+
+The working hypothesis here is that phthalates, which some studies show may have anti-androgenic effects, are interfering with the development of human male fetuses.
+
+Phthalate exposure may also interfere with brain development. A 2014 study from Factor-Litvak et al. studied 328 mother-child pairs and found that phthalate metabolites in maternal urine correlated with Wechsler IQs 6-7 points lower at age 7, across genders:
+
+Wechsler IQ graph
+Wechsler IQ graph
+The effects were specific to certain phthalates (DNBP and DIBP) and consistent across multiple cognitive domains:
+
+significant associations between exposure to DnBP and DiBP and IQ measured at age 7 years, after adjusting for potential confounders. Similar associations were found between [these phthalates'] metabolites and perceptual reasoning, working memory and processing speed subscales of the WISC-IV.
+
+Some gender differences emerged, though most weren't statistically significant:
+
+Associations between maternal prenatal MnBP concentrations and child age 7 full scale IQ, perceptual reasoning and working memory were stronger among girls and associations between maternal prenatal MnBP and MiBP concentrations and processing speed and verbal comprehension, respectively, were stronger among boys.
+
+The study is particularly notable for controlling for multiple confounders (including maternal IQ), and for replicating and extending earlier findings at age 3. The effect sizes (6-7 IQ points) are substantial and comparable to other known neurotoxicants, like organophosphate pesticides or lead exposure, and greater than air pollution.
+
+Several biological mechanisms are proposed:
+
+Phthalates may act as anti-androgens and lead to disruption in the normal sexual differentiation of the brain; they may modulate the activity of aromatase in the developing brain and thus interfere with estrogen synthesis; they may interfere with thyroid hormone production; and they may disrupt brain dopaminergic activity.
+
+The results have potential public health significance given the ubiquity of phthalate exposure:
+
+Because phthalate exposures are ubiquitous and concentrations seen here within the range previously observed among general populations, results are of public health significance.
+
+Can we definitively establish causation from these previous studies? No. But the persistence of effects from age 3 to 7, biological plausibility, and consistency with animal studies (more on that in a second) are suggestive.
+
+Another study in 2019, Grohs et al. followed 98 mother-child pairs to examine how BPA exposure during pregnancy affects child brain development, using advanced MRI scans at ages 2-5 and urinary BPA measurements during pregnancy and childhood.
+
+The study measured brain structure using diffusion tensor imaging (DTI), which tracks water movement through brain tissue. Higher mean diffusivity suggests less developed white matter. Children were scanned while watching movies or sleeping:
+
+Children participated in a diffusion magnetic resonance imaging (MRI) scan at age 2-5 years (3.7 ± 0.8 years)... DTI data was visually inspected prior to processing. Detection and removal of motion-corrupted volumes was performed manually by an investigator blinded to participant demographics.
+
+The researchers found evidence that higher prenatal BPA exposure altered white matter development in crucial brain regions. Specifically, they observed changes in the splenium (part of the bridge between brain hemispheres) and inferior longitudinal fasciculus (involved in visual and emotional processing):
+
+prenatal maternal urinary BPA concentrations were significantly associated with [mean diffusivity] of the splenium (p = 0.046, β = 0.238, [CI: 0.005 0.471]) and the right inferior longitudinal fasciculus (p = 0.017, β = 0.249, [CI: 0.046, 0.452])
+
+The authors claim that these brain changes directly explain behavioral problems in the children:
+
+splenium MD significantly mediated the relationship of prenatal maternal BPA and internalizing behavior, as demonstrated by a significant indirect effect (path ab: β = 0.213, [CI: 0.017, 0.564])
+
+(“Internalizing behavior” is a psychiatric term that refers to a set of inward-directed behaviors such as anxiety, depression, social withdrawal, low self-esteem, and feelings of worthlessness.)
+
+Crucially, the BPA levels causing these changes matched typical population exposure. BPA was detected in 89% of maternal urine samples at levels similar to national averages:
+
+Average human BPA intake is estimated to be 40–80 ng/kg/day, based on national biomonitoring data from Canada and the United States... BPA levels in the current study were similar to Canadian national biomonitoring data, with few participants above average exposure levels.
+
+The study has important limitations: single urine samples may not capture full exposure, the results didn't survive multiple comparison correction, sample size was limited to 98 pairs, and only early childhood outcomes were measured. As the authors note:
+
+This study provides preliminary evidence for the neural correlates of BPA exposure in humans... alterations to brain structure may be a mechanism by which prenatal BPA exposure affects behavior in young children.
+
+These three studies all looked at pretty small samples of children (85, 328, and 98). You could justifiably argue that these are, collectively, underpowered to draw firm conclusions, and that more and larger studies are needed.
+
+Bad for mammals?
+A substantial number of studies have found connections between one or more of these chemicals and a whole gamut of health issues in mammals. One advantage of animal studies is that you can test very high doses – much higher than what humans are likely exposed to – and see what happens at the extremes. This still leaves open the question of what happens at lower doses, but it gives you some data as to the effects of these chemicals on hormone systems.
+
+Wolfe and Layton (2003) fed DEHP to 17 male and 17 female rats at eight different doses, ranging from high to ridiculously high (120 μg - 775 mg / kg / day) – five times higher than the EPA limit. They tracked three generations of rats because some reproductive effects might not be obvious until the offspring reproduce. All generations received DEHP in their diet continuously – the exposed adults (F0) produced pups (F1) who were exposed in the womb and through nursing, then kept eating DEHP-laced food as they grew up and produced the next generation (F2), and so on through F3. Each generation was bred three times to ensure any effects weren't just bad luck.
+
+The results showed clear reproductive damage, especially in males. Males exposed to high doses (592-775 mg/kg/day) had severe fertility problems. When these males mated with healthy females, fewer eggs successfully implanted in the uterus ("decreased implantation sites") and fewer pregnancies occurred.
+
+Their testicles showed severe damage. The tiny tubes that make sperm (“seminiferous tubules”) were shriveled and contained only nurse cells (“Sertoli cells”) instead of developing sperm cells. The highest dose male group in F1 generation (775 mg/kg/day) couldn't produce any offspring at all, so there were no F2 and F3 generations for this dose.
+
+Male pups showed signs of feminization – their genitals were positioned more like females' ("decreased anogenital distance" or “AGD”), they kept nipples that male rats usually lose during development, and their sexual maturation (testes descent, vaginal opening) was delayed.
+
+And the effects got stronger across generations for the highest dose group:
+
+Spermatids/testis were decreased at 10,000 ppm [775 mg/kg/day] in the F0 males and no sperm or spermatids were noted in the F1 males.
+
+To prove the effects came from DEHP, they did "crossover" experiments, where they mated treated males with untreated females and vice versa. This showed the males were definitely harmed because they couldn't reproduce even with healthy partners. When treated females mated with healthy males, they could produce offspring, but the male pups were feminized (lower AGD).
+
+One thing Wolfe and Layton didn't do is look at the mechanisms that may have caused the physiological damage to the rats. It seems likely that the hormonal systems of these rats were disrupted by DEHP, we don't know for sure that it happened. What makes this next study interesting is that it looks both at the physiological and the hormonal effects.
+
+In 2016, Nelli and Pamanji injected DBP into adult male rats at two doses (100 and 500 mg/kg) once a week for four weeks. They wanted to know if DBP could harm fully developed males, not just developing ones.
+
+The DBP-injected males' testicles showed severe damage – namely, they shrank in size. In the picture below, (d) is testicles from control rats, (e) is 100 mg/kg treatment, (f) is 500 mg/kg treatment.
+
+Rat testicles comparison
+Rat testicles comparison
+Treated males couldn't produce normal sperm anymore. The sperm-producing tubes in the testicles (“seminiferous tubules”) shrank in diameter by 43-53%. The tubes had patches of dead tissue (“necrosis”), there were fewer developing sperm cells in the tubes and abnormal fluid buildup in the spaces between tubes (“edema in interstitial tissue”). The sperm itself changed – counts dropped 27-31%, motility dropped 17-21%, and the percentage of living sperm dropped 18-26%. The cell layer where sperm develops (“epithelial layer”) became 23-31% thinner.
+
+Importantly, there was a massive (1,600% to 2,600%) increase in abnormal sperm in treated rats. Some sperms even had weird “banana-shaped” heads – see (e) below for a visual.
+
+Rat sperm comparison
+Rat sperm comparison
+Not surprisingly, the DBP-injected males had trouble breeding – they needed 4-4.5 attempts to successfully mate compared to 1.5 in controls. When they did mate, fewer eggs implanted (26-34% decrease) and fewer pups survived (37-46% decrease).
+
+An interesting feature of this study is that they also try to figure out the mechanism by which DBP may have caused this damage in males. They find that DBP seems to have damaged male reproduction in two ways:
+
+DBP created "oxidative stress" – basically causing chemical damage in the testicles. DBP more than doubled the levels of harmful oxidation products while decreasing the natural antioxidant defenses that usually protect testicular tissue.
+DBP disrupted hormones – testosterone dropped by more than half, and in response, the brain pumped out more signaling hormones (FSH and LH) trying to kick the testicles back into action (“negative feedback in the pituitary”).
+The study also found that the male's offspring had delayed testes descent (a sign of puberty in rats).
+
+There are many more studies where rats, guinea pigs, and even dogs (older studies) were fed different chemicals that we found in foods, enough of them with convincing signs of disruption. To name a few examples:
+
+DEHA, a modern substitute for phthalates such as DEHP, is also associated with changes in body and liver weight, reduced ossification and slightly dilated ureters in fetuses, reduced offspring weight gain, total litter weight, and litter size in rats.
+DIDP is associated with liver effects in dogs and newborn mortality in rats.
+Bisphenol A is associated with immune system effects, along with hippocampus, liver, and kidney changes, in mice and rats.
+Should we be worried?
+Plastic chemicals are widespread and we almost certainly eat many different chemicals every day.
+
+We began this project searching for a “smoking gun” study that conclusively proved the dangers of these chemicals in humans at the levels we are consuming them. We didn’t find that. However, we’ve emerged from this project with the view that current safety limits for plastic chemicals could be materially wrong. The limits set by different agencies contradict each other, many of them haven’t been revised in decades despite advances in science, and real-world scenarios like chemical mixtures are understudied.
+
+We do think there is enough evidence that plastic chemicals are bad for babies for this to be worthy of concern for parents, and further study by experts. When exposed to chemicals before birth or early in life, both animals and humans are especially vulnerable to hormonal disruption, and it seems plausible that even slight interference can have effects that last a lifetime. More research is needed, and in the meantime, there's clearly going to be a market for a baby food company that eliminates plastic chemicals from their products.
+
+Should non-pregnant adults worry about this? We didn’t find strong enough evidence to conclude this with certainty. It’s probably not good for you to ingest exogenous hormonally active substances willy-nilly, but it’s also possible that you have bigger health concerns, like getting enough sleep, or exercising, or having purpose and meaning in your life. As the team that worked on this project – none of us pregnant mothers – these results have not changed our eating habits significantly.
+
+The evidence of harm seemed strongest for the original phthalates and for bisphenols. The phthalate substitutes seem to be less studied, but there aren't zero studies, and we couldn't find compelling evidence of harms.
+
+The purpose of our study was to measure chemicals levels in foods, not to reach conclusions about their safety. We were lucky to have expert advisors, but we’ll stress again that we are non experts with no background in this field. So you shouldn’t weigh our views too heavily, but we thought it would be helpful to share what we think, after a few months of studying this space, and this report would be incomplete if we didn’t.
+
+If you want to read more about the studies of EDC health effects, the Minderoo 2024 Plastic Health Umbrella Review and the accompanying report are good starting points.
+
+Some specific questions we investigated
+Are there plastic chemicals in baby foods?
+We didn't start out with a focus on baby foods, but what we learned about endocrine disrupting chemicals made us especially interested in what ends up in babies. So we tested prenatal vitamins, baby foods, formula, and breast milk from a local milk bank.
+
+We found phthalates (and phthalate substitutes) in many of these products.
+
+To our great surprise, all prenatal vitamins we tested contained DEHP, with Thorne Basic having the lowest levels. These are relatively low levels, but there is no good reason DEHP should be in prenatal vitamins:
+
+Sample ID	
+Product
+Assumed serving size (g)	DEHP ng/serving	DBP ng/serving	DIDP ng/serving	DEP ng/serving	DMP ng/serving	DIBP ng/serving	DCHP ng/serving	BPA ng/serving	DEHT ng/serving
+7170201	Nature Made Prenatal Folic Acid + DHA Supplement	1	1890	61	<100	11	18	18	<400	<5	7820
+7210202	Nature Made Prenatal Folic Acid + DHA Supplement	1	5623	<50	<500	<50	<25	<50	<1000	<5	8195
+20240203	Nature Made Prenatal Folic Acid + DHA Supplement	1	2760	27.3	<100	29.2	15.4	12.1	2210	5.2	12600
+7210204	One A Day Womens Prenatal 1 Multivitamin with DHA & Folic Acid	1	7840	520	<1000	67	65	170	<400	<5	19900
+7210205	One A Day Womens Prenatal 1 Multivitamin with DHA & Folic Acid	1	10800	480	<1000	58	54	110	<400	<5	7400
+7210206	One A Day Womens Prenatal 1 Multivitamin with DHA & Folic Acid	1	8900	510	<1000	60	61	140	<400	<5	13800
+8070207	One A Day Womens Prenatal 1 Multivitamin with DHA & Folic Acid	1	8765	<200	<2000	<200	<100	<200	3276	<1	6466
+8070301	One A Day Womens Prenatal 1 Multivitamin with DHA & Folic Acid	1	8267	<200	<2000	<200	<100	<200	2313	<1	29337
+8070302	One A Day Womens Prenatal 1 Multivitamin with DHA & Folic Acid	1	6820	<200	<2000	<200	<100	<200	2689	<1	4482
+8070201	Thorne Basic Prenatal Dietary Supplement	2	88	216	<400	<40	<20	<40	<20	<2	<200
+8070202	Thorne Basic Prenatal Dietary Supplement	2	62	132	<400	<40	<20	<40	<40	<10	<200
+8070203	Thorne Basic Prenatal Dietary Supplement	2	58	146	<400	<40	<20	<40	<40	<10	<200
+8070204	Thorne Prenatal DHA Dietary Supplement	2	3518	54	<400	<40	<20	<40	<400	<20	68764
+8070205	Thorne Prenatal DHA Dietary Supplement	2	3666	48	944	<40	<20	<40	<400	<10	274300
+8070206	Thorne Prenatal DHA Dietary Supplement	2	1258	334	<400	<40	<20	<40	<400	<10	126272
+We also found DEHP in most baby foods, including Enfamil formula, Kate Farms formula, and Gerber baby foods:
+
+Sample ID	
+Product
+Assumed serving size (g)	DEHP ng/serving	DBP ng/serving	BBP ng/serving	DEP ng/serving	DMP ng/serving	DIBP ng/serving	DEHT ng/serving	DEHA ng/serving
+7210901	Enfamil Neuro Pro 587g Infant Formula (Can)	22	2200	748	440	<220	134.2	308	10340	418
+7210902	Enfamil Neuro Pro 587g Infant Formula (Can)	22	2200	814	<110	<220	127.6	286	9460	396
+7210903	Enfamil Neuro Pro 587g Infant Formula (Can)	22	2200	858	<110	<220	143	286	21340	396
+7230901	Enfamil Neuro Pro 587g Infant Formula (Can)	22	1342	<220	<110	<220	<110	<220	7920	<220
+7230902	Enfamil Neuro Pro 587g Infant Formula (Can)	22	1342	<220	<110	<220	<110	<220	7260	<220
+7170901	Enfamil Neuro Pro 587g Infant Formula (Tub)	22	2860	858	<110	<220	145.2	418	11880	462
+7230903	Enfamil Neuro Pro 587g Infant Formula (Tub)	22	902	<220	<110	<220	<110	<220	3344	<220
+20240901	Enfamil Neuro Pro 587g Infant Formula (Tub)	22	1025.2	239.8	<110	501.6	<110	<220	1815	<220
+7091301	Gerber Baby Food Banana in Glass	113	1728.9	1593.3	<565	1559.4	<565	<1130	9333.8	<1130
+7211301	Gerber Baby Food Banana in Glass	113	<1130	<1130	<565	<1130	<565	<1130	<5650	<1130
+7241303	Gerber Baby Food Banana in Glass	113	<1130	<1130	<565	<1130	<565	<1130	<5650	<1130
+7091303	Gerber Baby Food Carrot Puree in Plastic	113	1728.9	<1130	<565	2067.9	<565	<1130	7073.8	<1130
+7091302	Gerber Baby Food Organic Carrot in Glass	113	1514.2	1243	<565	2712	<565	<1130	9164.3	<1130
+7241301	Gerber Baby Food Organic Carrot in Glass	113	<1130	<1130	<565	<1130	<565	<1130	<5650	<1130
+7211302	Gerber Natural for Baby Wonderfoods Banana Blueberry Pouch	99	1386	1881	<495	<990	<495	<990	2772	<990
+7211303	Gerber Natural for Baby Wonderfoods Banana Blueberry Pouch	99	1584	1485	<495	<990	<495	<990	2970	<990
+7211304	Gerber Natural for Baby Wonderfoods Banana Blueberry Pouch	99	1683	1584	<495	<990	<495	<990	3366	<990
+7091304	Happy Baby Baby Food Organic Carrot in Glass	113	2395.6	<1130	<565	<1130	<565	<1130	5118.9	<1130
+7151301	Happy Baby Baby Food Organic Carrot in Glass	113	1921	<1130	<565	<1130	<565	<1130	9492	<1130
+7290901	Happy Baby Baby Food Organic Carrot in Glass	113	1356	<1130	<565	<1130	<565	<1130	<5650	<1130
+8040901	Kate Farms Pediatric Standard Formula	177	2301	3717	<885	<1770	1221.3	<1770	<8850	<1770
+8070901	Kate Farms, Moog Pediatric Standard Formula via Infinity Enteral Feeding Pump	177	2478	<1770	<885	<1770	<885	6372	15930	27789
+All of the milk that we tested from a local breast milk bank had varying levels of DEHT, and one of the samples we tested contained the phthalates DEHP and DBP:
+
+Sample ID	
+Product
+Assumed serving size (g)	DEHP ng/serving	DBP ng/serving	DEHT ng/serving	DEHA ng/serving
+7152502	Breast Milk from Milk Bank Hospital Grade	152	<1520	<1520	5973.6	6247.2
+7152501	Breast Milk from Milk Bank Mature Grade	152	2432	3192	68400	1900
+8052501	Breast Milk from Milk Bank Mature Grade	152	<1520	<1520	529264	<1520
+Note that in human breast milk, the phthalate diesters that we measured were probably partially metabolized into the phthalate monoesters that we did not measure. This means actual phthalate levels could be higher than reported.
+
+Do less-processed foods contain fewer chemicals than heavily-processed foods?
+Yes, less-processed foods like water, coffee, milk, yogurt, produce, chicken, and beef that underwent fewer transformations from the raw ingredients had less frequent detections (8% vs 14%) and lower average contamination (16,201 vs 82,782 ng/serving) than heavily-processed foods like burgers, nuggets, and more complex beverages:
+
+Tags: water, coffee, milk, yogurt, produce, chicken, beef
+Tags: fast food, beverage
+Samples	203	200
+% Results Below LOQ	92.3%	85.6%
+% Results Above LOQ (Detection)	7.7%	14.4%
+Avg Detection (ng/serving)	16,201	82,782
+Avg Detection (ng/g)	130	331
+(LOQ is the Limit Of Quantification — the lowest concentration that could be reliably measured with a specified accuracy and precision.)
+
+The working hypothesis here is that parts of the food production process can introduce chemical contamination to the foods, and the more steps and machinery you have in food processing, the more opportunities there are for contaminants to enter the food.
+
+As one example, cow milking machines use flexible plastic or rubber tubes that can contain softening agents, like phthalates. As warm milk passes through these tubes, phthalates can leach from the tubing into the milk.
+
+Milking tubes on a cow
+Milking tubes on a cow
+In our own testing, we found that raw milk from a local farm had lower levels of chemical contamination. We tested 2 glass bottles of raw, unpasteurized, non-homogenized, grade A cow milk from a milk farm near the Bay Area, and 12 samples of Clover and Straus milk around the Bay Area.
+
+Total
+Phthalates
+Bisphenols
+PhthalateSubstitutes
+0
+2,000
+4,000
+6,000
+8,000
+10,000
+12,000
+14,000
+16,000
+18,000
+20,000
+22,000
+24,000
+26,000
+ng/serving
+24,849
+9,120
+13,440
+2,160
+<LOQ
+<LOQ
+11,409
+6,960
+Milk Store
+Milk Farm
+Cow milk directly from the farm showed lower levels for all 3 groups of analytes than cow milk from the store. Our lab still detected both phthalates and phthalate substitutes in farm milk, so it would be interesting to see if this holds for other farms and where exactly the leaching happens.
+
+However, we also tested farm-bought vs store-bought beef, testing 3 boneless beef ribeye steaks from a local butcher shop in the Bay Area which operates their own slaughterhouse and sources all meat from local California farms, and 7 boneless beef ribeye steaks (Pasture Raised, Grass Fed, and Organic Grass Fed) from different Whole Foods stores in the Bay Area
+
+Total
+Phthalates
+Bisphenols
+PhthalateSubstitutes
+0
+20,000
+40,000
+60,000
+80,000
+100,000
+120,000
+140,000
+160,000
+ng/serving
+99,744
+154,643
+9,590
+1,333
+381
+<LOQ
+89,772
+153,510
+Beef Store
+Beef Butcher
+Our testing indicated that beef from the butcher on average showed lower levels of phthalates and bisphenols, but higher levels of phthalate substitutes. The levels of phthalate substitutes were the highest, so the average total amount of chemicals was higher for butcher samples than store samples. We're not sure why. The butcher meat was wrapped in brown paper when we received it; we didn't test that paper separately, but we wish we did.
+
+It would be useful for a future study to look at the different stages in dairy, meat, and produce production to understand where plastic chemicals are introduced.
+
+In dairy products and meat, we acknowledge that the phthalate diesters that we did measure may have metabolized into the phthalate monoesters that we did not measure. Therefore, the values we report may only represent a portion of the phthalate diesters originally in these materials.
+
+Are plastic chemicals in our food a new phenomenon?
+One common belief among people concerned with plastic chemicals is that foods from say, the 1950s, didn't contain these chemicals, or contained lower levels of these chemicals. We set out to test this belief by sourcing sealed army rations and other foods from the 1950s, 1960s, and 1970s from eBay.
+
+Historically, phthalates were first used in 1926 to make PVC — itself patented in 1913 — more flexible, and expanded into wider use in the 1930s, not least because they “overcame the excessive volatility and undesirable odor” of camphor, the previous plasticizer of choice. Bisphenols were synthesized in the nineteenth century, saw use in epoxy resins starting in the 1940s, and were used to harden plastics beginning in the 1950s.
+
+Here's the list of what we purchased:
+
+Cocoa powder and cold tablets from circa 1920
+
+No product images available
+Cocoa powder from circa 1920
+No product images available
+Cold tablets from circa 1920
+Ghirardelli cocoa powder from circa 1940, which we compared to Ghirardelli cocoa powder from 2024
+
+No product images available
+Ghirardelli cocoa powder from circa 1940
+No product images available
+Ghirardelli cocoa powder from 2024
+Peanut butter, coffee powder, chocolate, cocoa powder, crackers, powdered milk, and sugar from a mix of 1952 Korean war rations and 1962 military rations
+
+No product images available
+Korean war military rations from 1950-60s
+No product images available
+Peanut butter from Korean war military rations
+No product images available
+Coffee powder from Korean war military rations
+No product images available
+Chocolate from Korean war military rations
+No product images available
+Cocoa powder from Korean war military rations
+No product images available
+Cracker from Korean war military rations
+No product images available
+Powdered milk from Korean war military rations
+No product images available
+Sugar from Korean war military rations
+Water purification tablets from 1973, which we compared with Aquatabs
+
+No product images available
+Water purification tablets from 1973
+No product images available
+Aquatabs water purification tablets from 2024
+We were able to find a product made 80 years ago that is still in production today – Ghirardelli hot cocoa. Here's how the 1940s sample compares to samples from 2024:
+
+DEHP
+DBP
+BBP
+DEP
+DMP
+DIBP
+DCHP
+DEHT
+DEHA
+0
+200
+400
+600
+800
+1,000
+1,200
+1,400
+ng/serving
+100
+252
+885
+188
+60
+<LOQ
+1,550
+<LOQ
+185
+27
+265
+55
+100
+<LOQ
+<LOQ
+600
+<LOQ
+45
+1940
+2024
+This comparison shows the general trend – vintage foods generally tested higher for DBP, DMP, DEP, DCHP, and sometimes DIBP – the original phthalates – while modern foods generally tested higher for DEHA and DEHT – the phthalate substitutes.
+
+One ambiguous result is for DEHP, a phthalate. Overall, DEHP levels are higher in vintage foods, but in the least-messy, most-direct comparison of the same product from Ghirardelli, DEHP in the modern sample is 152% higher than in the vintage sample. What gives, Ghirardelli?
+
+Lower DBP, DMP, DEP, DCHP vs higher DEHA and DEHT actually makes sense – the latter are phthalate substitutes and at least DEHT was likely only introduced around 1975, while many of the phthalates were banned or placed on warning lists like the California Prop 65.
+
+Strange contamination in 72-year old military rations
+
+We have one strange outlier in our vintage samples – a can of Korean War B-1 military rations from 1952. Its overall chemical levels were through the roof, way higher than for most other samples, including a can of similar rations from a decade later. These levels of phthalates are the highest out of all the samples we tested.
+
+ID	Cocoa Powder from 1952 Korean War Rations	Cracker from 1952 Korean War Rations	Powdered Milk from 1952 Korean War Rations
+Total	445,016	1,135,365	1,859,200
+Phthalates	444,974	1,135,248	1,859,200
+[DEHP Equivalents]	1,504,372	3,288,917	2,345,250
+Bisphenols	<LOQ	117	<LOQ
+Phthalate Substitutes	42	<LOQ	<LOQ
+We don't yet know what to make of it. Was there something about the way US military rations were prepared in the 1950s that leached ungodly amounts of plastic chemicals? Did the leaching somehow occur through a sealed metal can? Did the can lining or the packaging continue to leach plastic chemicals for over 70 years? Did someone sell us a counterfeit sealed can of army rations? Or were Korean war vets dosed with insane levels of phthalates through their rations? This is an unsolved mystery, and if you have any thoughts, we welcome them.
+
+All about water: bottled vs tap, hot cars, and Brita filters
+We conducted several experiments to understand chemical contamination in different types of water, looking at bottled vs tap water, the effects of leaving water bottles in hot cars, and the impact of water filters. Here's what we found:
+
+Bottled vs tap water
+We tested 21 tap water samples from San Francisco and Palo Alto, along with 17 bottled water samples (8 Fiji and 3 Essentia in plastic bottles; 3 Smeraldina and 3 Mountain Valley in glass bottles). The results were largely reassuring – most samples showed levels below the limit of quantification (LOQ) for all 18 analytes we tested.
+
+Fiji and Mountain Valley had one sample each exceed the FDA limit for DEHP phthalate (by 217% and 283% respectively). This looks like an outlier result though, since all the other 9 samples of these brands didn’t have any detections.
+
+DEHT was the most widespread – it appeared in 44% of tap water samples, with a notable outlier from San Francisco's Marina district showing a surprisingly high DEHT level of 500,550 nanograms in a 12 fl.oz serving. In contrast, our lab didn't detect DEHT in any bottled water, although the LOQ for bottled water was higher than some of the tap water results.
+
+To our surprise, we did not find different levels of chemical content in water from glass and plastic bottles.
+
+Unexpected results in a hot car
+To test whether leaving plastic water bottles in hot cars leads to chemical leaching, we left three Fiji bottles in parked cars in Palo Alto for one hour on a sunny summer day, comparing them with four control bottles not exposed to heat. Surprisingly, the heated bottles showed lower chemical levels. While one control bottle showed detectable DEHP and DBP at 6035 ng/serving, all bottles left in hot cars tested below LOQ for all analytes. This finding contradicts prior reporting, and we're not sure if that is because the water bottles we chose are more resistant to leaching or for some other reason. We only tested Fiji, so more research is needed with a greater diversity of plastic types, more samples, and more controlled temperature conditions.
+
+Sample ID	
+Product
+DEHP ng/serving	DBP ng/serving
+7190101	Fiji Natural Artesian Water	6035	6035
+7210102	Fiji Natural Artesian Water	<3550	<3550
+20240102	Fiji Natural Artesian Water	<3550	<3550
+20240103	Fiji Natural Artesian Water	<3550	<3550
+20240104	Fiji Natural Artesian Water	<3550	<3550
+7210112	Fiji Water - Car on Sunny Day (1hr)	<3550	<3550
+7210113	Fiji Water - Car on Sunny Day (1hr)	<3550	<3550
+7210114	Fiji Water - Car on Sunny Day (1hr)	<3550	<3550
+Running the tap
+We investigated whether running tap water for 30 seconds affected chemical levels by testing samples from three San Francisco locations: the Marina district, a Hayes Valley startup office, and the Y Combinator building in Dogpatch. The results were mixed and somewhat counterintuitive. In the Marina, levels decreased dramatically after running the tap. However, both Hayes Valley and Dogpatch showed increased levels after running the water.
+
+A possible explanation for this range of results is that different types of water pipes are in use in both individual homes and across water service regions, including both polyethylene (PEX) and chlorinated polyvinyl chloride (cPVC). Studies show that while “phthalate exposure from drinking water via cPVC or PEX is low when compared to other dietary sources,” cPVC pipes are associated with greater quantities of phthalates.
+
+Sample ID	
+Product
+DEP ng/serving	DMP ng/serving	DEHT ng/serving
+7150106	Unfiltered Tap Water - Y Combinator (0sec after start)	<3550	<1775	4189
+7230101	Unfiltered Tap Water - Y Combinator (0sec after start)	<3550	<1775	<3550
+7110106	Unfiltered Tap Water - Y Combinator (30sec after start)	<3550	<1775	<3550
+7150105	Unfiltered Tap Water - Y Combinator (30sec after start)	<3550	<1775	7668
+7230102	Unfiltered Tap Water - Y Combinator (30sec after start)	<3550	<1775	<17750
+7150103	Unfiltered Tap Water - Fort Mason (0sec after start)	<3550	<1775	500550
+7230105	Unfiltered Tap Water - Fort Mason (0sec after start)	<3550	<1775	<3550
+7110107	Unfiltered Tap Water - Fort Mason (30sec after start)	<3550	<1775	3940.5
+7150104	Unfiltered Tap Water - Fort Mason (30sec after start)	<3550	<1775	<3550
+7230106	Unfiltered Tap Water - Fort Mason (30sec after start)	<3550	<1775	<3550
+7150102	Unfiltered Tap Water - Hayes Valley (0sec after start)	<3550	<1775	4224.5
+7110108	Unfiltered Tap Water - Hayes Valley (30sec after start)	4366.5	6496.5	22897.5
+7150101	Unfiltered Tap Water - Hayes Valley (30sec after start)	<3550	<1775	5786.5
+7230104	Unfiltered Tap Water - Hayes Valley (30sec after start)	<3550	<1775	<17750
+7120109	Unfiltered Tap Water - PlasticList Office (30sec after start)	<3550	<1775	<3550
+7220101	Unfiltered Tap Water - PlasticList Office (30sec after start)	<3550	<1775	<17750
+7210107	Unfiltered Tap Water - PlasticList Office (30sec after start)	<3550	<1775	<17750
+7230103	Unfiltered Tap Water - PlasticList Office (30sec after start)	<3550	<1775	<3550
+8050101	Unfiltered Tap Water - PlasticList Office (30sec after start)	<3550	<1775	<17750
+Brita and Berkey Filtration
+Our Brita filter testing compared nine filtered samples against four unfiltered samples, all collected from the same location in downtown Palo Alto. Most analytes (17 out of 18) showed no detectable levels. However, DEHT appeared in two Brita-filtered samples at 5,325 and 3,905 ng/serving, while all unfiltered samples tested below LOQ. While this might suggest that Brita filters could introduce DEHT, the high LOQ (17,750 ng/serving) for some unfiltered samples makes it impossible to draw firm conclusions.
+
+Sample ID	
+Product
+DIBP ng/serving	DEHT ng/serving
+7120111	Brita Filtered Tap Water - Brita Pitcher 1 (directly after filtering)	<3550	<3550
+7210108	Brita Filtered Tap Water - Brita Pitcher 1 (directly after filtering)	<3550	<17750
+7220109	Brita Filtered Tap Water - Brita Pitcher 1 (directly after filtering)	<3550	<17750
+7120117	Brita Filtered Tap Water - Brita Pitcher 2 (directly after filtering)	<3550	5325
+7210111	Brita Filtered Tap Water - Brita Pitcher 2 (directly after filtering)	<3550	<17750
+7220108	Brita Filtered Tap Water - Brita Pitcher 2 (directly after filtering)	<3550	<17750
+7120112	Brita Filtered Tap Water - Brita Pitcher (after 1hr)	<3550	3905
+7210109	Brita Filtered Tap Water - Brita Pitcher (after 1hr)	<3550	<17750
+7220104	Brita Filtered Tap Water - Brita Pitcher (after 1hr)	<3550	<17750
+7120113	Brita Filtered Tap Water - Munchkin Cup (after 1hr)	<3550	4970
+7210110	Brita Filtered Tap Water - Munchkin Cup (after 1hr)	<3550	<17750
+7220106	Brita Filtered Tap Water - Munchkin Cup (after 1hr)	<3550	<17750
+7120114	Brita Filtered Tap Water - Solo Cup (after 1hr)	<3550	<3550
+7210104	Brita Filtered Tap Water - Solo Cup (after 1hr)	<3550	<17750
+7220107	Brita Filtered Tap Water - Solo Cup (after 1hr)	<3550	<17750
+7120115	Brita Filtered Tap Water - Nalgene Bottle (after 1hr)	4260	4615
+7210105	Brita Filtered Tap Water - Nalgene Bottle (after 1hr)	<3550	<17750
+7220103	Brita Filtered Tap Water - Nalgene Bottle (after 1hr)	<3550	<17750
+7120116	Brita Filtered Tap Water - Hydro Flask (after 1hr)	<3550	3905
+7210106	Brita Filtered Tap Water - Hydro Flask (after 1hr)	<3550	<17750
+7220105	Brita Filtered Tap Water - Hydro Flask (after 1hr)	<3550	<17750
+For our Berkey test, we collected two water samples from the same location in SF Haight-Ashbury and filtered one through Berkey. Both the unfiltered and the filtered water samples showed no detectable levels for our 18 chemicals. Because the unfiltered water wasn’t contaminated, we don’t know if Berkey filters out plastic chemicals, but we do know that Berkey didn’t leach any chemicals into the water.
+
+Like many aspects of our study, these water experiments raise as many questions as they answer. Future research should examine larger sample sizes, control for more variables, and investigate the sources of chemical contamination in water systems – particularly the surprising presence of DEHT in some tap water samples.
+
+Do plastic takeout containers leach chemicals into hot food?
+One common concern we wanted to investigate was whether hot food picks up additional plastic chemicals when stored in takeout containers. To test this, we conducted a series of experiments at a popular Indian restaurant in San Francisco. Over three separate days, we ordered identical meals – one to eat at the restaurant and one for takeout in their #5 PPL plastic containers.
+
+No product images available
+Indian food in a restaurant
+No product images available
+Indian food takeout
+Our protocol was straightforward: we'd order two of the exact same dish, send one straight to the lab for testing, and let the other sit in its takeout container for 45 minutes before testing (simulating a typical delivery or drive home time). These dishes were quite hot: in these pictures, the sample in the plate was 125.4F, and the sample in the takeout container was 168.2F which cooled down to 133.5F when we collected it 45 minutes later. Three days of collection gave us six complete meal comparisons.
+
+The results were striking – food that spent 45 minutes in the takeout containers showed 34% higher levels of plastic chemicals overall compared to the same dishes tested directly from the restaurant. The increase wasn't uniform across all chemical types: phthalate substitutes showed the biggest jump at 40%, while phthalates increased by a more modest 15%.
+
+Total
+Phthalates
+Bisphenols
+PhthalateSubstitutes
+0
+10,000
+20,000
+30,000
+40,000
+50,000
+60,000
+70,000
+80,000
+90,000
+100,000
+110,000
+ng/serving
+79,088
+105,952
+17,232
+19,736
+416
+376
+61,440
+85,840
+Eat-In
+Takeout
+We found an interesting pattern with bisphenols too. Four of our meal pairs were completely bisphenol-free, but on one particular day, both butter chicken meals (takeout and dine-in) contained detectable levels. This kind of variation highlights how chemical contamination can fluctuate even in food from the same kitchen on different days. Maybe on that day, they had different ingredients, or used a different cutting board?
+
+We'd love to see more comprehensive testing across different types of takeout containers, various price points, and foods with different fat contents (since fat-soluble chemicals might migrate differently). Our findings suggest that the choice of container and time spent in plastic packaging could meaningfully impact the chemical content of takeout meals.
+
+Which chemicals appear most frequently in our foods?
+DEHP and DEHT were detected in about 70% of samples, followed by DBP in 50% of samples. 3 out of 18 chemicals were not detected in any of the samples: DIDA, DNHP, DINP.
+
+DEHP (Di(2-ethylhexyl) phthalate) is one of the original phthalate plasticizers facing increasing regulation and restrictions due to concern about adverse health effects. The similar detection rates (around 70%) suggest that while there has been a push to replace DEHP with DEHT, both chemicals are still commonly present in products. This could indicate that the transition from DEHP to safer alternatives is still ongoing, with many products still containing the original phthalate while others have switched to the substitute.
+
+Analyte	No detections	Detections	% Detections
+DEHT	69	167	71
+DEHP	73	163	69
+DBP	118	118	50
+DEHA	170	66	28
+DMP	178	58	25
+DEP	181	55	23
+DIBP	190	46	20
+BPA	212	24	10
+BPS	215	21	9
+BPF	220	16	7
+BBP	223	13	6
+DCHP	229	7	3
+DNOP	234	2	1
+DIDP	234	2	1
+DINCH	235	1	0
+DNHP	236	0	0
+DIDA	236	0	0
+DINP	236	0	0
+The highest level of any chemical that we detected in food was in a Whopper we purchased at a Burger King in Sunnyvale on 2024-07-20. In this particular Whopper, we received this result for DEHT:
+
+Sample ID	
+Product
+Assumed serving size (g)	DEHT ng/serving
+07203309	Burger King Whopper with Cheese	316	5,877,600
+This result is so high that it implies that each Whopper contains 5.9 mg of DEHT – about 5 poppy seeds worth, or enough that you could scoop it into this laboratory micro-spatula from Amazon:
+
+No product images available
+5mg spatula from Amazon
+The other two Whoppers we tested also had high levels of DEHT, within about 40% of the highest result. Both the EPA and EFSA believe that this is a safe amount of DEHT to be exposed to, and we couldn't find any studies that showed harmful effects of DEHT; hopefully this lack of evidence persists.
+
+If you buy the same product twice, how much will chemical levels vary?
+When we bought two samples of the same product, plastic chemical levels differed on average by 59%, calculated as Relative Percent Difference (RPD).
+
+To test whether completely identical samples would show different levels of chemicals, we sent about 10% of our products in triplicate. This means we sent three copies of the product from the same batch – with matching lot number and expiration date – bought at the same store on the same day. We found that the triplicate samples differed less – on average by 33%.
+
+Our lab’s quality control methodology lists 20% RPD as an acceptable margin of measurement error for duplicate samples, meaning if you tested the exact same sample twice, you could see up to a 20% difference purely due to measurement noise. Taking that into account, the RPD for two samples of the same product (not necessarily from the same lot) ranges from 39-59%. For samples with the same lot number and expiration date, the RPD narrows to 13-33%.
+
+Within-product variability appears high, possibly because we are dealing with very small chemical concentrations measured in nanograms.
+
+Do thermal receipts contain plastic chemicals?
+While not a food question, we had heard that thermal receipt paper contains bisphenols, and having accumulated a lot of receipts from buying samples and personal shopping, we were curious to test some of them.
+
+To get a read for the possible migration of chemicals from receipts to hands, we tested 3 unaltered paper receipts and 3 samples of 175ml water in which a receipt had been soaked for 30 minutes.
+
+No product images available
+Lululemon paper receipt
+No product images available
+Safeway paper receipt
+No product images available
+UPS paper receipt
+The paper receipt samples showed phthalates, phthalate substitutes, and bisphenols. We knew that bisphenols were in receipts, but we were surprised by the presence of phthalates. The water samples showed only BPS, but at levels several magnitudes higher – 76 mg for one receipt.
+
+The BPS tests for the non-water samples (plain paper receipts) also had high BPS, but we don’t know exactly how high, because they exceeded the highest point in our lab's calibration range. The lab reported the results as >2,500 – meaning we know the lower bound, but not the upper bound. Usually, when a chemical is so concentrated in a sample that the result exceeds the range, the lab just tests with less sample. But sometimes, the concentration is so high that the sample amount becomes miniscule and the lab can't go any smaller, yet the concentration is still way too high to fit in the range. In that case, the lab reports the lower bound. This is what happened with the receipts.
+
+Sample ID	
+Product
+DEHP ng/receipt	DBP ng/receipt	BBP ng/receipt	DEP ng/receipt	DIBP ng/receipt	BPS ng/receipt	DEHT ng/receipt	DEHA ng/receipt
+8194503	Paper Receipt - UPS	1700	840	91	250	480	>2500	2600	660
+8194502	Paper Receipt - Safeway	720	260	<50	180	110	>2500	2500	<100
+8194501	Paper Receipt - Lululemon	210	370	<50	140	240	>2500	610	<100
+8154501	Paper Receipt in Water - Panda Express	<1750	<1750	<875	<1750	<1750	<175	<8750	<1750
+8154502	Paper Receipt in Water - Macy's	<1750	<1750	<875	<1750	<1750	76689900	<8750	<1750
+8154503	Paper Receipt in Water - Walgreens	<1750	<1750	<875	<1750	<1750	73618300	<8750	<1750
+Although neither the EPA and the EFSA set an intake limit for BPS, there is a long history of a phenomenon called “regrettable substitution,” when one problematic chemical is phased out and replaced with structurally similar alternatives that may later prove to have similar concerns. In this case, when BPA was restricted in some products, manufacturers often switched to BPS and BPF. But a systematic review of 32 studies found that BPS and BPF have potencies in the same order of magnitude as BPA, with estrogenic, antiestrogenic, androgenic, and antiandrogenic activities observed both in vitro and in vivo. The review concluded that based on the current literature, BPS and BPF are as hormonally active as BPA and have endocrine-disrupting effects.
+
+If BPS really is a regrettable substitution for BPA, then the levels detected in receipts are very high – 547,785,000% of the EFSA daily limit for BPA and 2,191% of the EPA limit, to be precise. The real BPS limit would probably be different from BPA, but considering that dermal absorption of BPA is higher than dietary absorption, the levels in the receipts would almost certainly far surpass any safety limit.
+
+How do prior tests for plastic chemicals in food compare?
+We were curious what other studies tested food for phthalates or bisphenols. We couldn’t find a centralized database of results, so we put together a list ourselves: Prior findings on phthalates and bisphenols in food. The list includes 20 studies published between 1989 and 2024 that tested food from the US, Canada, the UK, South Africa, China, Taiwan, Tunisia, and various countries in the EU.
+
+Prior tests found phthalates and bisphenols in seafood, meat, condiments, vegetables, fast food, and dairy foods. Interestingly, some of these studies reported DINP, DNHP, or DIDA in foods from the US and Canada, which our lab didn’t find in any of the samples we tested.
+
+Feel free to use and expand this dataset. We made it as a side project, so make sure to double-check the data you’re interested in.
+
+Conclusion
+The meat of our study is our results; this report is just a collection of notes on what we learned along the way. We think this was one of the larger tests of US food for plastic chemicals that’s been done to date, which is a little surprising given how relatively inexpensive it was. Our work raises as many questions as it does answers, and we hope that more studies are done. If you’re interested in running your own tests, check out our DIY instructions. We had a lot of fun doing this, and we think you will too!

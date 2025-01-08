@@ -1,0 +1,16 @@
+Run your own tests
+The good news for you is that you can skip most of the work we did and just use a lab that we believe to be excellent, and do your own tests for a relatively affordable per-sample fee.
+
+We recommend working with Light Labs to test food samples. They are building a new lab, have relationships with world-class established labs, and have experts who can assist you with the process. We worked with one of those established labs through Light Labs, and we happily recommend them. Light Labs became a sponsor for PlasticList, helping cover some of the testing costs. We couldn't have done this project without them.
+
+If your concern is personal (or fetal) health, you can use Million Marker to test your urine for phthalate and bisphenol metabolites, and compare your own levels with the general population.
+
+Here are some follow-up studies we think would be interesting:
+
+Do a more comprehensive comparison of vintage vs modern foods. We only tested a handful of vintage foods, but it should be possible to collect ~100 samples of vintage foods and compare them to modern counterparts. Testing 100 vintage-modern pairs would probably cost under $100,000. Seeing how the chemical makeup of our foods has changed over the decades would be very interesting.
+Go upstream and test raw ingredients from all the largest food suppliers to find out where the contamination is coming from. This will likely lead to significant discoveries.
+Test food in other countries. We'd like to see how European and Japanese foods compare to US equivalents.
+Test the same product at different stages of production, starting with raw ingredients and all the way to the final processed product, to trace where contamination occurs.
+Find many more raw farm foods straight from the animal or the tree and test them alongside similar store-bought foods. Go to remote farms, test their water supply, soil, and farm products. Find farms that supply grocery stores and test their products at each step from the farm to the store shelf.
+Test your own breast milk, urine, or blood. For example, you could collect morning and evening urine samples from a handful of participants and measure for the same chemicals we tested in food. This would give you a picture of how much of the total exposure is coming from food vs. other sources, such as air and clothing. Be careful not to draw extreme conclusions from the results. If you ask other people to donate samples and want to publish your results, you will likely need to go through an IRB.
+Start continuously testing the same set of foods, say once a month, and create a longitudinal dataset to show variation. Overlay it with events like changes in vendors or ingredients. Then use the dataset to track event-related changes in contamination, seasonal variation, and – if you test long enough – whether chemical levels increase or drop over the years.

@@ -1,0 +1,23 @@
+Industry advice
+Since we launched PlasticList, we’ve been heartened to have quite a few food companies reach out and ask for help interpreting their results and tracking down and eliminating their contamination. We’ve had calls with a bunch of them.
+
+We are happy to report that no food company wants this stuff in their food and they are all eager to figure out what’s going on and how to remove it. After a while we noticed the advice we were giving was pretty similar for every company, so we thought it would be useful to write it down and share publicly.
+
+So, here are some notes:
+
+To track down the source of your contamination, don’t just test a few samples of your product with varied production processes. Instead, test every single one of your inputs: every ingredient and input in the form you receive it before any processing steps, including water and any other consumables.
+Then, test the food before and after every step in your production process. If you boil something in tap water, test before and after boiling. If you chop something on a plastic cutting board (because wood cutting boards are outlawed in commercial kitchens, apparently), test before and after chopping.
+You may have to go deep into your supply chain to figure out the source of your contamination. One food company founder we spoke to said that some of the fruit they include in their product is picked, put into plastic bags, and then steamed in the bags before the bags are cut open and the fruit is transferred into another plastic bag, while still warm, for shipping. Whoops.
+Run at least three samples of every test due to sample-to-sample variation. You can see in our report and in our data that sample-to-sample and lot-to-lot variation should be expected.
+You should also test any intermediate or final packaging that your product ships in, as leaching can also occur post-production.
+There are a lot of steps that you need to carefully follow to prevent contaminating your samples during collection and transportation. It’s really easy to miss one of these and mess up your data. We describe many of these on our methodology page.
+You should consider running longitudinal tests, maybe quarterly, as we have heard that there can be seasonal variation in contamination from suppliers, due to things like summer heat, suppliers switching their processes, and suppliers switching their own backend suppliers for their inputs.
+And most importantly: PICK A GOOD LAB. Unfortunately not all labs are good, and we think many ISO-certified commercial labs will not give reliable results. We rejected many certified labs because we weren’t confident in their work; all-in-all, we spent about 10 weeks finding a lab that we trust for our tests. You can see our lab’s internal methodology here.
+Our lab has recently permitted us to identify them publicly, and they are IEH.
+
+We also worked with Light Labs to produce this study and they can be a big help.
+
+And Million Marker is able to work with food companies to debug their supply chains as well.
+
+You should consider hiring an analytical chemist as a consultant to validate that the testing methodology is accurate and to double-check the lab’s results. We hired John Brock to do this and it was well worth it; we would not have been confident in our choice of lab or our results without John.
+We couldn’t find a lot of evidence that the phthalate substitutes are bad; if you have high-percentile detections in phthalates or bisphenols, though, it’s probably worth figuring out how those chemicals are getting into your products.
