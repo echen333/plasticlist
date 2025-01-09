@@ -318,7 +318,7 @@ export default function QueryPage({ params }: PageParams) {
               </Button>
               <Button
                 variant="outlined"
-                color="primary"
+                color="secondary"
                 onClick={() => window.location.href = '/'}
               >
                 Ask a new question
