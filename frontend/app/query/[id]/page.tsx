@@ -1,9 +1,8 @@
 'use client';
 
 import { use, useEffect, useRef, useState } from 'react';
-import TestConversation from './TestConversation';
-import { useRouter } from 'next/navigation';
 import ReactMarkdown from 'react-markdown';
+import CustomCodeBlock from './CustomCodeBlock';
 import {
   Button,
   Card,
@@ -42,15 +41,39 @@ export default function QueryPage({ params }: PageParams) {
   const queryId = resolvedParams.id;
 
   // 2. React state
-  const [conversation, setConversation] = useState<ConversationQuery[]>([]);
+  const [conversation, setConversation] = useState<ConversationQuery[]>([{
+    id: 'test-1',
+    question: 'How do I analyze data with Python?',
+    response: `Here's an example of data analysis with Python:
+
+\`\`\`python
+import pandas as pd
+import numpy as np
+
+# Load and analyze data
+df = pd.read_csv('data.csv')
+summary = df.describe()
+
+# Calculate statistics
+mean_value = df['column'].mean()
+std_dev = df['column'].std()
+
+print(f"Mean: {mean_value}")
+print(f"Standard Deviation: {std_dev}")
+\`\`\`
+
+You can modify this code based on your needs.`
+  }]);
   const [conversationId, setConversationId] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [expandedBlocks, setExpandedBlocks] = useState<{[key: string]: boolean}>({});
 
   // SSE tracking
   const [isStreaming, setIsStreaming] = useState(false);
   const [activeQueryId, setActiveQueryId] = useState<string | null>(null);
+
+  // Test conversation state initialized above
 
   // Follow-up question
   const [followUpQuestion, setFollowUpQuestion] = useState('');
@@ -83,7 +106,8 @@ export default function QueryPage({ params }: PageParams) {
         if (data.current_query.status === 'processing') {
           setActiveQueryId(data.current_query.id);
         }
-      } catch (err) {
+      } catch (error) {
+        console.error('Fetch error:', error);
         setError('Failed to fetch conversation');
       } finally {
         setLoading(false);
@@ -139,7 +163,8 @@ export default function QueryPage({ params }: PageParams) {
             setActiveQueryId(null);
             // Optionally, refetch final conversation or patch local state
           }
-        } catch (err) {
+        } catch (error) {
+          console.error('SSE parse error:', error);
           setError('Failed to parse SSE data');
         }
       };
@@ -223,7 +248,8 @@ export default function QueryPage({ params }: PageParams) {
 
       // Start streaming the new query
       setActiveQueryId(newQueryId);
-    } catch (err) {
+    } catch (error) {
+      console.error('Follow-up submission error:', error);
       setError('Failed to submit follow-up question');
     } finally {
       setLoading(false);
@@ -237,9 +263,6 @@ export default function QueryPage({ params }: PageParams) {
           <Typography variant="h5" gutterBottom>
             Conversation
           </Typography>
-
-          {/* Test conversation for development */}
-          {!loading && conversation.length === 0 && <TestConversation />}
 
           {/* Loading + Error */}
           {loading && !conversation.length && (
@@ -276,8 +299,8 @@ export default function QueryPage({ params }: PageParams) {
               <ReactMarkdown
                 className="prose max-w-none"
                 components={{
-                  code: ({ node, inline, className, children, ...props }) => {
-                    const blockId = `${q.id}-${props.node?.position?.start?.line}`;
+                  code: ({ inline, className, children }) => {
+                    const blockId = `${q.id}-${Math.random()}`;
                     return (
                       <CustomCodeBlock
                         inline={inline}

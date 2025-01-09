@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useMemo } from 'react';
 import { Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
@@ -32,21 +32,26 @@ const isPythonCode = (className?: string, content?: string): boolean => {
 };
 
 function CustomCodeBlock({ children, className, inline, isExpanded, onToggle }: CustomCodeBlockProps) {
-  // Don't wrap inline code
-  if (inline) {
-    return <code className={className}>{children}</code>;
-  }
-
   const codeText = useMemo(() => String(children).trim(), [children]);
   const isPython = useMemo(() => isPythonCode(className, codeText), [className, codeText]);
+  
+  const inlineCode = useMemo(() => (
+    <code className={className}>{children}</code>
+  ), [className, children]);
+  
+  const standardCode = useMemo(() => (
+    <pre className={className}>
+      <code>{codeText}</code>
+    </pre>
+  ), [className, codeText]);
 
-  // Return standard rendering for non-Python code
+  // Return appropriate rendering based on conditions
+  if (inline) {
+    return inlineCode;
+  }
+
   if (!isPython) {
-    return (
-      <pre className={className}>
-        <code>{codeText}</code>
-      </pre>
-    );
+    return standardCode;
   }
 
   // For Python, wrap in MUI Accordion

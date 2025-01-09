@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Box, Typography } from '@mui/material';
 import ReactMarkdown from 'react-markdown';
 import CustomCodeBlock from './CustomCodeBlock';
 
 export default function TestConversation() {
+  const [expandedBlocks, setExpandedBlocks] = useState<{[key: string]: boolean}>({});
+
   return (
     <Box sx={{ mb: 2, p: 1, border: '1px solid #ccc', borderRadius: 1 }}>
       <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
@@ -12,11 +14,22 @@ export default function TestConversation() {
       <ReactMarkdown
         className="prose max-w-none"
         components={{
-          code: ({ node, inline, className, children, ...props }) => (
-            <CustomCodeBlock inline={inline} className={className}>
-              {children}
-            </CustomCodeBlock>
-          )
+          code: ({ inline, className, children }) => {
+            const blockId = 'test-python-block';
+            return (
+              <CustomCodeBlock
+                inline={inline}
+                className={className}
+                isExpanded={expandedBlocks[blockId] || false}
+                onToggle={() => setExpandedBlocks(prev => ({
+                  ...prev,
+                  [blockId]: !prev[blockId]
+                }))}
+              >
+                {children}
+              </CustomCodeBlock>
+            );
+          }
         }}
       >
         {`Here's an example of data analysis with Python:
