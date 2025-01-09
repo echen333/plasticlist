@@ -19,11 +19,16 @@ interface ConversationQuery {
   id: string;
   question: string;
   response?: string;
+  status?: string;
+}
+
+interface CurrentQuery extends ConversationQuery {
+  conversation_id: string;
 }
 
 interface QueryData {
-  current_query: ConversationQuery & { conversation_id: string };
-  conversation: (ConversationQuery & { conversation_id?: string })[];
+  current_query: CurrentQuery;
+  conversation: ConversationQuery[];
 }
 
 interface PageParams {
@@ -56,17 +61,26 @@ export default function QueryPage({ params }: PageParams) {
     const fetchConversation = async () => {
       try {
         setLoading(true);
+        setError(null);
+
         const res = await fetch(`/api/query/${queryId}`);
         if (!res.ok) {
           throw new Error(`API returned ${res.status}`);
         }
+
         const data: QueryData = await res.json();
 
         // We store the conversation_id so we can post follow-ups
+        // setConversationId(data.current_query[0].conversation_id);
         setConversationId(data.current_query.conversation_id);
 
         // Build an array of all queries
         setConversation(data.conversation);
+
+        // If the current query is still processing, open SSE
+        if (data.current_query.status === 'processing') {
+          setActiveQueryId(data.current_query.id);
+        }
       } catch (err) {
         setError('Failed to fetch conversation');
       } finally {
@@ -80,6 +94,7 @@ export default function QueryPage({ params }: PageParams) {
   // 5. SSE: whenever activeQueryId is set, stream the response for that query
   useEffect(() => {
     if (!activeQueryId) return;
+
     let eventSource: EventSource | null = null;
     let mounted = true;
 
@@ -92,10 +107,11 @@ export default function QueryPage({ params }: PageParams) {
 
         try {
           const data = JSON.parse(event.data);
+          
           if (data.content) {
             // Append streamed text to the appropriate query in conversation
-            setConversation(prev =>
-              prev.map(item => {
+            setConversation((prev) =>
+              prev.map((item) => {
                 if (item.id === activeQueryId) {
                   return {
                     ...item,
@@ -106,17 +122,20 @@ export default function QueryPage({ params }: PageParams) {
               })
             );
           }
+
           if (data.error) {
             setError(data.error);
             eventSource?.close();
             setIsStreaming(false);
             setActiveQueryId(null);
           }
+
           if (data.end) {
             // streaming done
             eventSource?.close();
             setIsStreaming(false);
             setActiveQueryId(null);
+            // Optionally, refetch final conversation or patch local state
           }
         } catch (err) {
           setError('Failed to parse SSE data');
@@ -136,7 +155,9 @@ export default function QueryPage({ params }: PageParams) {
 
     return () => {
       mounted = false;
-      if (eventSource) eventSource.close();
+      if (eventSource) {
+        eventSource.close();
+      }
     };
   }, [activeQueryId]);
 
@@ -151,11 +172,24 @@ export default function QueryPage({ params }: PageParams) {
   const handleFollowUpSubmit = async () => {
     if (!followUpQuestion.trim() || !conversationId) return;
 
-    try {
+  console.log("Current state:", {
+    conversationId,
+    followUpQuestion,
+    typeOfConversationId: typeof conversationId
+  });
+
+  const payload = {
+    question: followUpQuestion,
+    conversation_id: conversationId
+  };
+
+  console.log("Stringified payload:", JSON.stringify(payload));
+
+  try {
       setLoading(true);
       setError(null);
 
-      const res = await fetch('/api/query', {
+      const res = await fetch('/api/query/followup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -172,12 +206,13 @@ export default function QueryPage({ params }: PageParams) {
       const newQueryId = data.id;
 
       // Insert a placeholder object for the new query
-      setConversation(prev => [
+      setConversation((prev) => [
         ...prev,
         {
           id: newQueryId,
           question: followUpQuestion,
-          response: ''
+          response: '',
+          status: 'processing'
         }
       ]);
 
@@ -210,6 +245,7 @@ export default function QueryPage({ params }: PageParams) {
               </Typography>
             </Box>
           )}
+
           {error && (
             <Box
               sx={{
@@ -224,7 +260,7 @@ export default function QueryPage({ params }: PageParams) {
           )}
 
           {/* Render conversation */}
-          {conversation.map(q => (
+          {conversation.map((q) => (
             <Box
               key={q.id}
               sx={{ mb: 2, p: 1, border: '1px solid #ccc', borderRadius: 1 }}
@@ -262,8 +298,8 @@ export default function QueryPage({ params }: PageParams) {
               label="Ask a follow-up"
               variant="outlined"
               value={followUpQuestion}
-              onChange={e => setFollowUpQuestion(e.target.value)}
-              onKeyDown={e => {
+              onChange={(e) => setFollowUpQuestion(e.target.value)}
+              onKeyDown={(e) => {
                 if (e.key === 'Enter') {
                   e.preventDefault();
                   handleFollowUpSubmit();

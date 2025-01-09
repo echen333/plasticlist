@@ -11,6 +11,7 @@ from pinecone import Pinecone
 from typing import List, AsyncGenerator
 from supabase import create_client
 from datetime import datetime
+from fastapi import Request
 import uuid
 import logging
 import json
@@ -67,7 +68,7 @@ except Exception as e:
 
 class Query(BaseModel):
     question: str
-    conversation_id: Optional[str] = None
+    conversation_id: str
 
 async def get_embedding(text: str) -> List[float]:
     """Get embeddings from Voyage AI."""
@@ -149,41 +150,95 @@ async def get_relevant_context(query: str) -> str:
         logger.error(f"Error in get_relevant_context: {str(e)}")
         raise
 
+async def get_conversation_text(query_id: str) -> str:
+    """Fetch conversation history for the given query ID."""
+    # Get current query
+    result = supabase.table("queries").select("*").eq("id", query_id).execute()
+    logger.debug(f"Current query result: {result.data}")
+    
+    if not result.data:
+        return ""
+    
+    current_query = result.data[0]
+    conversation_id = current_query["conversation_id"]
+    if not conversation_id:
+        return ""
+
+    # Fetch all conversation queries
+    conversation_res = (
+        supabase.table("queries")
+        .select("*")
+        .eq("conversation_id", conversation_id)
+        .execute()
+    )
+    
+    logger.debug(f"Full conversation: {conversation_res.data}")
+    
+    # Build conversation history chronologically
+    conversation_data = sorted(conversation_res.data, key=lambda x: x["created_at"])
+    conversation_blocks = []
+    
+    for row in conversation_data:
+        # Skip current query
+        if row["id"] == query_id:
+            continue
+            
+        # Include all previous Q&A pairs
+        response = row.get("response", "")
+        if response:  # Include if there's any response
+            conversation_blocks.append(f"Q: {row['question']}\nA: {response}")
+    
+    history = "\n\n".join(conversation_blocks)
+    logger.debug(f"Final history: {history}")
+    return history
+
 async def process_query_stream(query_id: str, question: str):
     full_response = ""
     chunks_received = 0
     
     try:
         logger.debug(f"Starting stream for: {query_id}")
-        context = await get_relevant_context(question)
-        
-        prompt = f"""Here is some context about PlasticList:
-{context}
-Based on this context, please answer the following question:
-{question}
-If the context doesn't contain enough information to answer the question fully, please say so."""
 
+        # 1. Fetch the entire conversation so far
+        full_history = await get_conversation_text(query_id)
+
+        # 2. Add your general "PlasticList" context
+        context = await get_relevant_context(question)
+
+        # 3. Build the final prompt
+        prompt = f"""Conversation so far (if any):
+{full_history}
+
+Now the user is asking:
+{question}
+
+Additional context about PlasticList:
+{context}
+
+You are very smart! Please answer the user's latest question in detail to the best of your ability.
+"""
+
+        logger.debug(f"YOOYOYO{prompt[:1000]}")
         stream = anthropic_client.beta.messages.create(
             model="claude-3-sonnet-20240229",
             max_tokens=1000,
             messages=[{"role": "user", "content": prompt}],
             stream=True
         )
-        
+
         logger.debug("Stream created, processing chunks...")
         
         for message in stream:  # Regular for loop, not async
-            logger.debug(f"Event type: {message.type}")
             if message.type == 'content_block_delta' and hasattr(message.delta, 'text'):
                 text = message.delta.text
                 chunks_received += 1
                 full_response += text
                 sse_data = f"data: {json.dumps({'content': text})}\n\n"
-                logger.debug(f"Chunk {chunks_received}: {text}")
                 yield sse_data
                 await asyncio.sleep(0.01)
         
-        # Update database and end stream
+        # 4. Once done, update DB and yield end signal
+        logger.debug("updating query in db")
         await update_query_in_db(query_id, full_response, "completed")
         yield f"data: {json.dumps({'end': True, 'total_chunks': chunks_received})}\n\n"
         
@@ -191,6 +246,7 @@ If the context doesn't contain enough information to answer the question fully, 
         logger.error(f"Error in stream: {str(e)}")
         await update_query_in_db(query_id, full_response, "failed", str(e))
         yield f"data: {json.dumps({'error': str(e)})}\n\n"
+
 
 async def update_query_in_db(query_id: str, response: str, status: str, error: str = None):
     try:
@@ -205,29 +261,58 @@ async def update_query_in_db(query_id: str, response: str, status: str, error: s
     except Exception as e:
         logger.error(f"Database update failed: {str(e)}")
 
-@app.post("/api/query")
-async def create_query(query: Query):
+class InitialQuery(BaseModel):
+    question: str
+
+class FollowUpQuery(BaseModel):
+    question: str
+    conversation_id: str
+
+@app.post("/api/query/initial")
+async def create_initial_query(query: InitialQuery):
+    logger.debug(f"Received initial query: {query.model_dump_json()}")
     query_id = str(uuid.uuid4())
-    conversation_id = query.conversation_id or str(uuid.uuid4())
+    conversation_id = str(uuid.uuid4())  # Generate new conversation_id
 
     query_data = {
         "id": query_id,
         "question": query.question,
         "created_at": datetime.utcnow().isoformat(),
         "status": "processing",
-        "conversation_id": conversation_id
+        "conversation_id": conversation_id  # New conversation
     }
 
     try:
         supabase.table("queries").insert(query_data).execute()
         return {"id": query_id, "conversation_id": conversation_id}
     except Exception as e:
+        logger.error(f"Error creating initial query: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
+@app.post("/api/query/followup")
+async def create_followup_query(query: FollowUpQuery):
+    logger.debug(f"Received followup query: {query.model_dump_json()}")
+    query_id = str(uuid.uuid4())
+
+    query_data = {
+        "id": query_id,
+        "question": query.question,
+        "created_at": datetime.utcnow().isoformat(),
+        "status": "processing",
+        "conversation_id": query.conversation_id  # Use existing conversation
+    }
+
+    try:
+        supabase.table("queries").insert(query_data).execute()
+        return {"id": query_id, "conversation_id": query.conversation_id}
+    except Exception as e:
+        logger.error(f"Error creating followup query: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/api/query/{query_id}/stream")
 async def stream_query(query_id: str):
     """Stream the response for a given query ID"""
+    logger.debug("Streaming right now")
     try:
         # Get query details from Supabase
         result = supabase.table("queries").select("*").eq("id", query_id).execute()
@@ -278,15 +363,7 @@ async def get_query(query_id: str):
         # 2. Safely retrieve conversation_id
         conversation_id = query_data.get("conversation_id")
         
-        if not conversation_id:
-            # If there's no conversation_id, just return the single query
-            return {
-                "current_query": query_data,
-                "conversation": [query_data]
-            }
-
         # 3. Fetch entire conversation if we do have conversation_id
-        logger.debug(f"passed here {conversation_id}")
         conversation_res = (
             supabase.table("queries")
             .select("*")
@@ -295,8 +372,7 @@ async def get_query(query_id: str):
             .execute()
         )
 
-        logger.debug("done here ")
-
+        logger.debug(f"current_query {query_data} conversation: {conversation_res.data}")
         return {
             "current_query": query_data,
             "conversation": conversation_res.data
@@ -307,4 +383,5 @@ async def get_query(query_id: str):
 
 @app.get("/api/health")
 async def health_check():
+    logger.debug("healthy")
     return {"status": "healthy"}
