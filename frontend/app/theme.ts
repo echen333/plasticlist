@@ -63,6 +63,15 @@ const theme = createTheme({
         },
       },
     },
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          '& .MuiInputBase-input': {
+            color: '#000000',
+          },
+        },
+      },
+    },
   },
 });
 
