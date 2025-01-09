@@ -1,6 +1,7 @@
 'use client';
 
 import { use, useEffect, useRef, useState } from 'react';
+import CustomCodeBlock from './CustomCodeBlock';
 import { useRouter } from 'next/navigation';
 import ReactMarkdown from 'react-markdown';
 import {
@@ -268,7 +269,16 @@ export default function QueryPage({ params }: PageParams) {
               <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
                 Q: {q.question}
               </Typography>
-              <ReactMarkdown className="prose max-w-none">
+              <ReactMarkdown
+                className="prose max-w-none"
+                components={{
+                  code: ({ node, inline, className, children, ...props }) => (
+                    <CustomCodeBlock inline={inline} className={className}>
+                      {children}
+                    </CustomCodeBlock>
+                  )
+                }}
+              >
                 {q.response || ''}
               </ReactMarkdown>
             </Box>
