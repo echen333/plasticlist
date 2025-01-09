@@ -1,6 +1,7 @@
 'use client';
 
 import { use, useEffect, useRef, useState } from 'react';
+import FixedFollowupForm from '../../components/FixedFollowupForm';
 import { useRouter } from 'next/navigation';
 import ReactMarkdown from 'react-markdown';
 import {
@@ -289,12 +290,13 @@ export default function QueryPage({ params }: PageParams) {
   };
 
   return (
-    <Container maxWidth="md" sx={{ py: 4 }}>
-      <Card>
-        <CardContent>
-          <Typography variant="h5" gutterBottom>
-            Conversation
-          </Typography>
+    <>
+      <Container maxWidth="md" sx={{ py: 4 }}>
+        <Card>
+          <CardContent>
+            <Typography variant="h5" gutterBottom>
+              Conversation
+            </Typography>
 
           {/* Loading + Error */}
           {loading && !conversation.length && (
@@ -351,114 +353,23 @@ export default function QueryPage({ params }: PageParams) {
             </Box>
           )}
 
-          {/* Follow-up form */}
-          <Box sx={{ mt: 4 }}>
-            <TextField
-              fullWidth
-              label="Ask a follow-up"
-              variant="outlined"
-              value={followUpQuestion}
-              onChange={(e) => setFollowUpQuestion(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  e.preventDefault();
-                  handleFollowUpSubmit();
-                }
-              }}
-              sx={{ mb: 2 }}
-            />
-            <Box sx={{ display: 'flex', gap: 2 }}>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={handleFollowUpSubmit}
-                    disabled={loading || !conversationId}
-                  >
-                    Submit Follow-up
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    color="secondary"
-                    onClick={() => window.location.href = '/'}
-                  >
-                    Ask a new question
-                  </Button>
-                </Box>
-
-            {/* Suggested followup buttons */}
-            {suggestedFollowups.length > 0 && (
-              <Fade in={suggestedFollowups.length > 0} timeout={800}>
-                <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 1 }}>
-                  <Divider sx={{ my: 2 }} />
-                  <Typography variant="subtitle1">Suggested follow-ups:</Typography>
-                  {loadingFollowups ? (
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <CircularProgress size={20} />
-                    <Typography variant="body2" color="text.secondary">
-                      Generating suggestions...
-                    </Typography>
-                  </Box>
-                ) : (
-                  suggestedFollowups.map((question, i) => (
-                    <Button
-                      key={i}
-                      variant="outlined"
-                      onClick={async () => {
-                        try {
-                          setLoading(true);
-                          setError(null);
-                          setSuggestedFollowups([]); // Clear followups immediately
-
-                          const res = await fetch('/api/query/followup', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({
-                              question,
-                              conversation_id: conversationId
-                            })
-                          });
-
-                          if (!res.ok) {
-                            throw new Error(`Backend responded with ${res.status}`);
-                          }
-
-                          const data = await res.json();
-                          const newQueryId = data.id;
-
-                          // Insert a placeholder object for the new query
-                          setConversation((prev) => [
-                            ...prev,
-                            {
-                              id: newQueryId,
-                              question,
-                              response: '',
-                              status: 'processing'
-                            }
-                          ]);
-
-                          // Start streaming the new query
-                          setActiveQueryId(newQueryId);
-                        } catch (err) {
-                          setError('Failed to submit follow-up question');
-                        } finally {
-                          setLoading(false);
-                        }
-                      }}
-                      disabled={loading || !conversationId}
-                    >
-                      {question}
-                    </Button>
-                  ))
-                  )}
-                </Box>
-              </Fade>
-            )}
+          {/* Fixed Follow-up Form */}
+          <Box sx={{ mb: '200px' }}>
+            {/* Invisible ref for auto-scrolling */}
+            <div ref={bottomRef} />
           </Box>
-
-          {/* Invisible ref for auto-scrolling */}
-          <div ref={bottomRef} />
         </CardContent>
       </Card>
-    </Container>
+      </Container>
+      <FixedFollowupForm
+        conversationId={conversationId}
+        loading={loading}
+        followUpQuestion={followUpQuestion}
+        setFollowUpQuestion={setFollowUpQuestion}
+        handleFollowUpSubmit={handleFollowUpSubmit}
+        suggestedFollowups={suggestedFollowups}
+        loadingFollowups={loadingFollowups}
+      />
+    </>
   );
 }
