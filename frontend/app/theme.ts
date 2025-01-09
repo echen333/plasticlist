@@ -12,8 +12,8 @@ const theme = createTheme({
       main: '#000000',
     },
     background: {
-      default: '#FFFFFF',
-      paper: '#FFFFFF',
+      default: 'rgb(233, 233, 233)',
+      paper: 'rgb(233, 233, 233)',
     },
     text: {
       primary: '#000000',
@@ -41,6 +41,12 @@ const theme = createTheme({
         root: {
           textTransform: 'none',
           borderRadius: 4,
+        },
+        outlined: {
+          backgroundColor: '#FFD70020',
+          '&:hover': {
+            backgroundColor: '#FFD70040',
+          },
         },
       },
     },
