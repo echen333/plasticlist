@@ -367,14 +367,23 @@ export default function QueryPage({ params }: PageParams) {
               }}
               sx={{ mb: 2 }}
             />
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleFollowUpSubmit}
-              disabled={loading || !conversationId}
-            >
-              Submit Follow-up
-            </Button>
+            <Box sx={{ display: 'flex', gap: 2 }}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleFollowUpSubmit}
+                    disabled={loading || !conversationId}
+                  >
+                    Submit Follow-up
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    color="secondary"
+                    onClick={() => window.location.href = '/'}
+                  >
+                    Ask a new question
+                  </Button>
+                </Box>
 
             {/* Suggested followup buttons */}
             {suggestedFollowups.length > 0 && (

@@ -86,7 +86,7 @@ async def get_embedding(text: str) -> List[float]:
     }
     
     try:
-        time.sleep(0.05)
+        # time.sleep(0.005)
         response = requests.post(voyage_url, headers=headers, json=data)
         
         if response.status_code != 200:
@@ -122,7 +122,7 @@ async def get_relevant_context(query: str) -> str:
         # Get context from TSV data index (plasticlist3)
         tsv_results = index_tsv.query(
             vector=query_embedding,
-            top_k=30,  # Get 30 vectors as requested
+            top_k=4,  # Get 30 vectors as requested
             include_metadata=True,
             score_threshold=0.0,
             namespace="default"
@@ -319,10 +319,14 @@ async def process_query_stream(query_id: str, question: str):
 Now the user is asking:
 {question}
 
-Additional context about PlasticList:
+Additional context about PlasticList and the TSV:
 {context}
 
-You have access to a Python query tool that can analyze the TSV data directly. Use this tool when you need to perform calculations, filtering, or statistical analysis that isn't readily available in the context. Show your chain of thought by explaining your reasoning in <thinking> tags."""
+You have access to a Python query tool that can analyze samples.tsv data of plasticlist directly. It contains more than 600 rows and 100 columns. Use this tool when you need to perform calculations, filtering, or statistical analysis that isn't readily available in the context as the context only provides a preview of the entries in the TSV and not all of them. Note that there are over 100 different fields in the TSV so do not print all of them unless told to do so. For queries that look to filter the TSV data, check in your python program that if the final table has less than 20 entries, print the dataframe using .to_markdown() and then follow the original user query exactly. If the user is asking for the entries, display all entries again for the user (try to do in a nice table) since they cannot see the Python output. If the user asks you to do data analysis in a general form, add lots of extra debug and print statements and analyze lots of things in the Python snippets just in case it is helpful to the context. Do not use the tool if it is not necessary and the context suffices!
+
+Make sure to transcribe exactly what was in the output of the Python program. Note that we can render markdown so include the python program in a python codeblock. 
+
+Please add extra '\n' characters to separate out sections. Also, if you use the tool, include the Python snippet in your final response as well.  Try to be more concise in your analysis please, list only interesting facts. Also, attempt to use more markdown and bold in your answers to highlight important facts. Note that there is a string limit in your python output program so be wary of outputting too much information. """
 
         headers = {
             "Content-Type": "application/json",
@@ -332,7 +336,7 @@ You have access to a Python query tool that can analyze the TSV data directly. U
 
         data = {
             "model": "claude-3-5-sonnet-20241022",
-            "max_tokens": 1024,
+            "max_tokens": 8024,
             "tools": [PYTHON_QUERY_TOOL],
             "tool_choice": {"type": "auto"},
             "messages": [{"role": "user", "content": prompt}],
@@ -409,7 +413,7 @@ You have access to a Python query tool that can analyze the TSV data directly. U
 
                                             tool_result_data = {
                                                 "model": "claude-3-5-sonnet-20241022",
-                                                "max_tokens": 1024,
+                                                "max_tokens": 8024,
                                                 "tools": [
                                                     {
                                                         "name": "run_python_query",
@@ -489,7 +493,7 @@ You have access to a Python query tool that can analyze the TSV data directly. U
                             logger.error(f"Error processing chunk: {e}")
                             continue
 
-            await asyncio.sleep(0.01)
+            await asyncio.sleep(0.001)
 
         logger.debug(f"Stream finished. Full response length: {len(full_response)}")
         await update_query_in_db(query_id, full_response, "completed")
