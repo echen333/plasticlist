@@ -180,19 +180,6 @@ async def update_query_in_db(query_id: str, response: str, status: str, error: s
     except Exception as e:
         logger.error(f"Database update failed: {str(e)}")
 
-async def update_query_in_db(query_id: str, response: str, status: str, error: str = None):
-    try:
-        data = {
-            "status": status,
-            "response": response,
-            "completed_at": datetime.utcnow().isoformat()
-        }
-        if error:
-            data["error"] = error
-        supabase.table("queries").update(data).eq("id", query_id).execute()
-    except Exception as e:
-        logger.error(f"Database update failed: {str(e)}")
-
 @app.post("/api/query")
 async def create_query(query: Query):
     """Create a new query and return its ID immediately"""
