@@ -37,6 +37,21 @@ const theme = createTheme({
   },
   components: {
     MuiButton: {
+      variants: [
+        {
+          props: { variant: 'suggested' },
+          style: {
+            textTransform: 'none',
+            borderRadius: 4,
+            backgroundColor: '#FFD700',
+            color: '#000000',
+            border: '1px solid #CCB100',
+            '&:hover': {
+              backgroundColor: '#BFA100',
+            },
+          },
+        },
+      ],
       styleOverrides: {
         root: {
           textTransform: 'none',
