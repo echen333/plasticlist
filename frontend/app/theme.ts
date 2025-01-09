@@ -2,7 +2,62 @@
 import { createTheme } from '@mui/material/styles';
 
 const theme = createTheme({
-  // You can customize your theme here
+  palette: {
+    primary: {
+      main: '#FFD700', // A warm yellow for interactive elements
+      light: '#FFE44D',
+      dark: '#CCB100',
+    },
+    secondary: {
+      main: '#000000',
+    },
+    background: {
+      default: '#FFFFFF',
+      paper: '#FFFFFF',
+    },
+    text: {
+      primary: '#000000',
+      secondary: '#333333',
+    },
+  },
+  typography: {
+    fontFamily: '"Roboto Mono", "Courier New", monospace',
+    h4: {
+      fontWeight: 600,
+      letterSpacing: '-0.02em',
+    },
+    h6: {
+      fontWeight: 600,
+      letterSpacing: '-0.01em',
+    },
+    body1: {
+      lineHeight: 1.7,
+      letterSpacing: '0.01em',
+    },
+  },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          textTransform: 'none',
+          borderRadius: 4,
+        },
+      },
+    },
+    MuiChip: {
+      styleOverrides: {
+        root: {
+          borderRadius: 4,
+          '&:hover': {
+            backgroundColor: '#FFD70020',
+          },
+        },
+        outlined: {
+          borderColor: '#FFD700',
+        },
+      },
+    },
+  },
 });
 
 export default theme;
