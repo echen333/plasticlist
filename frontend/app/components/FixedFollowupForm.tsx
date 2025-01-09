@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, Button, TextField, Fade, Divider, Typography, CircularProgress } from '@mui/material';
+import { Box, Button, TextField, Fade, Typography } from '@mui/material';
 import React from 'react';
 
 interface FixedFollowupFormProps {
@@ -8,9 +8,10 @@ interface FixedFollowupFormProps {
   loading: boolean;
   followUpQuestion: string;
   setFollowUpQuestion: (question: string) => void;
-  handleFollowUpSubmit: () => void;
+  handleFollowUpSubmit: (overrideQuestion?: string) => void;
   suggestedFollowups: string[];
   loadingFollowups: boolean;
+  conversation: Array<{ id: string; question: string; response?: string; status?: string; }>;
 }
 
 export default function FixedFollowupForm({
@@ -20,15 +21,17 @@ export default function FixedFollowupForm({
   setFollowUpQuestion,
   handleFollowUpSubmit,
   suggestedFollowups,
-  loadingFollowups
+  loadingFollowups,
+  conversation
 }: FixedFollowupFormProps) {
   return (
-    <Box
+    <Fade in={!loading} timeout={800}>
+      <Box
       sx={{
         position: 'fixed',
-        bottom: 0,
-        left: 0,
-        right: 0,
+        bottom: 24, // Add space from bottom
+        left: '50%',
+        transform: 'translateX(-50%)', // Center the bar
         bgcolor: 'background.paper',
         boxShadow: 4,
         p: 2,
@@ -37,7 +40,7 @@ export default function FixedFollowupForm({
         alignItems: 'center',
         width: '100%',
         maxWidth: '900px', // Match Container maxWidth="md"
-        margin: '0 auto',
+        borderRadius: '12px', // Add rounded corners
         zIndex: 1000
       }}
     >
@@ -59,7 +62,7 @@ export default function FixedFollowupForm({
         <Button
           variant="contained"
           color="primary"
-          onClick={handleFollowUpSubmit}
+          onClick={() => handleFollowUpSubmit()}
           disabled={loading || !conversationId}
         >
           Submit Follow-up
@@ -72,38 +75,7 @@ export default function FixedFollowupForm({
           Ask a new question
         </Button>
       </Box>
-
-      {/* Suggested followup buttons */}
-      {suggestedFollowups.length > 0 && (
-        <Fade in={suggestedFollowups.length > 0} timeout={800}>
-          <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 1, width: '100%' }}>
-            <Divider sx={{ my: 2 }} />
-            <Typography variant="subtitle1">Suggested follow-ups:</Typography>
-            {loadingFollowups ? (
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <CircularProgress size={20} />
-                <Typography variant="body2" color="text.secondary">
-                  Generating suggestions...
-                </Typography>
-              </Box>
-            ) : (
-              suggestedFollowups.map((question, i) => (
-                <Button
-                  key={i}
-                  variant="outlined"
-                  onClick={() => {
-                    setFollowUpQuestion(question);
-                    handleFollowUpSubmit();
-                  }}
-                  disabled={loading || !conversationId}
-                >
-                  {question}
-                </Button>
-              ))
-            )}
-          </Box>
-        </Fade>
-      )}
     </Box>
+    </Fade>
   );
 }

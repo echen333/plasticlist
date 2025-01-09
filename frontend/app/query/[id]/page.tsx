@@ -254,7 +254,7 @@ export default function QueryPage({ params }: PageParams) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          question: followUpQuestion,
+          question: finalQuestion,
           conversation_id: conversationId
         })
       });
@@ -271,7 +271,7 @@ export default function QueryPage({ params }: PageParams) {
         ...prev,
         {
           id: newQueryId,
-          question: followUpQuestion,
+          question: finalQuestion,
           response: '',
           status: 'processing'
         }
@@ -291,7 +291,7 @@ export default function QueryPage({ params }: PageParams) {
 
   return (
     <>
-      <Container maxWidth="md" sx={{ py: 4 }}>
+      <Container maxWidth="md" sx={{ py: 4, pb: '120px' /* Extra padding to prevent content from being hidden by fixed bar */ }}>
         <Card>
           <CardContent>
             <Typography variant="h5" gutterBottom>
@@ -360,6 +360,41 @@ export default function QueryPage({ params }: PageParams) {
           </Box>
         </CardContent>
       </Card>
+
+      {/* Suggested followup buttons in separate card */}
+      {suggestedFollowups.length > 0 && (
+        <Card sx={{ mt: 2 }}>
+          <CardContent>
+            <Fade in={suggestedFollowups.length > 0} timeout={800}>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                <Typography variant="subtitle1">Suggested follow-ups:</Typography>
+                {loadingFollowups ? (
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <CircularProgress size={20} />
+                    <Typography variant="body2" color="text.secondary">
+                      Generating suggestions...
+                    </Typography>
+                  </Box>
+                ) : (
+                  suggestedFollowups.map((question, i) => (
+                    <Button
+                      key={i}
+                      variant="outlined"
+                      onClick={() => {
+                        setFollowUpQuestion(question);
+                        handleFollowUpSubmit();
+                      }}
+                      disabled={loading || !conversationId}
+                    >
+                      {question}
+                    </Button>
+                  ))
+                )}
+              </Box>
+            </Fade>
+          </CardContent>
+        </Card>
+      )}
       </Container>
       <FixedFollowupForm
         conversationId={conversationId}
@@ -369,6 +404,7 @@ export default function QueryPage({ params }: PageParams) {
         handleFollowUpSubmit={handleFollowUpSubmit}
         suggestedFollowups={suggestedFollowups}
         loadingFollowups={loadingFollowups}
+        conversation={conversation}
       />
     </>
   );
