@@ -638,30 +638,33 @@ async def generate_followups(query: Query):
     """Generate followup questions for a given query using Claude."""
     logger.debug(f"Generating followups for query: {query.model_dump_json()}")
     try:
-        # Get conversation history for context
-        history = await get_conversation_text(query.conversation_id)
+        # Get only the most recent conversation for context
+        result = supabase.table("queries").select("*").eq("id", query.conversation_id).execute()
+        if not result.data:
+            raise HTTPException(status_code=404, detail="Query not found")
+            
+        current_query = result.data[0]
+        current_response = current_query.get("response", "")
         
-        # Get relevant context
-        context = await get_relevant_context(query.question)
-        
-        # Prompt Claude to generate followups
-        response = anthropic_client.messages.create(
-            model="claude-3-sonnet-20240229",
-            max_tokens=1024,
-            messages=[{
-                "role": "user",
-                "content": f"""Based on this conversation history:
-{history}
-
-And this context about PlasticList:
-{context}
+        # Use a simpler prompt with just the current Q&A
+        prompt = f"""Based on this Q&A:
+Q: {current_query['question']}
+A: {current_response}
 
 Generate exactly 3 follow-up questions that would be good to ask next. Format them exactly like this:
 FOLLOWUP1: [first question]
 FOLLOWUP2: [second question]
 FOLLOWUP3: [third question]
 
-Make sure each question starts with FOLLOWUPn: on its own line."""
+Make sure each question starts with FOLLOWUPn: on its own line. Questions should be concise and directly related to the previous answer."""
+        
+        # Use a faster model for quicker responses
+        response = anthropic_client.messages.create(
+            model="claude-3-haiku-20240307",
+            max_tokens=1024,
+            messages=[{
+                "role": "user",
+                "content": prompt
             }]
         )
         

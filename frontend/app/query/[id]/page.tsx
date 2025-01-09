@@ -12,7 +12,8 @@ import {
   Box,
   Container,
   TextField,
-  Divider
+  Divider,
+  Fade
 } from '@mui/material';
 
 // Data interfaces
@@ -66,7 +67,7 @@ export default function QueryPage({ params }: PageParams) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          conversation_id: conversationId,
+          conversation_id: conversation[conversation.length - 1].id,
           question: conversation[conversation.length - 1].question
         })
       });
@@ -185,8 +186,10 @@ export default function QueryPage({ params }: PageParams) {
             eventSource?.close();
             setIsStreaming(false);
             setActiveQueryId(null);
-            // Generate followups after response completes
-            generateFollowups();
+            // Wait a bit before generating new followups to allow fade-out animation
+            setTimeout(() => {
+              generateFollowups();
+            }, 500);
           }
         } catch (err) {
           setError('Failed to parse SSE data');
@@ -212,12 +215,18 @@ export default function QueryPage({ params }: PageParams) {
     };
   }, [activeQueryId]);
 
-  // 6. Scroll to bottom whenever conversation updates
+  // 6. Scroll to bottom whenever conversation updates or streaming status changes
   useEffect(() => {
     if (bottomRef.current) {
-      bottomRef.current.scrollIntoView({ behavior: 'smooth' });
+      // Use requestAnimationFrame to ensure DOM has updated
+      requestAnimationFrame(() => {
+        bottomRef.current?.scrollIntoView({ 
+          behavior: 'smooth',
+          block: 'end'
+        });
+      });
     }
-  }, [conversation]);
+  }, [conversation, isStreaming, activeQueryId]);
 
   // 7. Ask a follow-up on the same page
   const handleFollowUpSubmit = async () => {
@@ -369,10 +378,11 @@ export default function QueryPage({ params }: PageParams) {
 
             {/* Suggested followup buttons */}
             {suggestedFollowups.length > 0 && (
-              <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 1 }}>
-                <Divider sx={{ my: 2 }} />
-                <Typography variant="subtitle1">Suggested follow-ups:</Typography>
-                {loadingFollowups ? (
+              <Fade in={suggestedFollowups.length > 0} timeout={800}>
+                <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 1 }}>
+                  <Divider sx={{ my: 2 }} />
+                  <Typography variant="subtitle1">Suggested follow-ups:</Typography>
+                  {loadingFollowups ? (
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                     <CircularProgress size={20} />
                     <Typography variant="body2" color="text.secondary">
@@ -384,17 +394,55 @@ export default function QueryPage({ params }: PageParams) {
                     <Button
                       key={i}
                       variant="outlined"
-                      onClick={() => {
-                        setFollowUpQuestion(question);
-                        handleFollowUpSubmit();
+                      onClick={async () => {
+                        try {
+                          setLoading(true);
+                          setError(null);
+                          setSuggestedFollowups([]); // Clear followups immediately
+
+                          const res = await fetch('/api/query/followup', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                              question,
+                              conversation_id: conversationId
+                            })
+                          });
+
+                          if (!res.ok) {
+                            throw new Error(`Backend responded with ${res.status}`);
+                          }
+
+                          const data = await res.json();
+                          const newQueryId = data.id;
+
+                          // Insert a placeholder object for the new query
+                          setConversation((prev) => [
+                            ...prev,
+                            {
+                              id: newQueryId,
+                              question,
+                              response: '',
+                              status: 'processing'
+                            }
+                          ]);
+
+                          // Start streaming the new query
+                          setActiveQueryId(newQueryId);
+                        } catch (err) {
+                          setError('Failed to submit follow-up question');
+                        } finally {
+                          setLoading(false);
+                        }
                       }}
                       disabled={loading || !conversationId}
                     >
                       {question}
                     </Button>
                   ))
-                )}
-              </Box>
+                  )}
+                </Box>
+              </Fade>
             )}
           </Box>
 
