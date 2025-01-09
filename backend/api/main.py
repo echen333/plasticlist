@@ -15,6 +15,7 @@ import uuid
 import logging
 import json
 import asyncio
+from typing import Optional
 
 # Set up logging
 # logging.basicConfig(level=logging.INFO)
@@ -66,6 +67,7 @@ except Exception as e:
 
 class Query(BaseModel):
     question: str
+    conversation_id: Optional[str] = None
 
 async def get_embedding(text: str) -> List[float]:
     """Get embeddings from Voyage AI."""
@@ -205,23 +207,23 @@ async def update_query_in_db(query_id: str, response: str, status: str, error: s
 
 @app.post("/api/query")
 async def create_query(query: Query):
-    """Create a new query and return its ID immediately"""
     query_id = str(uuid.uuid4())
-    
-    # Store initial query in Supabase
+    conversation_id = query.conversation_id or str(uuid.uuid4())
+
     query_data = {
         "id": query_id,
         "question": query.question,
         "created_at": datetime.utcnow().isoformat(),
-        "status": "processing"
+        "status": "processing",
+        "conversation_id": conversation_id
     }
-    
+
     try:
         supabase.table("queries").insert(query_data).execute()
-        return {"id": query_id}
+        return {"id": query_id, "conversation_id": conversation_id}
     except Exception as e:
-        logger.error(f"Database error: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
+
 
 @app.get("/api/query/{query_id}/stream")
 async def stream_query(query_id: str):
@@ -265,14 +267,43 @@ async def stream_query(query_id: str):
 
 @app.get("/api/query/{query_id}")
 async def get_query(query_id: str):
-    """Get query details"""
     try:
+        # 1. Get the specific query
         result = supabase.table("queries").select("*").eq("id", query_id).execute()
         if not result.data:
             raise HTTPException(status_code=404, detail="Query not found")
-        return result.data[0]
+        query_data = result.data[0]
+        logger.debug(f"query_data: {query_data}")
+
+        # 2. Safely retrieve conversation_id
+        conversation_id = query_data.get("conversation_id")
+        
+        if not conversation_id:
+            # If there's no conversation_id, just return the single query
+            return {
+                "current_query": query_data,
+                "conversation": [query_data]
+            }
+
+        # 3. Fetch entire conversation if we do have conversation_id
+        logger.debug(f"passed here {conversation_id}")
+        conversation_res = (
+            supabase.table("queries")
+            .select("*")
+            .eq("conversation_id", conversation_id)
+            # .order("created_at", ascending=True) # TODO!!
+            .execute()
+        )
+
+        logger.debug("done here ")
+
+        return {
+            "current_query": query_data,
+            "conversation": conversation_res.data
+        }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
 
 @app.get("/api/health")
 async def health_check():

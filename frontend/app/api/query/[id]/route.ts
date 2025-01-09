@@ -1,22 +1,27 @@
+// app/api/query/[id]/route.ts
 import { NextRequest } from 'next/server';
 
 export const runtime = 'edge';
 
 export async function GET(
   request: NextRequest,
-  context: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
-  const { params } = await context;
-  const { id } = params;
+  // 1. Await the promised params
+  const resolvedParams = await context.params;
+  const { id } = resolvedParams;
+
+  console.log('GET route called for query id:', id);
   
   try {
     if (!id) {
-      return Response.json(
-        { error: 'No ID provided' },
+      return new Response(
+        JSON.stringify({ error: 'No ID provided' }),
         { status: 400 }
       );
     }
     
+    // 2. Fetch the conversation from your Python backend
     const response = await fetch(`http://localhost:8000/api/query/${id}`, {
       method: 'GET',
     });
@@ -26,12 +31,15 @@ export async function GET(
     }
 
     const data = await response.json();
-    return Response.json(data);
+    return new Response(JSON.stringify(data), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' }
+    });
     
   } catch (error) {
     console.error('Query fetch error:', error);
-    return Response.json(
-      { error: 'Failed to fetch query' },
+    return new Response(
+      JSON.stringify({ error: 'Failed to fetch query' }),
       { status: 500 }
     );
   }
