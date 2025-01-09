@@ -1,159 +1,49 @@
-# PlasticList Search Engine
+# PlasticList: Understanding Plastic Chemical Exposure in Food
 
-A sophisticated search engine built to provide intelligent responses about plastics using RAG (Retrieval-Augmented Generation) technology. The system combines modern web technologies with advanced AI capabilities to deliver accurate, context-aware responses.
+A comprehensive food safety database and search engine analyzing plastic-related chemicals in everyday foods. Based on testing 775 samples across 312 food products, PlasticList found that 86% contained detectable levels of plastic chemicals, with some exceeding European safety limits by up to 32,000%.
+
+## Key Findings
+
+- Detected plastic chemicals in all tested baby foods, prenatal supplements, breast milk, yogurt, and ice cream products
+- Found that less-processed foods contain fewer chemicals than highly processed ones
+- Discovered hot foods in takeout containers had 34% higher levels after 45 minutes
+- Identified phthalates in 73% of products, phthalate substitutes in 73%, and bisphenols in 22%
+- Used rigorous testing methodology including GC/MS and isotope dilution mass spectrometry
 
 ## Architecture
 
-The project follows a modern microservices architecture with the following components:
-
-### Frontend (Next.js 15)
-- Built with Next.js 15 and Material UI for a responsive, modern interface
-- Real-time streaming responses using Server-Sent Events (SSE)
-- Conversation-based UI with support for follow-up questions
-- TypeScript for type safety and better developer experience
-- Markdown rendering for formatted AI responses
-
-### Backend (FastAPI)
-- FastAPI for high-performance API endpoints
-- Streaming response support using FastAPI's StreamingResponse
-- CORS middleware for secure frontend-backend communication
-- Comprehensive error handling and logging
+The search interface uses a specialized dual-index architecture:
 
 ### Search Engine Core
-- RAG (Retrieval-Augmented Generation) implementation
-- Pinecone vector database for efficient similarity search
-  - Two separate indices:
-    - `plasticlist2`: General knowledge index
-    - `plasticlist3`: TSV data index with 30 vector retrieval
-- Voyage AI 3 Large for generating high-quality embeddings
-- Claude 3 Sonnet for response generation
+- Advanced RAG (Retrieval-Augmented Generation) implementation
+- Pinecone vector database with two specialized indices:
+  - `plasticlist2`: General knowledge and scientific context
+  - `plasticlist3`: Detailed TSV data with vectors encoding sample metadata (chemical levels, testing conditions, safety thresholds)
+- Voyage AI 3 Large embeddings for accurate chemical and food context matching
+- Claude 3 Sonnet for scientifically-accurate response generation
+
+### Frontend & Backend
+- Real-time streaming responses via Server-Sent Events (SSE)
+- Conversation-based UI supporting contextual follow-up questions
+- FastAPI backend with streaming support
 - Supabase for conversation history and state management
 
 ## Unique Features
 
-1. **Dual-Index RAG System**
-   - Combines general knowledge and specialized TSV data
-   - Weighted retrieval from multiple sources
-   - Configurable vector counts for different indices
+1. **Specialized Chemical Testing Database**
+   - Comprehensive testing of 18 plastic-related chemicals
+   - Raw data from ISO/IEC 17025-accredited laboratory
+   - Rigorous QA/QC including isotope dilution mass spectrometry
+   - Detailed metadata on testing conditions and methodologies
 
-2. **Real-time Response Streaming**
-   - Server-Sent Events for immediate feedback
-   - Progressive response rendering
-   - Optimized for low latency
+2. **Dual-Index Scientific RAG**
+   - Combines general scientific knowledge with detailed chemical test data
+   - Weighted retrieval balancing context and specific measurements
+   - Vector-encoded sample metadata for precise chemical information retrieval
+   - Configurable vector counts for optimal information density
 
-3. **Conversation Management**
-   - Persistent conversation history
-   - Context-aware follow-up questions
-   - UUID-based conversation tracking
-
-4. **Error Handling & Reliability**
-   - Comprehensive error catching and reporting
-   - Graceful degradation
-   - Detailed logging for debugging
-
-5. **Scalable Architecture**
-   - Separate frontend and backend services
-   - Environment-based configuration
-   - Containerization-ready structure
-
-## Development Process
-
-The project was developed following these key steps:
-
-1. **Initial Setup**
-   - Environment configuration with essential API keys
-   - Basic Next.js and FastAPI project scaffolding
-   - Integration of Material UI components
-
-2. **Core RAG Implementation**
-   - Pinecone index creation and management
-   - Integration with Voyage AI for embeddings
-   - Implementation of vector similarity search
-
-3. **Data Processing**
-   - TSV data processing pipeline
-   - Text chunking and embedding generation
-   - Metadata management for context preservation
-
-4. **Frontend Development**
-   - Responsive UI implementation
-   - Real-time streaming setup
-   - Conversation UI components
-   - Error handling and loading states
-
-5. **Backend API Development**
-   - Endpoint creation for queries
-   - Streaming response implementation
-   - Conversation state management
-   - Error handling middleware
-
-6. **Integration & Testing**
-   - Frontend-backend integration
-   - Streaming response testing
-   - Conversation flow validation
-   - Performance optimization
-
-## Getting Started
-
-### Prerequisites
-- Node.js 18+
-- Python 3.12+
-- Pinecone account
-- Voyage AI API key
-- Claude API key
-- Supabase account
-
-### Environment Setup
-1. Clone the repository
-2. Copy `.env.example` to `.env` and fill in required credentials
-3. Install dependencies:
-   ```bash
-   # Frontend
-   cd frontend
-   npm install
-
-   # Backend
-   cd ../backend
-   pip install -r requirements.txt
-   ```
-
-### Running the Application
-1. Start the frontend:
-   ```bash
-   cd frontend
-   npm run dev
-   ```
-
-2. Start the backend:
-   ```bash
-   cd backend
-   uvicorn api.main:app --reload
-   ```
-
-The application will be available at `http://localhost:3000`
-
-## Technical Details
-
-### API Endpoints
-
-- `/api/query/initial`: Start a new conversation
-- `/api/query/followup`: Submit follow-up questions
-- `/api/query/{query_id}/stream`: Stream responses
-- `/api/query/{query_id}`: Get query details
-
-### Data Flow
-
-1. User submits question
-2. Backend generates embeddings using Voyage AI
-3. Pinecone performs similarity search
-4. Context is retrieved from both indices
-5. Claude generates response with context
-6. Response is streamed to frontend
-7. Conversation history is updated in Supabase
-
-### Performance Considerations
-
-- Optimized embedding generation with rate limiting
-- Efficient vector search with configurable parameters
-- Streaming responses for better user experience
-- Caching of conversation history
+3. **Real-time Scientific Response Generation**
+   - Streaming responses with progressive rendering
+   - Context-aware conversation management
+   - Chemical-specific answer validation
+   - Persistent conversation history for complex scientific queries
