@@ -1,18 +1,24 @@
-// app/api/query/[id]/route.ts
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+export const runtime = 'edge';
 
 export async function GET(
   request: NextRequest,
   context: { params: { id: string } }
 ) {
-  // Properly await the params
-  const { id } = await context.params;
-
+  const { params } = await context;
+  const { id } = params;
+  
   try {
-    const response = await fetch(`${API_URL}/api/query/${id}`, {
-      cache: 'no-store'
+    if (!id) {
+      return Response.json(
+        { error: 'No ID provided' },
+        { status: 400 }
+      );
+    }
+    
+    const response = await fetch(`http://localhost:8000/api/query/${id}`, {
+      method: 'GET',
     });
 
     if (!response.ok) {
@@ -20,11 +26,12 @@ export async function GET(
     }
 
     const data = await response.json();
-    return NextResponse.json(data);
+    return Response.json(data);
+    
   } catch (error) {
-    console.error('Error fetching query:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch query results' },
+    console.error('Query fetch error:', error);
+    return Response.json(
+      { error: 'Failed to fetch query' },
       { status: 500 }
     );
   }

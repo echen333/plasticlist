@@ -1,25 +1,20 @@
 'use client';
 
-import { useState, useEffect, use } from 'react';
+import { useEffect, useState, use } from 'react';
 import { useRouter } from 'next/navigation';
+import ReactMarkdown from 'react-markdown';
 import { 
   Button,
   Card,
   CardContent,
   Typography,
-  Skeleton,
+  CircularProgress,
   Box,
   Container
 } from '@mui/material';
 
-interface QueryResult {
-  id: string;
-  question: string;
-  response: string;
-  status: string;
-  error: string | null;
-  created_at: string;
-  completed_at: string;
+interface PageParams {
+  params: Promise<{ id: string }>;
 }
 
 function BackButton() {
@@ -35,108 +30,139 @@ function BackButton() {
   );
 }
 
-function LoadingSkeleton() {
-  return (
-    <Card>
-      <CardContent>
-        <Box sx={{ mb: 3 }}>
-          <Skeleton variant="rectangular" width={200} height={32} />
-        </Box>
-        <Box sx={{ mb: 3 }}>
-          <Skeleton variant="rectangular" width="100%" height={24} />
-          <Skeleton variant="rectangular" width="80%" height={24} sx={{ mt: 1 }} />
-        </Box>
-        <Box sx={{ mb: 3 }}>
-          <Skeleton variant="rectangular" width="100%" height={120} />
-        </Box>
-      </CardContent>
-    </Card>
-  );
-}
-
-interface PageParams {
-  params: Promise<{ id: string }> // Change to Promise type
-}
-
 export default function QueryPage({ params }: PageParams) {
-  const resolvedParams = use(params) as { id: string };  // Add type assertion
-  const [result, setResult] = useState<QueryResult | null>(null);
+  const resolvedParams = use(params);
+  const queryId = resolvedParams.id;
+  
+  const [streamedResponse, setStreamedResponse] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isStreaming, setIsStreaming] = useState(false);
 
   useEffect(() => {
-    const fetchData = async () => {
+    let eventSource: EventSource | null = null;
+    let mounted = true;
+
+    const startStreaming = async () => {
       try {
-        const response = await fetch(`/api/query/${resolvedParams.id}`);  // Use resolvedParams.id
-        if (!response.ok) throw new Error('Failed to fetch results');
-        const data = await response.json();
-        setResult(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred');
-      } finally {
-        setLoading(false);
+        if (eventSource) {
+          eventSource.close();
+        }
+        
+        eventSource = new EventSource(`/api/query/${queryId}/stream`);
+        
+        eventSource.onopen = () => {
+          setIsStreaming(true);
+          setLoading(false);
+        };
+
+        eventSource.onmessage = (event) => {
+          if (!mounted) return;
+          
+          try {
+            const data = JSON.parse(event.data);
+            
+            if (data.content) {
+              setStreamedResponse(prev => prev + data.content);
+            }
+            
+            if (data.error) {
+              setError(data.error);
+              eventSource?.close();
+              setIsStreaming(false);
+            }
+            
+            if (data.end) {
+              eventSource?.close();
+              setIsStreaming(false);
+            }
+          } catch (error) {
+            setError('Failed to parse stream data');
+          }
+        };
+
+        eventSource.onerror = () => {
+          if (!mounted) return;
+          setError('Stream connection error');
+          eventSource?.close();
+          setIsStreaming(false);
+        };
+
+      } catch (error) {
+        if (!mounted) return;
+        setError('Failed to set up streaming connection');
       }
     };
 
-    fetchData();
-  }, [resolvedParams.id]);
+    startStreaming();
 
-  if (loading) {
-    return (
-      <Container maxWidth="md" sx={{ py: 4 }}>
-        <LoadingSkeleton />
-      </Container>
-    );
-  }
-
-  if (error) {
-    return (
-      <Container maxWidth="md" sx={{ py: 4 }}>
-        <Card>
-          <CardContent>
-            <Typography color="error">{error}</Typography>
-            <Box sx={{ mt: 2 }}>
-              <BackButton />
-            </Box>
-          </CardContent>
-        </Card>
-      </Container>
-    );
-  }
-
-  if (!result) {
-    return null;
-  }
+    return () => {
+      mounted = false;
+      if (eventSource) {
+        eventSource.close();
+      }
+    };
+  }, [queryId]);
 
   return (
     <Container maxWidth="md" sx={{ py: 4 }}>
       <Card>
         <CardContent>
-          <Box sx={{ mb: 3 }}>
-            <Typography variant="h5" gutterBottom>
-              Query Results
-            </Typography>
-          </Box>
+          <Typography variant="h5" gutterBottom>
+            Query Results
+          </Typography>
           
-          <Box sx={{ mb: 3 }}>
-            <Typography variant="subtitle1" sx={{ mb: 1 }}>
-              Question:
-            </Typography>
-            <Typography variant="body1" color="text.secondary">
-              {result.question}
-            </Typography>
+          {loading && !streamedResponse && (
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+              <CircularProgress size={20} />
+              <Typography color="text.secondary">
+                Processing your query...
+              </Typography>
+            </Box>
+          )}
+
+          {error && (
+            <Box sx={{ 
+              bgcolor: 'error.light', 
+              p: 2, 
+              borderRadius: 1,
+              mb: 2
+            }}>
+              <Typography color="error">Error: {error}</Typography>
+            </Box>
+          )}
+
+          <Box sx={{ position: 'relative' }}>
+            {(streamedResponse || isStreaming) && (
+              <Box sx={{ mb: 2 }}>
+                <ReactMarkdown className="prose max-w-none">
+                  {streamedResponse || ''}
+                </ReactMarkdown>
+              </Box>
+            )}
+
+            {isStreaming && (
+              <Box sx={{ 
+                mt: 1, 
+                display: 'flex', 
+                alignItems: 'center',
+                gap: 1
+              }}>
+                <Box sx={{
+                  width: 8,
+                  height: 8,
+                  bgcolor: 'primary.main',
+                  borderRadius: '50%',
+                  animation: 'pulse 1.5s infinite'
+                }} />
+                <Typography variant="body2" color="text.secondary">
+                  Receiving response...
+                </Typography>
+              </Box>
+            )}
           </Box>
 
-          <Box sx={{ mb: 3 }}>
-            <Typography variant="subtitle1" sx={{ mb: 1 }}>
-              Response:
-            </Typography>
-            <Typography variant="body1" color="text.secondary" sx={{ whiteSpace: 'pre-wrap' }}>
-              {result.response}
-            </Typography>
-          </Box>
-
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
             <BackButton />
           </Box>
         </CardContent>

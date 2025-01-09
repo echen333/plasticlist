@@ -1,5 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse
 from dotenv import load_dotenv
 import os
 import time
@@ -7,14 +8,17 @@ import requests
 from anthropic import Anthropic
 from pydantic import BaseModel
 from pinecone import Pinecone
-from typing import List
+from typing import List, AsyncGenerator
 from supabase import create_client
 from datetime import datetime
 import uuid
 import logging
+import json
+import asyncio
 
 # Set up logging
-logging.basicConfig(level=logging.INFO)
+# logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 load_dotenv()
@@ -40,6 +44,7 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["*"]  # Needed for EventSource
 )
 
 # Initialize clients
@@ -48,17 +53,8 @@ try:
     voyage_api_key = os.getenv("VOYAGE_API_KEY")
     voyage_url = "https://api.voyageai.com/v1/embeddings"
     
-    # Initialize Pinecone with new class-based approach
     pc = Pinecone(api_key=os.getenv("PINECONE_API_KEY"))
-    
-    # Debug: List all indexes
-    indexes = pc.list_indexes()
-    logger.info(f"Available Pinecone indexes: {indexes}")
-    
     index = pc.Index("plasticlist2")
-    # Debug: Get index stats
-    stats = index.describe_index_stats()
-    logger.info(f"Index stats: {stats}")
     
     supabase_url = os.getenv("SUPABASE_URL")
     supabase_key = os.getenv("SUPABASE_KEY")
@@ -72,10 +68,7 @@ class Query(BaseModel):
 
 async def get_embedding(text: str) -> List[float]:
     """Get embeddings from Voyage AI."""
-    logger.debug(f"Getting embedding for text of length {len(text)}")
-    
     if len(text) > 8192:
-        logger.warning("Text too long for embedding, truncating...")
         text = text[:8192]
     
     headers = {
@@ -88,10 +81,7 @@ async def get_embedding(text: str) -> List[float]:
     }
     
     try:
-        # Add a small delay between requests to respect rate limits
         time.sleep(0.05)
-        
-        logger.debug("Sending request to Voyage AI")
         response = requests.post(voyage_url, headers=headers, json=data)
         
         if response.status_code != 200:
@@ -99,13 +89,10 @@ async def get_embedding(text: str) -> List[float]:
             response.raise_for_status()
         
         response_data = response.json()
-        logger.debug("Successfully got response from Voyage AI")
         
         if 'data' in response_data and len(response_data['data']) > 0 and 'embedding' in response_data['data'][0]:
-            logger.debug("got embedding")
             return response_data['data'][0]['embedding']
         else:
-            logger.error(f"Unexpected response format: {response_data}")
             raise Exception("Could not find embeddings in response")
             
     except Exception as e:
@@ -115,12 +102,8 @@ async def get_embedding(text: str) -> List[float]:
 async def get_relevant_context(query: str) -> str:
     """Get relevant context from Pinecone"""
     try:
-        logger.info("Getting embedding from Voyage AI...")
         query_embedding = await get_embedding(query)
-        logger.info(f"Embedding dimension: {len(query_embedding)}")
         
-        logger.info("Searching Pinecone...")
-        # Search Pinecone with lower score threshold
         results = index.query(
             vector=query_embedding,
             top_k=3,
@@ -129,111 +112,150 @@ async def get_relevant_context(query: str) -> str:
             namespace="default"
         )
         
-        # Debug log the entire results
-        logger.info(f"Pinecone results: {results}")
-        
-        # Check if we have matches in the results
         matches = results.get('matches', []) if isinstance(results, dict) else results.matches
         
-        # Debug log individual matches
-        for match in matches:
-            logger.info(f"Match score: {match.get('score', 'N/A')}, ID: {match.get('id', 'N/A')}")
-            
-        # Construct context string
         context = "\n\n".join([
             f"Content from {match['id']}:\n{match['metadata']['text']}"
             for match in matches
         ])
-        logger.info(f"Found {len(matches)} matching contexts")
         return context
         
     except Exception as e:
         logger.error(f"Error in get_relevant_context: {str(e)}")
         raise
 
-@app.post("/api/query")
-async def process_query(query: Query):
+async def process_query_stream(query_id: str, question: str):
+    full_response = ""
+    chunks_received = 0
+    
     try:
-        # Generate unique ID for the query
-        query_id = str(uuid.uuid4())
+        logger.debug(f"Starting stream for: {query_id}")
+        context = await get_relevant_context(question)
         
-        logger.info(f"Processing query: {query.question}")
+        prompt = f"""Here is some context about PlasticList:
+{context}
+Based on this context, please answer the following question:
+{question}
+If the context doesn't contain enough information to answer the question fully, please say so."""
+
+        stream = anthropic_client.beta.messages.create(
+            model="claude-3-sonnet-20240229",
+            max_tokens=1000,
+            messages=[{"role": "user", "content": prompt}],
+            stream=True
+        )
         
-        # Store initial query in Supabase
-        query_data = {
-            "id": query_id,
-            "question": query.question,
-            "created_at": datetime.utcnow().isoformat(),
-            "status": "processing"
+        logger.debug("Stream created, processing chunks...")
+        
+        for message in stream:  # Regular for loop, not async
+            logger.debug(f"Event type: {message.type}")
+            if message.type == 'content_block_delta' and hasattr(message.delta, 'text'):
+                text = message.delta.text
+                chunks_received += 1
+                full_response += text
+                sse_data = f"data: {json.dumps({'content': text})}\n\n"
+                logger.debug(f"Chunk {chunks_received}: {text}")
+                yield sse_data
+                await asyncio.sleep(0.01)
+        
+        # Update database and end stream
+        await update_query_in_db(query_id, full_response, "completed")
+        yield f"data: {json.dumps({'end': True, 'total_chunks': chunks_received})}\n\n"
+        
+    except Exception as e:
+        logger.error(f"Error in stream: {str(e)}")
+        await update_query_in_db(query_id, full_response, "failed", str(e))
+        yield f"data: {json.dumps({'error': str(e)})}\n\n"
+
+async def update_query_in_db(query_id: str, response: str, status: str, error: str = None):
+    try:
+        data = {
+            "status": status,
+            "response": response,
+            "completed_at": datetime.utcnow().isoformat()
+        }
+        if error:
+            data["error"] = error
+        supabase.table("queries").update(data).eq("id", query_id).execute()
+    except Exception as e:
+        logger.error(f"Database update failed: {str(e)}")
+
+async def update_query_in_db(query_id: str, response: str, status: str, error: str = None):
+    try:
+        data = {
+            "status": status,
+            "response": response,
+            "completed_at": datetime.utcnow().isoformat()
+        }
+        if error:
+            data["error"] = error
+        supabase.table("queries").update(data).eq("id", query_id).execute()
+    except Exception as e:
+        logger.error(f"Database update failed: {str(e)}")
+
+@app.post("/api/query")
+async def create_query(query: Query):
+    """Create a new query and return its ID immediately"""
+    query_id = str(uuid.uuid4())
+    
+    # Store initial query in Supabase
+    query_data = {
+        "id": query_id,
+        "question": query.question,
+        "created_at": datetime.utcnow().isoformat(),
+        "status": "processing"
+    }
+    
+    try:
+        supabase.table("queries").insert(query_data).execute()
+        return {"id": query_id}
+    except Exception as e:
+        logger.error(f"Database error: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/query/{query_id}/stream")
+async def stream_query(query_id: str):
+    """Stream the response for a given query ID"""
+    try:
+        # Get query details from Supabase
+        result = supabase.table("queries").select("*").eq("id", query_id).execute()
+        if not result.data:
+            raise HTTPException(status_code=404, detail="Query not found")
+        
+        query_data = result.data[0]
+
+        # Add debug log for completed responses
+        if query_data["status"] == "completed":
+            logger.debug(f"Sending completed response: {query_data['response']}")
+        
+        # Set up SSE headers
+        headers = {
+            "Content-Type": "text/event-stream",
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
         }
         
-        try:
-            logger.info("Storing query in Supabase...")
-            supabase.table("queries").insert(query_data).execute()
-        except Exception as e:
-            logger.error(f"Supabase insert error: {str(e)}")
-            raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
-        
-        try:
-            # Get relevant context
-            logger.info("Getting context from Pinecone...")
-            context = await get_relevant_context(query.question)
-            
-            # Create prompt with context
-            prompt = f"""Here is some context about PlasticList:
-
-{context}
-
-Based on this context, please answer the following question:
-{query.question}
-
-If the context doesn't contain enough information to answer the question fully, please say so."""
-            
-            logger.info("Sending request to Claude...")
-            # Get response from Claude
-            response = anthropic_client.beta.messages.create(
-                model="claude-3-sonnet-20240229",
-                max_tokens=1000,
-                messages=[{
-                    "role": "user",
-                    "content": prompt
-                }]
+        if query_data["status"] == "completed":
+            # If already completed, return full response immediately
+            return StreamingResponse(
+                content=iter([f"data: {json.dumps({'content': query_data['response']})}\n\n"]),
+                media_type="text/event-stream",
+                headers=headers
             )
-            
-            response_text = response.content[0].text
-            logger.info("Got response from Claude")
-            
-            # Update query with response
-            logger.info("Updating Supabase with response...")
-            supabase.table("queries").update({
-                "status": "completed",
-                "response": response_text,
-                "completed_at": datetime.utcnow().isoformat()
-            }).eq("id", query_id).execute()
-            
-            return {
-                "id": query_id,
-                "response": response_text
-            }
-            
-        except Exception as e:
-            logger.error(f"Error during processing: {str(e)}")
-            # Update query with error
-            try:
-                supabase.table("queries").update({
-                    "status": "failed",
-                    "error": str(e),
-                    "completed_at": datetime.utcnow().isoformat()
-                }).eq("id", query_id).execute()
-            except Exception as db_error:
-                logger.error(f"Failed to update error in database: {str(db_error)}")
-            raise HTTPException(status_code=500, detail=str(e))
-            
+        
+        # Start streaming response
+        return StreamingResponse(
+            content=process_query_stream(query_id, query_data["question"]),
+            media_type="text/event-stream",
+            headers=headers
+        )
     except Exception as e:
+        logger.error(f"Streaming error: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/api/query/{query_id}")
 async def get_query(query_id: str):
+    """Get query details"""
     try:
         result = supabase.table("queries").select("*").eq("id", query_id).execute()
         if not result.data:
