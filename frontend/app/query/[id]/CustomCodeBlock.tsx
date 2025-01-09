@@ -107,4 +107,11 @@ function CustomCodeBlock({ children, className, inline }: CustomCodeBlockProps) 
   );
 }
 
-export default React.memo(CustomCodeBlock);
+export default React.memo(CustomCodeBlock, (prevProps, nextProps) => {
+  // Only re-render if the content or className actually changed
+  return (
+    prevProps.children === nextProps.children &&
+    prevProps.className === nextProps.className &&
+    prevProps.inline === nextProps.inline
+  );
+});
