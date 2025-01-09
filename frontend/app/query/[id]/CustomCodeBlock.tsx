@@ -60,12 +60,15 @@ function CustomCodeBlock({ children, className, inline, isExpanded, onToggle }: 
       expanded={isExpanded}
       onChange={onToggle}
       sx={{
+        width: '100%',
+        minHeight: 48,
         marginY: 2,
         backgroundColor: 'background.paper',
         border: '1px solid',
         borderColor: 'divider',
         borderRadius: 1,
         boxShadow: 'none',
+        transition: 'none',
         '&:before': {
           display: 'none',
         },

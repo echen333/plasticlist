@@ -41,29 +41,7 @@ export default function QueryPage({ params }: PageParams) {
   const queryId = resolvedParams.id;
 
   // 2. React state
-  const [conversation, setConversation] = useState<ConversationQuery[]>([{
-    id: 'test-1',
-    question: 'How do I analyze data with Python?',
-    response: `Here's an example of data analysis with Python:
-
-\`\`\`python
-import pandas as pd
-import numpy as np
-
-# Load and analyze data
-df = pd.read_csv('data.csv')
-summary = df.describe()
-
-# Calculate statistics
-mean_value = df['column'].mean()
-std_dev = df['column'].std()
-
-print(f"Mean: {mean_value}")
-print(f"Standard Deviation: {std_dev}")
-\`\`\`
-
-You can modify this code based on your needs.`
-  }]);
+  const [conversation, setConversation] = useState<ConversationQuery[]>([]);
   const [conversationId, setConversationId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -300,7 +278,7 @@ You can modify this code based on your needs.`
                 className="prose max-w-none"
                 components={{
                   code: ({ inline, className, children }) => {
-                    const blockId = `${q.id}-${Math.random()}`;
+                    const blockId = `code-block-${q.id}`;
                     return (
                       <CustomCodeBlock
                         inline={inline}
