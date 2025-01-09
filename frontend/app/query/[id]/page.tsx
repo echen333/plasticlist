@@ -71,16 +71,33 @@ export default function QueryPage({ params }: PageParams) {
         })
       });
       
-      if (!res.ok) throw new Error('Failed to generate followups');
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(`Failed to generate followups: ${res.status} - ${errorText}`);
+      }
       
-      const data = await res.json();
+      let data;
+      try {
+        data = await res.json();
+        if (!data.followups) {
+          throw new Error('Response missing followups data');
+        }
+      } catch (parseError) {
+        throw new Error('Failed to parse server response: ' + parseError.message);
+      }
+
       // Parse followups using regex
       const followups = data.followups.match(/FOLLOWUP\d: (.+)$/gm)
         ?.map(f => f.replace(/FOLLOWUP\d: /, '')) || [];
       
+      if (followups.length === 0) {
+        console.warn('No followup questions found in response');
+      }
+      
       setSuggestedFollowups(followups);
     } catch (err) {
       console.error('Failed to generate followups:', err);
+      setError(err.message); // Show error in UI
     } finally {
       setLoadingFollowups(false);
     }
