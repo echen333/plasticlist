@@ -307,14 +307,23 @@ export default function QueryPage({ params }: PageParams) {
               }}
               sx={{ mb: 2 }}
             />
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleFollowUpSubmit}
-              disabled={loading || !conversationId}
-            >
-              Submit Follow-up
-            </Button>
+            <Box sx={{ display: 'flex', gap: 2 }}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleFollowUpSubmit}
+                disabled={loading || !conversationId}
+              >
+                Submit Follow-up
+              </Button>
+              <Button
+                variant="outlined"
+                color="primary"
+                onClick={() => window.location.href = '/'}
+              >
+                Ask a new question
+              </Button>
+            </Box>
           </Box>
 
           {/* Invisible ref for auto-scrolling */}
