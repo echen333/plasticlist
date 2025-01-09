@@ -17,6 +17,7 @@ import logging
 import json
 import asyncio
 from typing import Optional
+import aiohttp
 
 # Set up logging
 # logging.basicConfig(level=logging.INFO)
@@ -192,6 +193,100 @@ async def get_conversation_text(query_id: str) -> str:
     logger.debug(f"Final history: {history}")
     return history
 
+import pandas as pd
+import ast
+from io import StringIO
+import sys
+import contextlib
+import builtins
+
+def is_safe_code(code: str) -> bool:
+    """Basic security check for Python code"""
+    forbidden = ['eval', 'exec', 'open', 'os', 'sys', 'subprocess']
+    try:
+        tree = ast.parse(code)
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Name) and node.id in forbidden:
+                return False
+            # Just check for any dangerous imports
+            if isinstance(node, ast.Import) or isinstance(node, ast.ImportFrom):
+                module = node.names[0].name.split('.')[0]
+                if module in forbidden:
+                    return False
+    except:
+        return False
+    return True
+
+@contextlib.contextmanager
+def capture_output():
+    """Capture stdout and stderr"""
+    new_out, new_err = StringIO(), StringIO()
+    old_out, old_err = sys.stdout, sys.stderr
+    try:
+        sys.stdout, sys.stderr = new_out, new_err
+        yield sys.stdout, sys.stderr
+    finally:
+        sys.stdout, sys.stderr = old_out, old_err
+
+async def execute_python_query(query: str) -> str:
+    """Execute a Python query on the TSV data"""
+    if not is_safe_code(query):
+        return "Error: Query contains forbidden operations"
+    
+    try:
+        # Load your TSV data
+        df = pd.read_csv('data/raw/samples.tsv', sep='\t')
+        
+        # Create a copy of builtins with only safe functions
+        safe_builtins = {
+            name: getattr(builtins, name)
+            for name in [
+                'print', 'len', 'range', 'str', 'int', 'float', 'bool',
+                'list', 'dict', 'sum', 'min', 'max', 'round', 'sorted',
+                'enumerate', 'zip', 'abs', '__import__'  # Add __import__
+            ]
+        }
+        
+        # Add the globals we want available to the query
+        globals_dict = {
+            '__builtins__': safe_builtins,
+            'pd': pd,
+            'df': df,
+        }
+
+        # Capture output
+        with capture_output() as (out, err):
+            # Execute the query in a clean local namespace
+            local_dict = {}
+            exec(query, globals_dict, local_dict)
+            
+            # Collect output
+            output = out.getvalue()
+            error_output = err.getvalue()
+            
+            # Check for result variable
+            result_str = ""
+            if 'result' in local_dict:
+                # Handle DataFrames specially
+                if isinstance(local_dict['result'], pd.DataFrame):
+                    result_str = local_dict['result'].to_string()
+                else:
+                    result_str = str(local_dict['result'])
+
+        # Combine all outputs
+        final_output = ""
+        if output:
+            final_output += f"Output:\n{output}\n"
+        if result_str:
+            final_output += f"Result variable:\n{result_str}\n"
+        if error_output:
+            final_output += f"Errors:\n{error_output}\n"
+            
+        return final_output.strip() if final_output.strip() else "No output generated"
+        
+    except Exception as e:
+        return f"Error executing query: {str(e)}"
+
 async def process_query_stream(query_id: str, question: str):
     full_response = ""
     chunks_received = 0
@@ -199,13 +294,25 @@ async def process_query_stream(query_id: str, question: str):
     try:
         logger.debug(f"Starting stream for: {query_id}")
 
-        # 1. Fetch the entire conversation so far
+        # [Previous code for PYTHON_QUERY_TOOL, context gathering, and prompt remains the same]
+        PYTHON_QUERY_TOOL = {
+            "name": "run_python_query",
+            "description": """Executes a Python query on the PlasticList TSV data...""",  # Your existing description
+            "input_schema": {
+                "type": "object",
+                "properties": {
+                    "query": {
+                        "type": "string",
+                        "description": "A complete Python code snippet that uses pandas to analyze the TSV data. The data will be available as a pandas DataFrame named 'df'."
+                    }
+                },
+                "required": ["query"]
+            }
+        }
+
+        # Previous context gathering remains the same
         full_history = await get_conversation_text(query_id)
-
-        # 2. Add your general "PlasticList" context
         context = await get_relevant_context(question)
-
-        # 3. Build the final prompt
         prompt = f"""Conversation so far (if any):
 {full_history}
 
@@ -215,38 +322,183 @@ Now the user is asking:
 Additional context about PlasticList:
 {context}
 
-You are very smart! Please answer the user's latest question in detail to the best of your ability.
-"""
+You have access to a Python query tool that can analyze the TSV data directly. Use this tool when you need to perform calculations, filtering, or statistical analysis that isn't readily available in the context. Show your chain of thought by explaining your reasoning in <thinking> tags."""
 
-        logger.debug(f"YOOYOYO{prompt[:1000]}")
-        stream = anthropic_client.beta.messages.create(
-            model="claude-3-sonnet-20240229",
-            max_tokens=1000,
-            messages=[{"role": "user", "content": prompt}],
-            stream=True
-        )
+        headers = {
+            "Content-Type": "application/json",
+            "X-Api-Key": os.getenv("ANTHROPIC_API_KEY"),
+            "anthropic-version": "2023-06-01"
+        }
 
-        logger.debug("Stream created, processing chunks...")
-        
-        for message in stream:  # Regular for loop, not async
-            if message.type == 'content_block_delta' and hasattr(message.delta, 'text'):
-                text = message.delta.text
-                chunks_received += 1
-                full_response += text
-                sse_data = f"data: {json.dumps({'content': text})}\n\n"
-                yield sse_data
-                await asyncio.sleep(0.01)
-        
-        # 4. Once done, update DB and yield end signal
-        logger.debug("updating query in db")
+        data = {
+            "model": "claude-3-5-sonnet-20241022",
+            "max_tokens": 1024,
+            "tools": [PYTHON_QUERY_TOOL],
+            "tool_choice": {"type": "auto"},
+            "messages": [{"role": "user", "content": prompt}],
+            "stream": True
+        }
+
+        async with aiohttp.ClientSession() as session:
+            async with session.post(
+                "https://api.anthropic.com/v1/messages",
+                headers=headers,
+                json=data
+            ) as response:
+                async for chunk in response.content:
+                    chunk_str = chunk.decode('utf-8')
+                    logger.debug(f"Raw chunk received: {chunk_str}")
+                    
+                    if chunk_str.startswith("data: "):
+                        try:
+                            json_str = chunk_str[6:]  # Remove "data: " prefix
+                            if json_str.strip() == "[DONE]":
+                                continue
+                                
+                            data = json.loads(json_str)
+                            logger.debug(f"Processed JSON data: {data}")
+
+                            # Handle message delta with tool_use stop reason
+                            if data.get("type") == "message_delta" and \
+                            data.get("delta", {}).get("stop_reason") == "tool_use":
+                                logger.debug("Detected tool_use stop reason - continuing stream")
+                                continue
+
+                            # Handle content block start
+                            if data.get("type") == "content_block_start":
+                                if data.get("content_block", {}).get("type") == "tool_use":
+                                    logger.debug(f"Tool use block started: {data}")
+                                    current_tool_input = ""  # Reset tool input buffer
+                                continue
+
+                            # Handle content block delta
+                            if data.get("type") == "content_block_delta":
+                                delta = data.get("delta", {})
+                                
+                                # Handle text_delta
+                                if delta.get("type") == "text_delta":
+                                    text = delta.get("text", "")
+                                    if text:
+                                        full_response += text
+                                        chunks_received += 1
+                                        sse_data = f"data: {json.dumps({'content': text})}\n\n"
+                                        logger.debug(f"Yielding text SSE data: {sse_data}")
+                                        yield sse_data
+
+                                # Handle input_json_delta (building tool input)
+                                elif delta.get("type") == "input_json_delta":
+                                    partial_json = delta.get("partial_json", "")
+                                    logger.debug(f"Received partial JSON: {partial_json}")
+                                    current_tool_input += partial_json
+                                    logger.debug(f"Current tool input build: {current_tool_input}")
+
+                                    # Try to parse complete JSON when we have a complete query
+                                    try:
+                                        tool_input = json.loads(current_tool_input)
+                                        if "query" in tool_input:
+                                            logger.debug(f"Complete tool input received: {tool_input}")
+                                            query = tool_input["query"]
+                                            
+                                            # Execute Python query
+                                            logger.debug(f"Executing Python query: {query}")
+                                            query_result = await execute_python_query(query)
+                                            logger.debug(f"Query execution result: {query_result}")
+
+                                            # Send tool result back
+                                            # In your process_query_stream function, modify the tool result handling section:
+
+                                            tool_result_data = {
+                                                "model": "claude-3-5-sonnet-20241022",
+                                                "max_tokens": 1024,
+                                                "tools": [
+                                                    {
+                                                        "name": "run_python_query",
+                                                        "description": "Executes a Python query on the PlasticList TSV data",
+                                                        "input_schema": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "query": {
+                                                                    "type": "string",
+                                                                    "description": "A complete Python code snippet that uses pandas to analyze the TSV data. The data will be available as a pandas DataFrame named 'df'."
+                                                                }
+                                                            },
+                                                            "required": ["query"]
+                                                        }
+                                                    }
+                                                ],
+                                                "messages": [
+                                                    {
+                                                        "role": "user", 
+                                                        "content": prompt
+                                                    },
+                                                    {
+                                                        "role": "assistant",
+                                                        "content": [
+                                                            {
+                                                                "type": "tool_use",
+                                                                "id": data.get("id", "default_tool_id"),
+                                                                "name": "run_python_query",
+                                                                "input": tool_input
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        "role": "user",
+                                                        "content": [
+                                                            {
+                                                                "type": "tool_result",
+                                                                "tool_use_id": data.get("id", "default_tool_id"),
+                                                                "content": query_result
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            }
+
+                                            logger.debug("Sending tool result back to Claude")
+                                            tool_response_raw = await session.post(
+                                                "https://api.anthropic.com/v1/messages",
+                                                headers=headers,
+                                                json=tool_result_data
+                                            )
+                                            
+                                            tool_response = await tool_response_raw.json()
+                                            logger.debug(f"Received tool response: {tool_response}")
+                                            
+                                            if 'content' in tool_response:
+                                                text = tool_response['content'][0]['text']
+                                                full_response += text
+                                                sse_data = f"data: {json.dumps({'content': text})}\n\n"
+                                                logger.debug(f"Yielding tool result SSE data: {sse_data}")
+                                                yield sse_data
+
+                                    except json.JSONDecodeError:
+                                        # Not a complete JSON yet, continue building
+                                        logger.debug("Incomplete JSON, continuing to build")
+                                        continue
+
+                            # Handle message stop
+                            if data.get("type") == "message_stop":
+                                logger.debug("Received message_stop - ending stream")
+                                break
+
+                        except json.JSONDecodeError as e:
+                            logger.error(f"JSON decode error: {e}")
+                            continue
+                        except Exception as e:
+                            logger.error(f"Error processing chunk: {e}")
+                            continue
+
+            await asyncio.sleep(0.01)
+
+        logger.debug(f"Stream finished. Full response length: {len(full_response)}")
         await update_query_in_db(query_id, full_response, "completed")
         yield f"data: {json.dumps({'end': True, 'total_chunks': chunks_received})}\n\n"
-        
+
     except Exception as e:
         logger.error(f"Error in stream: {str(e)}")
         await update_query_in_db(query_id, full_response, "failed", str(e))
         yield f"data: {json.dumps({'error': str(e)})}\n\n"
-
 
 async def update_query_in_db(query_id: str, response: str, status: str, error: str = None):
     try:
