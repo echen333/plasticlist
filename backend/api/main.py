@@ -54,7 +54,8 @@ try:
     voyage_url = "https://api.voyageai.com/v1/embeddings"
     
     pc = Pinecone(api_key=os.getenv("PINECONE_API_KEY"))
-    index = pc.Index("plasticlist2")
+    index_general = pc.Index("plasticlist2")
+    index_tsv = pc.Index("plasticlist3")
     
     supabase_url = os.getenv("SUPABASE_URL")
     supabase_key = os.getenv("SUPABASE_KEY")
@@ -100,11 +101,13 @@ async def get_embedding(text: str) -> List[float]:
         raise
 
 async def get_relevant_context(query: str) -> str:
-    """Get relevant context from Pinecone"""
+    """Get relevant context from both Pinecone indices"""
     try:
+        # Get query embedding once and reuse
         query_embedding = await get_embedding(query)
         
-        results = index.query(
+        # Get context from general knowledge index (plasticlist2)
+        general_results = index_general.query(
             vector=query_embedding,
             top_k=3,
             include_metadata=True,
@@ -112,13 +115,33 @@ async def get_relevant_context(query: str) -> str:
             namespace="default"
         )
         
-        matches = results.get('matches', []) if isinstance(results, dict) else results.matches
+        # Get context from TSV data index (plasticlist3)
+        tsv_results = index_tsv.query(
+            vector=query_embedding,
+            top_k=30,  # Get 30 vectors as requested
+            include_metadata=True,
+            score_threshold=0.0,
+            namespace="default"
+        )
         
-        context = "\n\n".join([
-            f"Content from {match['id']}:\n{match['metadata']['text']}"
-            for match in matches
+        # Process general knowledge results
+        general_matches = general_results.get('matches', []) if isinstance(general_results, dict) else general_results.matches
+        general_context = "\n\n".join([
+            f"Content from general knowledge ({match['id']}):\n{match['metadata']['text']}"
+            for match in general_matches
         ])
-        return context
+        
+        # Process TSV data results
+        tsv_matches = tsv_results.get('matches', []) if isinstance(tsv_results, dict) else tsv_results.matches
+        tsv_context = "\n\n".join([
+            f"TSV Entry {i+1}:\n{match['metadata']['text']}"
+            for i, match in enumerate(tsv_matches)
+        ])
+        
+        # Combine contexts with clear separation
+        combined_context = f"""General Knowledge:\n{general_context}\n\nTSV Data:\n{tsv_context}"""
+        
+        return combined_context
         
     except Exception as e:
         logger.error(f"Error in get_relevant_context: {str(e)}")
