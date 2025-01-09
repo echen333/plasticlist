@@ -633,6 +633,44 @@ async def get_query(query_id: str):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@app.post("/api/query/generate-followups")
+async def generate_followups(query: Query):
+    """Generate followup questions for a given query using Claude."""
+    logger.debug(f"Generating followups for query: {query.model_dump_json()}")
+    try:
+        # Get conversation history for context
+        history = await get_conversation_text(query.conversation_id)
+        
+        # Get relevant context
+        context = await get_relevant_context(query.question)
+        
+        # Prompt Claude to generate followups
+        response = anthropic_client.messages.create(
+            model="claude-3-sonnet-20240229",
+            max_tokens=1024,
+            messages=[{
+                "role": "user",
+                "content": f"""Based on this conversation history:
+{history}
+
+And this context about PlasticList:
+{context}
+
+Generate exactly 3 follow-up questions that would be good to ask next. Format them exactly like this:
+FOLLOWUP1: [first question]
+FOLLOWUP2: [second question]
+FOLLOWUP3: [third question]
+
+Make sure each question starts with FOLLOWUPn: on its own line."""
+            }]
+        )
+        
+        logger.debug(f"Claude response: {response.content[0].text}")
+        return {"followups": response.content[0].text}
+    except Exception as e:
+        logger.error(f"Error generating followups: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 @app.get("/api/health")
 async def health_check():
     logger.debug("healthy")

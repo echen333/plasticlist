@@ -11,7 +11,8 @@ import {
   CircularProgress,
   Box,
   Container,
-  TextField
+  TextField,
+  Divider
 } from '@mui/material';
 
 // Data interfaces
@@ -45,6 +46,8 @@ export default function QueryPage({ params }: PageParams) {
   const [conversationId, setConversationId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [suggestedFollowups, setSuggestedFollowups] = useState<string[]>([]);
+  const [loadingFollowups, setLoadingFollowups] = useState(false);
 
   // SSE tracking
   const [isStreaming, setIsStreaming] = useState(false);
@@ -52,6 +55,36 @@ export default function QueryPage({ params }: PageParams) {
 
   // Follow-up question
   const [followUpQuestion, setFollowUpQuestion] = useState('');
+
+  // Function to generate followup suggestions
+  const generateFollowups = async () => {
+    if (!conversationId || conversation.length === 0) return;
+    
+    try {
+      setLoadingFollowups(true);
+      const res = await fetch('/api/query/generate-followups', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          conversation_id: conversationId,
+          question: conversation[conversation.length - 1].question
+        })
+      });
+      
+      if (!res.ok) throw new Error('Failed to generate followups');
+      
+      const data = await res.json();
+      // Parse followups using regex
+      const followups = data.followups.match(/FOLLOWUP\d: (.+)$/gm)
+        ?.map(f => f.replace(/FOLLOWUP\d: /, '')) || [];
+      
+      setSuggestedFollowups(followups);
+    } catch (err) {
+      console.error('Failed to generate followups:', err);
+    } finally {
+      setLoadingFollowups(false);
+    }
+  };
 
   // 3. Scroll ref (we'll scroll to bottom on conversation change)
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -135,7 +168,8 @@ export default function QueryPage({ params }: PageParams) {
             eventSource?.close();
             setIsStreaming(false);
             setActiveQueryId(null);
-            // Optionally, refetch final conversation or patch local state
+            // Generate followups after response completes
+            generateFollowups();
           }
         } catch (err) {
           setError('Failed to parse SSE data');
@@ -315,6 +349,36 @@ export default function QueryPage({ params }: PageParams) {
             >
               Submit Follow-up
             </Button>
+
+            {/* Suggested followup buttons */}
+            {suggestedFollowups.length > 0 && (
+              <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 1 }}>
+                <Divider sx={{ my: 2 }} />
+                <Typography variant="subtitle1">Suggested follow-ups:</Typography>
+                {loadingFollowups ? (
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <CircularProgress size={20} />
+                    <Typography variant="body2" color="text.secondary">
+                      Generating suggestions...
+                    </Typography>
+                  </Box>
+                ) : (
+                  suggestedFollowups.map((question, i) => (
+                    <Button
+                      key={i}
+                      variant="outlined"
+                      onClick={() => {
+                        setFollowUpQuestion(question);
+                        handleFollowUpSubmit();
+                      }}
+                      disabled={loading || !conversationId}
+                    >
+                      {question}
+                    </Button>
+                  ))
+                )}
+              </Box>
+            )}
           </Box>
 
           {/* Invisible ref for auto-scrolling */}
