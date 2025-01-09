@@ -109,14 +109,17 @@ export default function HomePage() {
         </Stack>
       </Box>
       <form onSubmit={handleSubmit}>
-        <TextField
-          fullWidth
-          label="Ask a question about plastics"
-          value={question}
-          onChange={(e) => setQuestion(e.target.value)}
-          margin="normal"
-          disabled={isLoading}
-        />
+      <TextField
+        id="question-input"
+        key="question-input"
+        fullWidth
+        label="Ask a question about plastics"
+        value={question}
+        onChange={(e) => setQuestion(e.target.value)}
+        margin="normal"
+        disabled={isLoading}
+        variant="outlined"
+      />
         <Button 
           variant="contained" 
           type="submit"

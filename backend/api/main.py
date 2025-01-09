@@ -86,7 +86,7 @@ async def get_embedding(text: str) -> List[float]:
     }
     
     try:
-        time.sleep(0.05)
+        # time.sleep(0.005)
         response = requests.post(voyage_url, headers=headers, json=data)
         
         if response.status_code != 200:
@@ -493,7 +493,7 @@ Please add extra '\n' characters to separate out sections. Also, if you use the 
                             logger.error(f"Error processing chunk: {e}")
                             continue
 
-            await asyncio.sleep(0.01)
+            await asyncio.sleep(0.001)
 
         logger.debug(f"Stream finished. Full response length: {len(full_response)}")
         await update_query_in_db(query_id, full_response, "completed")
