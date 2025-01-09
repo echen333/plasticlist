@@ -1,14 +1,42 @@
 # PlasticList: Understanding Plastic Chemical Exposure in Food
 
-A comprehensive food safety database and search engine analyzing plastic-related chemicals in everyday foods. Based on testing 775 samples across 312 food products, PlasticList found that 86% contained detectable levels of plastic chemicals, with some exceeding European safety limits by up to 32,000%.
+A comprehensive food safety database and search engine analyzing plastic-related chemicals in everyday foods. Based on testing 775 samples across 312 food products, PlasticList provides an intelligent interface for querying chemical testing data and scientific findings.
 
-## Key Findings
+## Getting Started
 
-- Detected plastic chemicals in all tested baby foods, prenatal supplements, breast milk, yogurt, and ice cream products
-- Found that less-processed foods contain fewer chemicals than highly processed ones
-- Discovered hot foods in takeout containers had 34% higher levels after 45 minutes
-- Identified phthalates in 73% of products, phthalate substitutes in 73%, and bisphenols in 22%
-- Used rigorous testing methodology including GC/MS and isotope dilution mass spectrometry
+### Prerequisites
+- Node.js 18+
+- Python 3.12+
+- Pinecone account
+- Voyage AI API key
+- Claude API key
+- Supabase account
+
+### Quick Start
+1. Clone and set up environment:
+   ```bash
+   git clone https://github.com/echen333/plasticlist.git
+   cd plasticlist
+   cp .env.example .env  # Fill in your API keys
+   ```
+
+2. Install dependencies:
+   ```bash
+   # Frontend
+   cd frontend && npm install
+   # Backend
+   cd ../backend && pip install -r requirements.txt
+   ```
+
+3. Start the services:
+   ```bash
+   # Terminal 1: Frontend
+   cd frontend && npm run dev
+   # Terminal 2: Backend
+   cd backend && uvicorn api.main:app --reload
+   ```
+
+Visit http://localhost:3000 to start querying the database.
 
 ## Architecture
 
