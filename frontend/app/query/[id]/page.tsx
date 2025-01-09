@@ -1,7 +1,7 @@
 'use client';
 
 import { use, useEffect, useRef, useState } from 'react';
-import CustomCodeBlock from './CustomCodeBlock';
+import TestConversation from './TestConversation';
 import { useRouter } from 'next/navigation';
 import ReactMarkdown from 'react-markdown';
 import {
@@ -237,32 +237,8 @@ export default function QueryPage({ params }: PageParams) {
             Conversation
           </Typography>
 
-          {/* Test Python Code Block */}
-          <Box sx={{ mb: 2, p: 1, border: '1px solid #ccc', borderRadius: 1 }}>
-            <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
-              Test Python Code Block
-            </Typography>
-            <ReactMarkdown
-              className="prose max-w-none"
-              components={{
-                code: ({ node, inline, className, children, ...props }) => (
-                  <CustomCodeBlock inline={inline} className={className}>
-                    {children}
-                  </CustomCodeBlock>
-                )
-              }}
-            >
-              {`\`\`\`python
-import pandas as pd
-
-# Count frequency of blinded names
-blinded_counts = df['blinded_name'].value_counts()
-
-# Display top 20 most common blinded names
-print(blinded_counts.head(20).to_markdown())
-\`\`\``}
-            </ReactMarkdown>
-          </Box>
+          {/* Test conversation for development */}
+          {!loading && conversation.length === 0 && <TestConversation />}
 
           {/* Loading + Error */}
           {loading && !conversation.length && (

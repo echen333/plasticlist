@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import { Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
@@ -29,14 +29,14 @@ const isPythonCode = (className?: string, content?: string): boolean => {
   return pythonPatterns.some(pattern => pattern.test(contentStr));
 };
 
-export default function CustomCodeBlock({ children, className, inline }: CustomCodeBlockProps) {
+function CustomCodeBlock({ children, className, inline }: CustomCodeBlockProps) {
   // Don't wrap inline code
   if (inline) {
     return <code className={className}>{children}</code>;
   }
 
-  const codeText = String(children).trim();
-  const isPython = isPythonCode(className, codeText);
+  const codeText = useMemo(() => String(children).trim(), [children]);
+  const isPython = useMemo(() => isPythonCode(className, codeText), [className, codeText]);
 
   // Return standard rendering for non-Python code
   if (!isPython) {
@@ -48,9 +48,12 @@ export default function CustomCodeBlock({ children, className, inline }: CustomC
   }
 
   // For Python, wrap in MUI Accordion (auto-collapsed)
+  const [isExpanded, setIsExpanded] = useState(false);
+
   return (
     <Accordion 
-      defaultExpanded={false} 
+      expanded={isExpanded}
+      onChange={() => setIsExpanded(prev => !prev)}
       sx={{
         marginY: 2,
         backgroundColor: 'background.paper',
@@ -103,3 +106,5 @@ export default function CustomCodeBlock({ children, className, inline }: CustomC
     </Accordion>
   );
 }
+
+export default React.memo(CustomCodeBlock);
