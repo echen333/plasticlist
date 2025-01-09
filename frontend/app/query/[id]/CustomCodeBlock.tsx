@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
@@ -6,6 +6,8 @@ interface CustomCodeBlockProps {
   children: React.ReactNode;
   className?: string;
   inline?: boolean;
+  isExpanded: boolean;
+  onToggle: () => void;
 }
 
 const isPythonCode = (className?: string, content?: string): boolean => {
@@ -47,13 +49,11 @@ function CustomCodeBlock({ children, className, inline }: CustomCodeBlockProps) 
     );
   }
 
-  // For Python, wrap in MUI Accordion (auto-collapsed)
-  const [isExpanded, setIsExpanded] = useState(false);
-
+  // For Python, wrap in MUI Accordion
   return (
     <Accordion 
-      expanded={isExpanded}
-      onChange={() => setIsExpanded(prev => !prev)}
+      expanded={props.isExpanded}
+      onChange={props.onToggle}
       sx={{
         marginY: 2,
         backgroundColor: 'background.paper',

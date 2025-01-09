@@ -46,6 +46,7 @@ export default function QueryPage({ params }: PageParams) {
   const [conversationId, setConversationId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [expandedBlocks, setExpandedBlocks] = useState<{[key: string]: boolean}>({});
 
   // SSE tracking
   const [isStreaming, setIsStreaming] = useState(false);
@@ -275,11 +276,22 @@ export default function QueryPage({ params }: PageParams) {
               <ReactMarkdown
                 className="prose max-w-none"
                 components={{
-                  code: ({ node, inline, className, children, ...props }) => (
-                    <CustomCodeBlock inline={inline} className={className}>
-                      {children}
-                    </CustomCodeBlock>
-                  )
+                  code: ({ node, inline, className, children, ...props }) => {
+                    const blockId = `${q.id}-${props.node?.position?.start?.line}`;
+                    return (
+                      <CustomCodeBlock
+                        inline={inline}
+                        className={className}
+                        isExpanded={expandedBlocks[blockId] || false}
+                        onToggle={() => setExpandedBlocks(prev => ({
+                          ...prev,
+                          [blockId]: !prev[blockId]
+                        }))}
+                      >
+                        {children}
+                      </CustomCodeBlock>
+                    );
+                  }
                 }}
               >
                 {q.response || ''}
