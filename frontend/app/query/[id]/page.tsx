@@ -11,7 +11,9 @@ import {
   CircularProgress,
   Box,
   Container,
-  TextField
+  TextField,
+  Divider,
+  Fade
 } from '@mui/material';
 
 // Data interfaces
@@ -45,6 +47,8 @@ export default function QueryPage({ params }: PageParams) {
   const [conversationId, setConversationId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [suggestedFollowups, setSuggestedFollowups] = useState<string[]>([]);
+  const [loadingFollowups, setLoadingFollowups] = useState(false);
 
   // SSE tracking
   const [isStreaming, setIsStreaming] = useState(false);
@@ -52,6 +56,53 @@ export default function QueryPage({ params }: PageParams) {
 
   // Follow-up question
   const [followUpQuestion, setFollowUpQuestion] = useState('');
+
+  // Function to generate followup suggestions
+  const generateFollowups = async () => {
+    if (!conversationId || conversation.length === 0) return;
+    
+    try {
+      setLoadingFollowups(true);
+      const res = await fetch('/api/query/generate-followups', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          conversation_id: conversation[conversation.length - 1].id,
+          question: conversation[conversation.length - 1].question
+        })
+      });
+      
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(`Failed to generate followups: ${res.status} - ${errorText}`);
+      }
+      
+      let data;
+      try {
+        data = await res.json();
+        if (!data.followups) {
+          throw new Error('Response missing followups data');
+        }
+      } catch (parseError) {
+        throw new Error('Failed to parse server response: ' + parseError.message);
+      }
+
+      // Parse followups using regex
+      const followups = data.followups.match(/FOLLOWUP\d: (.+)$/gm)
+        ?.map(f => f.replace(/FOLLOWUP\d: /, '')) || [];
+      
+      if (followups.length === 0) {
+        console.warn('No followup questions found in response');
+      }
+      
+      setSuggestedFollowups(followups);
+    } catch (err) {
+      console.error('Failed to generate followups:', err);
+      setError(err.message); // Show error in UI
+    } finally {
+      setLoadingFollowups(false);
+    }
+  };
 
   // 3. Scroll ref (we'll scroll to bottom on conversation change)
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -135,7 +186,10 @@ export default function QueryPage({ params }: PageParams) {
             eventSource?.close();
             setIsStreaming(false);
             setActiveQueryId(null);
-            // Optionally, refetch final conversation or patch local state
+            // Wait a bit before generating new followups to allow fade-out animation
+            setTimeout(() => {
+              generateFollowups();
+            }, 500);
           }
         } catch (err) {
           setError('Failed to parse SSE data');
@@ -161,12 +215,18 @@ export default function QueryPage({ params }: PageParams) {
     };
   }, [activeQueryId]);
 
-  // 6. Scroll to bottom whenever conversation updates
+  // 6. Scroll to bottom whenever conversation updates or streaming status changes
   useEffect(() => {
     if (bottomRef.current) {
-      bottomRef.current.scrollIntoView({ behavior: 'smooth' });
+      // Use requestAnimationFrame to ensure DOM has updated
+      requestAnimationFrame(() => {
+        bottomRef.current?.scrollIntoView({ 
+          behavior: 'smooth',
+          block: 'end'
+        });
+      });
     }
-  }, [conversation]);
+  }, [conversation, isStreaming, activeQueryId]);
 
   // 7. Ask a follow-up on the same page
   const handleFollowUpSubmit = async () => {
@@ -308,22 +368,91 @@ export default function QueryPage({ params }: PageParams) {
               sx={{ mb: 2 }}
             />
             <Box sx={{ display: 'flex', gap: 2 }}>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={handleFollowUpSubmit}
-                disabled={loading || !conversationId}
-              >
-                Submit Follow-up
-              </Button>
-              <Button
-                variant="outlined"
-                color="secondary"
-                onClick={() => window.location.href = '/'}
-              >
-                Ask a new question
-              </Button>
-            </Box>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleFollowUpSubmit}
+                    disabled={loading || !conversationId}
+                  >
+                    Submit Follow-up
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    color="secondary"
+                    onClick={() => window.location.href = '/'}
+                  >
+                    Ask a new question
+                  </Button>
+                </Box>
+
+            {/* Suggested followup buttons */}
+            {suggestedFollowups.length > 0 && (
+              <Fade in={suggestedFollowups.length > 0} timeout={800}>
+                <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 1 }}>
+                  <Divider sx={{ my: 2 }} />
+                  <Typography variant="subtitle1">Suggested follow-ups:</Typography>
+                  {loadingFollowups ? (
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <CircularProgress size={20} />
+                    <Typography variant="body2" color="text.secondary">
+                      Generating suggestions...
+                    </Typography>
+                  </Box>
+                ) : (
+                  suggestedFollowups.map((question, i) => (
+                    <Button
+                      key={i}
+                      variant="outlined"
+                      onClick={async () => {
+                        try {
+                          setLoading(true);
+                          setError(null);
+                          setSuggestedFollowups([]); // Clear followups immediately
+
+                          const res = await fetch('/api/query/followup', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                              question,
+                              conversation_id: conversationId
+                            })
+                          });
+
+                          if (!res.ok) {
+                            throw new Error(`Backend responded with ${res.status}`);
+                          }
+
+                          const data = await res.json();
+                          const newQueryId = data.id;
+
+                          // Insert a placeholder object for the new query
+                          setConversation((prev) => [
+                            ...prev,
+                            {
+                              id: newQueryId,
+                              question,
+                              response: '',
+                              status: 'processing'
+                            }
+                          ]);
+
+                          // Start streaming the new query
+                          setActiveQueryId(newQueryId);
+                        } catch (err) {
+                          setError('Failed to submit follow-up question');
+                        } finally {
+                          setLoading(false);
+                        }
+                      }}
+                      disabled={loading || !conversationId}
+                    >
+                      {question}
+                    </Button>
+                  ))
+                  )}
+                </Box>
+              </Fade>
+            )}
           </Box>
 
           {/* Invisible ref for auto-scrolling */}

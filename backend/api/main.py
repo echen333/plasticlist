@@ -43,7 +43,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=["http://localhost:3000", "http://localhost:5173"],  # Add Vite dev server
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -636,6 +636,47 @@ async def get_query(query_id: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
+@app.post("/api/query/generate-followups")
+async def generate_followups(query: Query):
+    """Generate followup questions for a given query using Claude."""
+    logger.debug(f"Generating followups for query: {query.model_dump_json()}")
+    try:
+        # Get only the most recent conversation for context
+        result = supabase.table("queries").select("*").eq("id", query.conversation_id).execute()
+        if not result.data:
+            raise HTTPException(status_code=404, detail="Query not found")
+            
+        current_query = result.data[0]
+        current_response = current_query.get("response", "")
+        
+        # Use a simpler prompt with just the current Q&A
+        prompt = f"""Based on this Q&A:
+Q: {current_query['question']}
+A: {current_response}
+
+Generate exactly 3 follow-up questions that would be good to ask next. Format them exactly like this:
+FOLLOWUP1: [first question]
+FOLLOWUP2: [second question]
+FOLLOWUP3: [third question]
+
+Make sure each question starts with FOLLOWUPn: on its own line. Questions should be concise and directly related to the previous answer."""
+        
+        # Use a faster model for quicker responses
+        response = anthropic_client.messages.create(
+            model="claude-3-haiku-20240307",
+            max_tokens=1024,
+            messages=[{
+                "role": "user",
+                "content": prompt
+            }]
+        )
+        
+        logger.debug(f"Claude response: {response.content[0].text}")
+        return {"followups": response.content[0].text}
+    except Exception as e:
+        logger.error(f"Error generating followups: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/api/health")
 async def health_check():
