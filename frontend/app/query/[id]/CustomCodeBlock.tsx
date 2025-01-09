@@ -31,7 +31,7 @@ const isPythonCode = (className?: string, content?: string): boolean => {
   return pythonPatterns.some(pattern => pattern.test(contentStr));
 };
 
-function CustomCodeBlock({ children, className, inline }: CustomCodeBlockProps) {
+function CustomCodeBlock({ children, className, inline, isExpanded, onToggle }: CustomCodeBlockProps) {
   // Don't wrap inline code
   if (inline) {
     return <code className={className}>{children}</code>;
@@ -52,8 +52,8 @@ function CustomCodeBlock({ children, className, inline }: CustomCodeBlockProps) 
   // For Python, wrap in MUI Accordion
   return (
     <Accordion 
-      expanded={props.isExpanded}
-      onChange={props.onToggle}
+      expanded={isExpanded}
+      onChange={onToggle}
       sx={{
         marginY: 2,
         backgroundColor: 'background.paper',
