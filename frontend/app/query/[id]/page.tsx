@@ -61,7 +61,7 @@ export default function QueryPage({ params }: PageParams) {
   // Function to generate followup suggestions
   const generateFollowups = async () => {
     if (!conversationId || conversation.length === 0) return;
-    
+
     try {
       setLoadingFollowups(true);
       const res = await fetch('/api/query/generate-followups', {
@@ -72,12 +72,12 @@ export default function QueryPage({ params }: PageParams) {
           question: conversation[conversation.length - 1].question
         })
       });
-      
+
       if (!res.ok) {
         const errorText = await res.text();
         throw new Error(`Failed to generate followups: ${res.status} - ${errorText}`);
       }
-      
+
       let data;
       try {
         data = await res.json();
@@ -91,11 +91,11 @@ export default function QueryPage({ params }: PageParams) {
       // Parse followups using regex
       const followups = data.followups.match(/FOLLOWUP\d: (.+)$/gm)
         ?.map(f => f.replace(/FOLLOWUP\d: /, '')) || [];
-      
+
       if (followups.length === 0) {
         console.warn('No followup questions found in response');
       }
-      
+
       setSuggestedFollowups(followups);
     } catch (err) {
       console.error('Failed to generate followups:', err);
@@ -159,7 +159,7 @@ export default function QueryPage({ params }: PageParams) {
 
         try {
           const data = JSON.parse(event.data);
-          
+
           if (data.content) {
             // Append streamed text to the appropriate query in conversation
             setConversation((prev) =>
@@ -216,18 +216,40 @@ export default function QueryPage({ params }: PageParams) {
     };
   }, [activeQueryId]);
 
-  // 6. Scroll to bottom whenever conversation updates or streaming status changes
   useEffect(() => {
     if (bottomRef.current) {
-      // Use requestAnimationFrame to ensure DOM has updated
-      requestAnimationFrame(() => {
-        bottomRef.current?.scrollIntoView({ 
+      // Get the viewport height
+      const viewportHeight = window.innerHeight;
+      // Get the bottom ref's position
+      const bottomPosition = bottomRef.current.getBoundingClientRect().bottom;
+      // Check if we're already near bottom
+      const isNearBottom = bottomPosition <= viewportHeight + 100; // 100px threshold
+
+      // Only scroll if we're streaming or near bottom
+      if (isStreaming || isNearBottom || suggestedFollowups.length > 0 ) {
+        requestAnimationFrame(() => {
+          bottomRef.current?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'end'
+          });
+        });
+      }
+    }
+  }, [conversation, isStreaming, activeQueryId, suggestedFollowups, loadingFollowups]);
+
+  useEffect(() => {
+    if (suggestedFollowups.length > 0 && !loadingFollowups) {
+      // Wait for Fade animation (200ms) plus a small buffer
+      const timeoutId = setTimeout(() => {
+        bottomRef.current?.scrollIntoView({
           behavior: 'smooth',
           block: 'end'
         });
-      });
+      }, 250);  // 200ms fade + 50ms buffer
+  
+      return () => clearTimeout(timeoutId);
     }
-  }, [conversation, isStreaming, activeQueryId]);
+  }, [suggestedFollowups, loadingFollowups]);
 
   // 7. Ask a follow-up on the same page
   const handleFollowUpSubmit = async (overrideQuestion?: string) => {
@@ -240,14 +262,14 @@ export default function QueryPage({ params }: PageParams) {
       typeOfConversationId: typeof conversationId
     });
 
-  const payload = {
-    question: finalQuestion,
-    conversation_id: conversationId
-  };
+    const payload = {
+      question: finalQuestion,
+      conversation_id: conversationId
+    };
 
-  console.log("Stringified payload:", JSON.stringify(payload));
+    console.log("Stringified payload:", JSON.stringify(payload));
 
-  try {
+    try {
       setLoading(true);
       setError(null);
       setSuggestedFollowups([])
@@ -300,118 +322,143 @@ export default function QueryPage({ params }: PageParams) {
 
   return (
     <>
-      <Container maxWidth="md" sx={{ py: 4, pb: '120px' /* Extra padding to prevent content from being hidden by fixed bar */ }}>
+
+      <Container
+        maxWidth="md"
+        sx={{
+          py: 4,
+          height: 'calc(100vh - 200px)', // viewport height minus fixed form height
+          overflowY: 'auto',
+          position: 'relative',
+          zIndex: 1
+        }}
+      >
+
         <Card>
           <CardContent>
             <Typography variant="h5" gutterBottom>
               Conversation
             </Typography>
 
-          {/* Loading + Error */}
-          {loading && !conversation.length && (
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-              <CircularProgress size={20} />
-              <Typography color="text.secondary">
-                Loading or Processing...
-              </Typography>
-            </Box>
-          )}
-
-          {error && (
-            <Box
-              sx={{
-                bgcolor: 'error.light',
-                p: 2,
-                borderRadius: 1,
-                mb: 2
-              }}
-            >
-              <Typography color="error">Error: {error}</Typography>
-            </Box>
-          )}
-
-          {/* Render conversation */}
-          {conversation.map((q) => (
-            <Box
-              key={q.id}
-              sx={{ mb: 2, p: 1, border: '1px solid #ccc', borderRadius: 1 }}
-            >
-              <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
-                Q: {q.question}
-              </Typography>
-              <ReactMarkdown className="prose max-w-none">
-                {q.response || ''}
-              </ReactMarkdown>
-            </Box>
-          ))}
-
-          {/* Show streaming indicator */}
-          {isStreaming && (
-            <Box
-              sx={{
-                mt: 1,
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1
-              }}
-            >
-              <CircularProgress size={20} />
-              <Typography variant="body2" color="text.secondary">
-                Receiving response...
-              </Typography>
-            </Box>
-          )}
-
-          {/* Fixed Follow-up Form */}
-          <Box sx={{ mb: '100px' }}>
-            {/* Invisible ref for auto-scrolling */}
-            <div ref={bottomRef} />
-          </Box>
-        </CardContent>
-      </Card>
-
-      {/* Suggested followup buttons in separate card */}
-      {suggestedFollowups.length > 0 && (
-        <Card sx={{ mt: 2 }}>
-          <CardContent>
-            <Fade in={suggestedFollowups.length > 0} timeout={800}>
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                <Typography variant="subtitle1">Suggested follow-ups:</Typography>
-                {loadingFollowups ? (
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <CircularProgress size={20} />
-                    <Typography variant="body2" color="text.secondary">
-                      Generating suggestions...
-                    </Typography>
-                  </Box>
-                ) : (
-                  suggestedFollowups.map((question, i) => (
-                    <Button
-                      key={i}
-                      variant="outlined"
-                      onClick={() => handleFollowUpSubmit(question)}
-                      disabled={loading || !conversationId}
-                    >
-                      {question}
-                    </Button>
-                  ))
-                )}
+            {/* Loading + Error */}
+            {loading && !conversation.length && (
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+                <CircularProgress size={20} />
+                <Typography color="text.secondary">
+                  Loading or Processing...
+                </Typography>
               </Box>
-            </Fade>
+            )}
+
+            {error && (
+              <Box
+                sx={{
+                  bgcolor: 'error.light',
+                  p: 2,
+                  borderRadius: 1,
+                  mb: 2
+                }}
+              >
+                <Typography color="error">Error: {error}</Typography>
+              </Box>
+            )}
+
+            {/* Render conversation */}
+            {conversation.map((q) => (
+              <Box
+                key={q.id}
+                sx={{ mb: 2, p: 1, border: '1px solid #ccc', borderRadius: 1 }}
+              >
+                <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+                  Q: {q.question}
+                </Typography>
+                <ReactMarkdown className="prose max-w-none">
+                  {q.response || ''}
+                </ReactMarkdown>
+              </Box>
+            ))}
+
+            {/* Show streaming indicator */}
+            {isStreaming && (
+              <Box
+                sx={{
+                  mt: 1,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 1
+                }}
+              >
+                <CircularProgress size={20} />
+                <Typography variant="body2" color="text.secondary">
+                  Receiving response...
+                </Typography>
+              </Box>
+            )}
+
+            <div ref={bottomRef} style={{ height: 1, width: '100%' }} />
+
           </CardContent>
         </Card>
-      )}
+
+        {/* Suggested followup buttons in separate card */}
+        {suggestedFollowups.length > 0 && (
+          <Card sx={{ mt: 2 }}>
+            <CardContent>
+              {/* <Fade in={suggestedFollowups.length > 0} timeout={100}> */}
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                  <Typography variant="subtitle1">Suggested follow-ups:</Typography>
+                  {loadingFollowups ? (
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <CircularProgress size={20} />
+                      <Typography variant="body2" color="text.secondary">
+                        Generating suggestions...
+                      </Typography>
+                    </Box>
+                  ) : (
+                    suggestedFollowups.map((question, i) => (
+                      <Button
+                        key={i}
+                        variant="outlined"
+                        onClick={() => handleFollowUpSubmit(question)}
+                        disabled={loading || !conversationId}
+                      >
+                        {question}
+                      </Button>
+                    ))
+                  )}
+                </Box>
+              {/* </Fade> */}
+            </CardContent>
+          </Card>
+        )}
       </Container>
-      <FixedFollowupForm
-        conversationId={conversationId}
-        loading={loading}
-        followUpQuestion={followUpQuestion}
-        setFollowUpQuestion={setFollowUpQuestion}
-        handleFollowUpSubmit={handleFollowUpSubmit}
-        suggestedFollowups={suggestedFollowups}
-        loadingFollowups={loadingFollowups}
-        conversation={conversation}
-      />
+      <Box
+        sx={{
+          position: 'fixed',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          bgcolor: 'background.default',
+          borderTop: '1px solid',
+          borderColor: 'divider',
+          zIndex: 2, // Higher than the content
+          boxShadow: '0px -2px 8px rgba(0,0,0,0.1)' // Optional shadow for visual separation
+        }}
+      >
+        <Container maxWidth="md">
+          <FixedFollowupForm
+            conversationId={conversationId}
+            loading={loading}
+            followUpQuestion={followUpQuestion}
+            setFollowUpQuestion={setFollowUpQuestion}
+            handleFollowUpSubmit={handleFollowUpSubmit}
+            suggestedFollowups={suggestedFollowups}
+            loadingFollowups={loadingFollowups}
+            conversation={conversation}
+          />
+        </Container>
+      </Box>
+
     </>
   );
 }
