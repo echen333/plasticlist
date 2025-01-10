@@ -1,6 +1,12 @@
 // app/theme.ts
 import { createTheme } from '@mui/material/styles';
 
+declare module '@mui/material/Button' {
+  interface ButtonPropsVariantOverrides {
+    suggested: true;
+  }
+}
+
 const theme = createTheme({
   palette: {
     primary: {
@@ -54,7 +60,7 @@ const theme = createTheme({
     MuiButton: {
       variants: [
         {
-          props: { variant: 'suggested' },
+          props: { variant: 'suggested' as const},
           style: {
             textTransform: 'none',
             borderRadius: 4,
