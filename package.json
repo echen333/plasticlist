@@ -1,0 +1,8 @@
+{
+    "private": true,
+    "scripts": {
+      "dev": "vercel dev",
+      "dev:frontend": "cd frontend && npm run dev",
+      "dev:backend": "cd backend && uvicorn api.main:app --reload"
+    }
+  }

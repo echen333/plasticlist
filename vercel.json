@@ -1,11 +1,15 @@
 {
+    "framework": "nextjs",
     "buildCommand": "cd frontend && npm install && npm run build",
+    "devCommand": "cd frontend && npx next dev --port $PORT",
     "outputDirectory": "frontend/.next",
+    "builds": [
+      { "src": "backend/api/main.py", "use": "@vercel/python" }
+    ],
     "rewrites": [
       {
-        "source": "/api/(.*)",
-        "destination": "/api/$1"
+        "source": "/api/:path*",
+        "destination": "/backend/api/main.py"
       }
     ]
-  }
-  
+}
