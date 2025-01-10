@@ -3,6 +3,8 @@ import { NextRequest } from 'next/server';
 
 export const runtime = 'edge';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
 export async function GET(
   request: NextRequest,
   context: { params: Promise<{ id: string }> }
@@ -22,7 +24,7 @@ export async function GET(
     }
     
     // 2. Fetch the conversation from your Python backend
-    const response = await fetch(`http://localhost:8000/api/query/${id}`, {
+    const response = await fetch(`${API_URL}/api/query/${id}`, {
       method: 'GET',
     });
 

@@ -1,6 +1,8 @@
 // app/api/query/followup/route.ts
 import { NextResponse } from 'next/server';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
 export async function POST(req: Request) {
   try {
     const { question, conversation_id } = await req.json();
@@ -12,7 +14,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const response = await fetch('http://localhost:8000/api/query/followup', {
+    const response = await fetch(`${API_URL}/api/query/followup`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -31,7 +33,7 @@ export async function POST(req: Request) {
     // Check if it's a connection error
     if (error instanceof TypeError && error.message.includes('fetch failed')) {
       return NextResponse.json(
-        { error: 'Backend service unavailable (localhost:8000). Please ensure the backend server is running.' },
+        { error: 'Backend service unavailable' },
         { status: 503 }
       );
     }

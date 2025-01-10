@@ -1,11 +1,13 @@
 // app/api/query/initial/route.ts
 import { NextResponse } from 'next/server';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
 export async function POST(req: Request) {
   try {
     const { question } = await req.json();
     
-    const response = await fetch('http://localhost:8000/api/query/initial', {
+    const response = await fetch(`${API_URL}/api/query/initial`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

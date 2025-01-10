@@ -2,6 +2,8 @@
 
 export const runtime = 'edge';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -11,7 +13,7 @@ export async function GET(
   console.log('Stream route called for id:', id);
   
   try {
-    const response = await fetch(`http://localhost:8000/api/query/${id}/stream`, {
+    const response = await fetch(`${API_URL}/api/query/${id}/stream`, {
       method: 'GET',
     });
     if (!response.ok) {
