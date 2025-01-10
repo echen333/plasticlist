@@ -60,7 +60,7 @@ const theme = createTheme({
     MuiButton: {
       variants: [
         {
-          props: { variant: 'suggested' },
+          props: { variant: 'suggested' as const},
           style: {
             textTransform: 'none',
             borderRadius: 4,

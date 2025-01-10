@@ -99,7 +99,6 @@ export default function QueryPage({ params }: PageParams) {
       // Parse followups using regex
       const followups = data.followups.match(/FOLLOWUP\d: (.+)$/gm)
         ?.map((f: string) => f.replace(/FOLLOWUP\d: /, '')) || [];
-      
       if (followups.length === 0) {
         console.warn('No followup questions found in response');
       }
