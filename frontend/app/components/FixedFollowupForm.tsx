@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, Button, TextField, Fade, Typography } from '@mui/material';
+import { Box, Button, TextField, Fade } from '@mui/material';
 import React from 'react';
 
 interface FixedFollowupFormProps {
@@ -20,9 +20,6 @@ export default function FixedFollowupForm({
   followUpQuestion,
   setFollowUpQuestion,
   handleFollowUpSubmit,
-  suggestedFollowups,
-  loadingFollowups,
-  conversation
 }: FixedFollowupFormProps) {
   return (
     <Fade in={!loading} timeout={800}>
