@@ -1,8 +1,8 @@
 'use client';
 
 import { use, useEffect, useRef, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import ReactMarkdown from 'react-markdown';
+import CustomCodeBlock from './CustomCodeBlock';
 import {
   Button,
   Card,
@@ -45,14 +45,17 @@ export default function QueryPage({ params }: PageParams) {
   // 2. React state
   const [conversation, setConversation] = useState<ConversationQuery[]>([]);
   const [conversationId, setConversationId] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [expandedBlocks, setExpandedBlocks] = useState<{[key: string]: boolean}>({});
   const [suggestedFollowups, setSuggestedFollowups] = useState<string[]>([]);
   const [loadingFollowups, setLoadingFollowups] = useState(false);
 
   // SSE tracking
   const [isStreaming, setIsStreaming] = useState(false);
   const [activeQueryId, setActiveQueryId] = useState<string | null>(null);
+
+  // Test conversation state initialized above
 
   // Follow-up question
   const [followUpQuestion, setFollowUpQuestion] = useState('');
@@ -132,7 +135,8 @@ export default function QueryPage({ params }: PageParams) {
         if (data.current_query.status === 'processing') {
           setActiveQueryId(data.current_query.id);
         }
-      } catch (err) {
+      } catch (error) {
+        console.error('Fetch error:', error);
         setError('Failed to fetch conversation');
       } finally {
         setLoading(false);
@@ -191,7 +195,8 @@ export default function QueryPage({ params }: PageParams) {
               generateFollowups();
             }, 500);
           }
-        } catch (err) {
+        } catch (error) {
+          console.error('SSE parse error:', error);
           setError('Failed to parse SSE data');
         }
       };
@@ -281,7 +286,8 @@ export default function QueryPage({ params }: PageParams) {
 
       // Start streaming the new query
       setActiveQueryId(newQueryId);
-    } catch (err) {
+    } catch (error) {
+      console.error('Follow-up submission error:', error);
       setError('Failed to submit follow-up question');
     } finally {
       setLoading(false);
@@ -328,7 +334,27 @@ export default function QueryPage({ params }: PageParams) {
               <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
                 Q: {q.question}
               </Typography>
-              <ReactMarkdown className="prose max-w-none">
+              <ReactMarkdown
+                className="prose max-w-none"
+                components={{
+                  code: ({ inline, className, children }) => {
+                    const blockId = `code-block-${q.id}`;
+                    return (
+                      <CustomCodeBlock
+                        inline={inline}
+                        className={className}
+                        isExpanded={expandedBlocks[blockId] || false}
+                        onToggle={() => setExpandedBlocks(prev => ({
+                          ...prev,
+                          [blockId]: !prev[blockId]
+                        }))}
+                      >
+                        {children}
+                      </CustomCodeBlock>
+                    );
+                  }
+                }}
+              >
                 {q.response || ''}
               </ReactMarkdown>
             </Box>
