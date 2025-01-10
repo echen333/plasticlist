@@ -328,7 +328,7 @@ You have access to a Python query tool that can analyze samples.tsv data of plas
 
 Make sure to transcribe exactly what was in the output of the Python program. Note that we can render markdown so include the python program in a python codeblock. 
 
-Please add extra '\n' characters to separate out sections. Also, if you use the tool, include the Python snippet in your final response as well.  Try to be more concise in your analysis please, list only interesting facts. Also, attempt to use more markdown and bold in your answers to highlight important facts. Note that there is a string limit in your python output program so be wary of outputting too much information. """
+Also, if you use the tool, you must include the Python snippet in your final response as well.  Try to be more concise in your analysis please, list only interesting facts. Also, use more markdown and bold in your answers to highlight important facts. Note that there is a string limit in your python output program so be wary of outputting too much information. """
 
         headers = {
             "Content-Type": "application/json",

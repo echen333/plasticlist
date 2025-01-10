@@ -13,8 +13,6 @@ import {
   CircularProgress,
   Box,
   Container,
-  TextField,
-  Divider,
   Fade
 } from '@mui/material';
 
@@ -101,7 +99,6 @@ export default function QueryPage({ params }: PageParams) {
       // Parse followups using regex
       const followups = data.followups.match(/FOLLOWUP\d: (.+)$/gm)
         ?.map((f: string) => f.replace(/FOLLOWUP\d: /, '')) || [];
-
       if (followups.length === 0) {
         console.warn('No followup questions found in response');
       }
@@ -332,8 +329,8 @@ export default function QueryPage({ params }: PageParams) {
       // Start streaming the new query
       setActiveQueryId(newQueryId);
     } catch (err) {
-      console.error('Failed to submit follow-up:', err);
-      setError(`Failed to submit follow-up question: ${err.message}`);
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
+      setError(`Failed to submit follow-up question: ${errorMessage}`);
     } finally {
       setLoading(false);
     }
@@ -392,27 +389,27 @@ export default function QueryPage({ params }: PageParams) {
                   Q: {q.question}
                 </Typography>
                 <ReactMarkdown
-                className="prose max-w-none"
-                components={{
-                  code: ({ inline, className, children }: MarkdownCodeComponentProps) => {
-                    const blockId = `code-block-${q.id}`;
-                    return (
-                      <CustomCodeBlock
-                        inline={inline}
-                        className={className}
-                        isExpanded={expandedBlocks[blockId] || false}
-                        onToggle={() => setExpandedBlocks(prev => ({
-                          ...prev,
-                          [blockId]: !prev[blockId]
-                        }))}
-                      >
-                        {children}
-                      </CustomCodeBlock>
-                    );
-                  }
-                }}
-              >{q.response || ''}
-              </ReactMarkdown>
+                  className="prose max-w-none"
+                  components={{
+                    code: ({ inline, className, children }: MarkdownCodeComponentProps) => {
+                      const blockId = `code-block-${q.id}`;
+                      return (
+                        <CustomCodeBlock
+                          inline={inline}
+                          className={className}
+                          isExpanded={expandedBlocks[blockId] || false}
+                          onToggle={() => setExpandedBlocks(prev => ({
+                            ...prev,
+                            [blockId]: !prev[blockId]
+                          }))}
+                        >
+                          {children}
+                        </CustomCodeBlock>
+                      );
+                    }
+                  }}
+                >{q.response || ''}
+                </ReactMarkdown>
               </Box>
             ))}
 
