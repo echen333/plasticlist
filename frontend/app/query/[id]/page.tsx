@@ -250,6 +250,7 @@ export default function QueryPage({ params }: PageParams) {
   try {
       setLoading(true);
       setError(null);
+      setSuggestedFollowups([])
 
       const res = await fetch('/api/query/followup', {
         method: 'POST',
@@ -362,7 +363,7 @@ export default function QueryPage({ params }: PageParams) {
           )}
 
           {/* Fixed Follow-up Form */}
-          <Box sx={{ mb: '200px' }}>
+          <Box sx={{ mb: '100px' }}>
             {/* Invisible ref for auto-scrolling */}
             <div ref={bottomRef} />
           </Box>
