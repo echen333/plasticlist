@@ -143,6 +143,15 @@ export default function QueryPage({ params }: PageParams) {
     fetchConversation();
   }, [queryId]);
 
+  useEffect(() => {
+    if (conversation.length > 0 && bottomRef.current && !loading) {
+      bottomRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'end'
+      });
+    }
+  }, [conversation.length, loading]);
+
   // 5. SSE: whenever activeQueryId is set, stream the response for that query
   useEffect(() => {
     if (!activeQueryId) return;
@@ -226,7 +235,7 @@ export default function QueryPage({ params }: PageParams) {
       const isNearBottom = bottomPosition <= viewportHeight + 100; // 100px threshold
 
       // Only scroll if we're streaming or near bottom
-      if (isStreaming || isNearBottom || suggestedFollowups.length > 0 ) {
+      if (isStreaming || isNearBottom) {
         requestAnimationFrame(() => {
           bottomRef.current?.scrollIntoView({
             behavior: 'smooth',
@@ -236,20 +245,6 @@ export default function QueryPage({ params }: PageParams) {
       }
     }
   }, [conversation, isStreaming, activeQueryId, suggestedFollowups, loadingFollowups]);
-
-  useEffect(() => {
-    if (suggestedFollowups.length > 0 && !loadingFollowups) {
-      // Wait for Fade animation (200ms) plus a small buffer
-      const timeoutId = setTimeout(() => {
-        bottomRef.current?.scrollIntoView({
-          behavior: 'smooth',
-          block: 'end'
-        });
-      }, 250);  // 200ms fade + 50ms buffer
-  
-      return () => clearTimeout(timeoutId);
-    }
-  }, [suggestedFollowups, loadingFollowups]);
 
   // 7. Ask a follow-up on the same page
   const handleFollowUpSubmit = async (overrideQuestion?: string) => {
@@ -395,7 +390,7 @@ export default function QueryPage({ params }: PageParams) {
               </Box>
             )}
 
-            <div ref={bottomRef} style={{ height: 1, width: '100%' }} />
+            
 
           </CardContent>
         </Card>
@@ -404,7 +399,7 @@ export default function QueryPage({ params }: PageParams) {
         {suggestedFollowups.length > 0 && (
           <Card sx={{ mt: 2 }}>
             <CardContent>
-              {/* <Fade in={suggestedFollowups.length > 0} timeout={100}> */}
+              <Fade in={suggestedFollowups.length > 0} timeout={2000}>
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                   <Typography variant="subtitle1">Suggested follow-ups:</Typography>
                   {loadingFollowups ? (
@@ -427,10 +422,11 @@ export default function QueryPage({ params }: PageParams) {
                     ))
                   )}
                 </Box>
-              {/* </Fade> */}
+              </Fade>
             </CardContent>
           </Card>
         )}
+        <div ref={bottomRef} style={{ height: 1, width: '100%' }} />
       </Container>
       <Box
         sx={{
