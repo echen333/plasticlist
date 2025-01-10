@@ -253,7 +253,7 @@ export default function QueryPage({ params }: PageParams) {
       // Get the bottom ref's position
       const bottomPosition = bottomRef.current.getBoundingClientRect().bottom;
       // Check if we're already near bottom
-      const isNearBottom = bottomPosition <= viewportHeight + 100; // 100px threshold
+      const isNearBottom = bottomPosition <= viewportHeight + 130; // 100px threshold
 
       // Only scroll if we're streaming or near bottom
       if (isStreaming || isNearBottom) {
@@ -402,7 +402,8 @@ export default function QueryPage({ params }: PageParams) {
                     );
                   }
                 }}
-              >
+              >{q.response || ''}
+              </ReactMarkdown>
               </Box>
             ))}
 
