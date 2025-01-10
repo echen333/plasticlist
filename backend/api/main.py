@@ -18,6 +18,7 @@ import json
 import asyncio
 from typing import Optional
 import aiohttp
+import traceback
 
 # Set up logging
 # logging.basicConfig(level=logging.INFO)
@@ -285,7 +286,8 @@ async def execute_python_query(query: str) -> str:
         return final_output.strip() if final_output.strip() else "No output generated"
         
     except Exception as e:
-        return f"Error executing query: {str(e)}"
+        error_trace = traceback.format_exc()
+        return f"Error executing query:\n{error_trace}"
 
 async def process_query_stream(query_id: str, question: str):
     full_response = ""
@@ -407,6 +409,16 @@ Please add extra '\n' characters to separate out sections. Also, if you use the 
                                             logger.debug(f"Executing Python query: {query}")
                                             query_result = await execute_python_query(query)
                                             logger.debug(f"Query execution result: {query_result}")
+
+                                            if query_result.startswith("Error executing query:"):
+                                                # Mark the query as failed in the database
+                                                await update_query_in_db(query_id, query_result, "failed")
+                                                
+                                                # Send the error message back to the client
+                                                sse_data = f"data: {json.dumps({'error': query_result})}\n\n"
+                                                logger.debug(f"Yielding error SSE data: {sse_data}")
+                                                yield sse_data
+                                                return  # Exit the function after handling the error
 
                                             # Send tool result back
                                             # In your process_query_stream function, modify the tool result handling section:

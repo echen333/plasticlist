@@ -179,6 +179,21 @@ export default function QueryPage({ params }: PageParams) {
           }
 
           if (data.error) {
+            console.log("Error from server:", data.error)
+            if (data.error) {
+              // Append streamed text to the appropriate query in conversation
+              setConversation((prev) =>
+                prev.map((item) => {
+                  if (item.id === activeQueryId) {
+                    return {
+                      ...item,
+                      response: (item.response || '') + " Error executing query with error: " + data.error
+                    };
+                  }
+                  return item;
+                })
+              );
+            }
             setError(data.error);
             eventSource?.close();
             setIsStreaming(false);
