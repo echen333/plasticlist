@@ -230,17 +230,18 @@ export default function QueryPage({ params }: PageParams) {
   }, [conversation, isStreaming, activeQueryId]);
 
   // 7. Ask a follow-up on the same page
-  const handleFollowUpSubmit = async () => {
-    if (!followUpQuestion.trim() || !conversationId) return;
+  const handleFollowUpSubmit = async (overrideQuestion?: string) => {
+    const finalQuestion = overrideQuestion || followUpQuestion;
+    if (!finalQuestion.trim() || !conversationId) return;
 
-  console.log("Current state:", {
-    conversationId,
-    followUpQuestion,
-    typeOfConversationId: typeof conversationId
-  });
+    console.log("Current state:", {
+      conversationId,
+      question: finalQuestion,
+      typeOfConversationId: typeof conversationId
+    });
 
   const payload = {
-    question: followUpQuestion,
+    question: finalQuestion,
     conversation_id: conversationId
   };
 
@@ -260,7 +261,13 @@ export default function QueryPage({ params }: PageParams) {
       });
 
       if (!res.ok) {
-        throw new Error(`Backend responded with ${res.status}`);
+        const errorText = await res.text();
+        console.error('Backend error:', {
+          status: res.status,
+          statusText: res.statusText,
+          body: errorText
+        });
+        throw new Error(`Backend responded with ${res.status}: ${errorText}`);
       }
 
       const data = await res.json();
@@ -283,7 +290,8 @@ export default function QueryPage({ params }: PageParams) {
       // Start streaming the new query
       setActiveQueryId(newQueryId);
     } catch (err) {
-      setError('Failed to submit follow-up question');
+      console.error('Failed to submit follow-up:', err);
+      setError(`Failed to submit follow-up question: ${err.message}`);
     } finally {
       setLoading(false);
     }
@@ -380,10 +388,7 @@ export default function QueryPage({ params }: PageParams) {
                     <Button
                       key={i}
                       variant="outlined"
-                      onClick={() => {
-                        setFollowUpQuestion(question);
-                        handleFollowUpSubmit();
-                      }}
+                      onClick={() => handleFollowUpSubmit(question)}
                       disabled={loading || !conversationId}
                     >
                       {question}
