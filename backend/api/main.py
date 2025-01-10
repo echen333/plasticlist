@@ -283,7 +283,7 @@ async def execute_python_query(query: str) -> str:
         if error_output:
             final_output += f"Errors:\n{error_output}\n"
             
-        return final_output.strip() if final_output.strip() else "No output generated"
+        return final_output.strip()[:30000] if final_output.strip() else "No output generated"
         
     except Exception as e:
         error_trace = traceback.format_exc()

@@ -3,15 +3,16 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { TextField, Button, Container, Typography, Box, Chip, Stack } from '@mui/material';
+import { TextField, Button, Container, Typography, Box, Chip, Stack, Link } from '@mui/material';
 
 const sampleQueries = [
-  "what are all the entries with tap water as a blind",
-  "what were the most interesting things about the study?",
-  "what did they find about tap water?",
-  "who are the advisors behind the project?",
-  "give me the 20 products that arrived at the lab last",
-  "how many distinct blinded names are there and what was distribution"
+  "What are all the entries with tap water as a blind?",
+  "What were the most interesting things about the study?",
+  "What did they find about tap water?",
+  "Who are the advisors behind the project?",
+  "Give me the 20 products that arrived at the lab last.",
+  "What percentage of entries measured as '<LOQ'?",
+  "How many distinct blinded names are there and which names come up with the most frequency?"
 ];
 
 export default function HomePage() {
@@ -32,13 +33,13 @@ export default function HomePage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ question: sample })
       });
-      
+
       const data = await res.json();
-      
+
       if (data.error) {
         throw new Error(data.error);
       }
-      
+
       if (data.id) {
         router.push(`/query/${data.id}`);
       }
@@ -52,7 +53,7 @@ export default function HomePage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!question.trim()) return;
-    
+
     setIsLoading(true);
     try {
       const res = await fetch('/api/query/initial', {
@@ -60,13 +61,13 @@ export default function HomePage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ question })
       });
-      
+
       const data = await res.json();
-      
+
       if (data.error) {
         throw new Error(data.error);
       }
-      
+
       // Only redirect if we get a valid ID back
       if (data.id) {
         router.push(`/query/${data.id}`);
@@ -82,14 +83,30 @@ export default function HomePage() {
     <Container maxWidth="md" sx={{ mt: 4 }}>
       <Box sx={{ mb: 4 }}>
         <Typography variant="h4" gutterBottom>
-          PlasticList
+          PlasticList Search
         </Typography>
         <Typography variant="body1" paragraph>
-          PlasticList is a scientific project that tested 775 samples of 312 foods for plastic-related chemicals. The project analyzed 18 different chemicals, including phthalates and bisphenols, finding plastic chemicals in 86% of tested foods. Led by a team of researchers and advised by experts from UNC, Columbia, CMU, and Mount Sinai, PlasticList aims to understand the presence of plastic chemicals in everyday foods.
+          PlasticList Search is a demo search interface for the{' '}
+          <Link
+            href="https://www.plasticlist.org/"
+            target="_blank"
+            rel="noopener noreferrer"
+            sx={{ fontWeight: 'bold' }}
+          >
+            PlasticList
+          </Link>{' '}
+          project, a research initiative that tested over 100 everyday foods from the Bay Area for the presence of plastic chemicals. The study, conducted by a team of independent researchers, quantified the levels of endocrine-disrupting chemicals (EDCs) and other plastic-related substances in common food items. The accompanying TSV dataset contains extensive data on chemical levels, testing conditions, and safety thresholds.
         </Typography>
+
         <Typography variant="body1" paragraph>
-          Ask questions about our findings, methodology, or specific products we tested. For example, you can ask about tap water findings, interesting discoveries, or details about specific food items.
+          Ask questions about the findings, methodology, or specific products tested. You can find more details about the website <Link
+            href="https://github.com/echen333/plasticlist"
+            target="_blank"
+            rel="noopener noreferrer"
+            sx={{ fontWeight: 'bold' }}
+          >here</Link>.
         </Typography>
+        
       </Box>
       <Box sx={{ mb: 4 }}>
         <Typography variant="h6" gutterBottom>
@@ -109,19 +126,19 @@ export default function HomePage() {
         </Stack>
       </Box>
       <form onSubmit={handleSubmit}>
-      <TextField
-        id="question-input"
-        key="question-input"
-        fullWidth
-        label="Ask a question about plastics"
-        value={question}
-        onChange={(e) => setQuestion(e.target.value)}
-        margin="normal"
-        disabled={isLoading}
-        variant="outlined"
-      />
-        <Button 
-          variant="contained" 
+        <TextField
+          id="question-input"
+          key="question-input"
+          fullWidth
+          label="Ask a question about plastics"
+          value={question}
+          onChange={(e) => setQuestion(e.target.value)}
+          margin="normal"
+          disabled={isLoading}
+          variant="outlined"
+        />
+        <Button
+          variant="contained"
           type="submit"
           disabled={isLoading}
         >
