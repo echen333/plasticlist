@@ -12,8 +12,8 @@ const theme = createTheme({
       main: '#000000',
     },
     background: {
-      default: '#FFFFFF',
-      paper: '#FFFFFF',
+      default: 'rgb(233, 233, 233)',
+      paper: 'rgb(233, 233, 233)',
     },
     text: {
       primary: '#000000',
@@ -37,10 +37,31 @@ const theme = createTheme({
   },
   components: {
     MuiButton: {
+      variants: [
+        {
+          props: { variant: 'suggested' },
+          style: {
+            textTransform: 'none',
+            borderRadius: 4,
+            backgroundColor: '#FFD700',
+            color: '#000000',
+            border: '1px solid #CCB100',
+            '&:hover': {
+              backgroundColor: '#BFA100',
+            },
+          },
+        },
+      ],
       styleOverrides: {
         root: {
           textTransform: 'none',
           borderRadius: 4,
+        },
+        outlined: {
+          backgroundColor: '#FFD70020',
+          '&:hover': {
+            backgroundColor: '#FFD70040',
+          },
         },
       },
     },
@@ -54,6 +75,15 @@ const theme = createTheme({
         },
         outlined: {
           borderColor: '#FFD700',
+        },
+      },
+    },
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          '& .MuiInputBase-input': {
+            color: '#000000',
+          },
         },
       },
     },
