@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-interface CustomCodeBlockProps {
+export interface CustomCodeBlockProps {
   children: React.ReactNode;
   className?: string;
   inline?: boolean;

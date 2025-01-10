@@ -1,6 +1,12 @@
 // app/theme.ts
 import { createTheme } from '@mui/material/styles';
 
+declare module '@mui/material/Button' {
+  interface ButtonPropsVariantOverrides {
+    suggested: true;
+  }
+}
+
 const theme = createTheme({
   palette: {
     primary: {

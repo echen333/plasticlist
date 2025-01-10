@@ -13,8 +13,6 @@ import {
   CircularProgress,
   Box,
   Container,
-  TextField,
-  Divider,
   Fade
 } from '@mui/material';
 
@@ -39,6 +37,11 @@ interface PageParams {
   params: Promise<{ id: string }>;
 }
 
+interface MarkdownCodeComponentProps extends React.HTMLProps<HTMLElement> {
+  inline?: boolean;
+  className?: string;
+}
+
 export default function QueryPage({ params }: PageParams) {
   // 1. Resolve the Next.js dynamic route param
   const resolvedParams = use(params);
@@ -49,7 +52,7 @@ export default function QueryPage({ params }: PageParams) {
   const [conversationId, setConversationId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [expandedBlocks, setExpandedBlocks] = useState<{[key: string]: boolean}>({});
+  const [expandedBlocks, setExpandedBlocks] = useState<{ [key: string]: boolean }>({});
   const [suggestedFollowups, setSuggestedFollowups] = useState<string[]>([]);
   const [loadingFollowups, setLoadingFollowups] = useState(false);
 
@@ -88,22 +91,26 @@ export default function QueryPage({ params }: PageParams) {
         if (!data.followups) {
           throw new Error('Response missing followups data');
         }
-      } catch (parseError) {
+      } catch (error) {
+        const parseError = error instanceof Error ? error : new Error('Unknown JSON parse error');
         throw new Error('Failed to parse server response: ' + parseError.message);
       }
 
       // Parse followups using regex
       const followups = data.followups.match(/FOLLOWUP\d: (.+)$/gm)
-        ?.map(f => f.replace(/FOLLOWUP\d: /, '')) || [];
+        ?.map((f: string) => f.replace(/FOLLOWUP\d: /, '')) || [];
+      
+      if (followups.length === 0) {
+        console.warn('No followup questions found in response');
+      }
 
       if (followups.length === 0) {
         console.warn('No followup questions found in response');
       }
 
       setSuggestedFollowups(followups);
-    } catch (err) {
-      console.error('Failed to generate followups:', err);
-      setError(err.message); // Show error in UI
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
       setLoadingFollowups(false);
     }
@@ -323,8 +330,8 @@ export default function QueryPage({ params }: PageParams) {
       // Start streaming the new query
       setActiveQueryId(newQueryId);
     } catch (err) {
-      console.error('Failed to submit follow-up:', err);
-      setError(`Failed to submit follow-up question: ${err.message}`);
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
+      setError(`Failed to submit follow-up question: ${errorMessage}`);
     } finally {
       setLoading(false);
     }
@@ -383,27 +390,27 @@ export default function QueryPage({ params }: PageParams) {
                   Q: {q.question}
                 </Typography>
                 <ReactMarkdown
-                className="prose max-w-none"
-                components={{
-                  code: ({ inline, className, children }) => {
-                    const blockId = `code-block-${q.id}`;
-                    return (
-                      <CustomCodeBlock
-                        inline={inline}
-                        className={className}
-                        isExpanded={expandedBlocks[blockId] || false}
-                        onToggle={() => setExpandedBlocks(prev => ({
-                          ...prev,
-                          [blockId]: !prev[blockId]
-                        }))}
-                      >
-                        {children}
-                      </CustomCodeBlock>
-                    );
-                  }
-                }}
-              >{q.response || ''}
-              </ReactMarkdown>
+                  className="prose max-w-none"
+                  components={{
+                    code: ({ inline, className, children }: MarkdownCodeComponentProps) => {
+                      const blockId = `code-block-${q.id}`;
+                      return (
+                        <CustomCodeBlock
+                          inline={inline}
+                          className={className}
+                          isExpanded={expandedBlocks[blockId] || false}
+                          onToggle={() => setExpandedBlocks(prev => ({
+                            ...prev,
+                            [blockId]: !prev[blockId]
+                          }))}
+                        >
+                          {children}
+                        </CustomCodeBlock>
+                      );
+                    }
+                  }}
+                >{q.response || ''}
+                </ReactMarkdown>
               </Box>
             ))}
 
