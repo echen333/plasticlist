@@ -413,7 +413,8 @@ export default function QueryPage({ params }: PageParams) {
                     suggestedFollowups.map((question, i) => (
                       <Button
                         key={i}
-                        variant="outlined"
+                        variant="contained"
+                        color="primary"
                         onClick={() => handleFollowUpSubmit(question)}
                         disabled={loading || !conversationId}
                       >
