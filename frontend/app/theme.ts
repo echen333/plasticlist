@@ -36,6 +36,21 @@ const theme = createTheme({
     },
   },
   components: {
+    MuiCssBaseline: {
+      styleOverrides: {
+        '*::-webkit-scrollbar': {
+          width: '8px',
+          backgroundColor: 'rgb(233, 233, 233)', // Matches your background color
+        },
+        '*::-webkit-scrollbar-thumb': {
+          backgroundColor: '#888',
+          borderRadius: '4px',
+        },
+        '*::-webkit-scrollbar-track': {
+          backgroundColor: 'rgb(233, 233, 233)', // Matches your background color
+        },
+      },
+    },
     MuiButton: {
       variants: [
         {

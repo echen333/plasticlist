@@ -28,6 +28,13 @@ export async function POST(req: Request) {
     return NextResponse.json(data);
   } catch (error) {
     console.error('Error in followup query route:', error);
+    // Check if it's a connection error
+    if (error instanceof TypeError && error.message.includes('fetch failed')) {
+      return NextResponse.json(
+        { error: 'Backend service unavailable (localhost:8000). Please ensure the backend server is running.' },
+        { status: 503 }
+      );
+    }
     return NextResponse.json(
       { error: 'Failed to create follow-up query' },
       { status: 500 }
