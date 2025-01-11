@@ -29,13 +29,32 @@ class VideoDownloader:
         self.video_platforms = {
             'vimeo': {
                 'base_url': 'https://vimeo.com/search?q=',
-                'video_url': 'https://vimeo.com/'
+                'video_url': 'https://vimeo.com/',
+                'headers': {
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+                    'Accept-Language': 'en-US,en;q=0.5',
+                    'Referer': 'https://vimeo.com/'
+                }
             },
             'dailymotion': {
                 'base_url': 'https://www.dailymotion.com/video/',
-                'video_url': 'https://www.dailymotion.com/video/'
+                'video_url': 'https://www.dailymotion.com/video/',
+                'headers': {
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+                }
             }
         }
+        self.search_terms.extend([
+            "helicopter water bomber fire",
+            "fire fighting helicopter action",
+            "helicopter fire suppression",
+            "helicopter water drop wildfire",
+            "fire helicopter rescue operation",
+            "aerial firefighting helicopter action",
+            "helicopter forest fire response",
+            "skycrane helicopter water drop"
+        ])
         
     def search_platform_videos(self) -> List[Dict]:
         """Search multiple platforms for helicopter firefighting videos."""
@@ -56,25 +75,35 @@ class VideoDownloader:
                 try:
                     if platform == 'vimeo':
                         search_url = f"{platform_info['base_url']}{term.replace(' ', '+')}"
-                        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                            results = ydl.extract_info(search_url, download=False, process=False)
-                            if results and 'entries' in results:
-                                for entry in results['entries'][:5]:  # Limit to first 5 results per term
-                                    if entry:
-                                        video_url = f"{platform_info['video_url']}{entry['id']}"
-                                        try:
-                                            video_info = ydl.extract_info(video_url, download=False)
-                                            if video_info and video_info.get('duration', 999) <= 60:
-                                                videos.append({
-                                                    'url': video_url,
-                                                    'title': video_info.get('title', 'Untitled'),
-                                                    'duration': video_info.get('duration', 0),
-                                                    'views': video_info.get('view_count', 0),
-                                                    'platform': platform
-                                                })
-                                        except Exception as e:
-                                            print(f"Error processing video {video_url}: {str(e)}")
-                                            continue
+                        headers = platform_info['headers']
+                        session = requests.Session()
+                        session.headers.update(headers)
+                        
+                        try:
+                            response = session.get(search_url)
+                            response.raise_for_status()
+                            
+                            # Parse video IDs from search results
+                            video_ids = re.findall(r'data-clip-id="(\d+)"', response.text)
+                            for video_id in video_ids[:5]:  # Limit to first 5 results
+                                video_url = f"{platform_info['video_url']}{video_id}"
+                                try:
+                                    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                                        video_info = ydl.extract_info(video_url, download=False)
+                                        if video_info and video_info.get('duration', 999) <= 60:
+                                            videos.append({
+                                                'url': video_url,
+                                                'title': video_info.get('title', 'Untitled'),
+                                                'duration': video_info.get('duration', 0),
+                                                'views': video_info.get('view_count', 0),
+                                                'platform': platform
+                                            })
+                                except Exception as e:
+                                    print(f"Error processing Vimeo video {video_url}: {str(e)}")
+                                    continue
+                        except requests.exceptions.RequestException as e:
+                            print(f"Error searching Vimeo - {term}: {str(e)}")
+                            continue
                     elif platform == 'dailymotion':
                         # Use Dailymotion API endpoint for search
                         search_url = f"https://api.dailymotion.com/videos?fields=id,title,duration,views_total&search={term.replace(' ', '+')}&limit=5"
