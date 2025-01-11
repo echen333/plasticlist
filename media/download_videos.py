@@ -4,6 +4,8 @@ import json
 from pathlib import Path
 import yt_dlp
 import time
+from typing import List, Dict
+from datetime import datetime
 
 class VideoDownloader:
     def __init__(self):
@@ -13,6 +15,48 @@ class VideoDownloader:
         self.todo_file = self.base_dir / 'todo.txt'
         self.setup_directories()
         self.load_progress()
+        self.search_terms = [
+            "helicopter firefighting water drop",
+            "skycrane helicopter fire",
+            "firehawk helicopter wildfire",
+            "helicopter bambi bucket fire",
+            "aerial firefighting helicopter"
+        ]
+        
+    def search_youtube_videos(self) -> List[Dict]:
+        """Search YouTube for helicopter firefighting videos."""
+        videos = []
+        ydl_opts = {
+            'format': 'mp4',
+            'quiet': True,
+            'no_warnings': True,
+            'extract_flat': True,
+            'default_search': 'ytsearch',
+            'match_filter': lambda info: (
+                float(info.get('duration', 999)) <= 60 and  # Under 1 minute
+                int(info.get('view_count', 0)) > 1000  # Popular videos
+            )
+        }
+        
+        for term in self.search_terms:
+            try:
+                with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                    results = ydl.extract_info(f"ytsearch20:{term}", download=False)
+                    if results and 'entries' in results:
+                        for entry in results['entries']:
+                            if entry:
+                                videos.append({
+                                    'url': f"https://youtube.com/watch?v={entry['id']}",
+                                    'title': entry['title'],
+                                    'duration': entry.get('duration', 0),
+                                    'views': entry.get('view_count', 0)
+                                })
+                time.sleep(2)  # Avoid rate limiting
+            except Exception as e:
+                print(f"Error searching {term}: {str(e)}")
+                continue
+        
+        return videos
 
     def setup_directories(self):
         """Create necessary directories if they don't exist."""
@@ -128,9 +172,31 @@ class VideoDownloader:
 
     def run(self):
         """Main execution method."""
+        # First try existing todo list
         videos = self.parse_todo_list()
-        print(f"Found {len(videos)} videos to download")
+        print(f"Found {len(videos)} videos in todo list")
         
+        # Then search YouTube for more videos
+        if len(videos) < 50:
+            print("\nSearching YouTube for additional videos...")
+            youtube_videos = self.search_youtube_videos()
+            print(f"Found {len(youtube_videos)} videos on YouTube")
+            
+            # Add new videos to todo.txt
+            with open(self.todo_file, 'a') as f:
+                f.write("\n## YouTube Videos\n")
+                for video in youtube_videos:
+                    if video['url'] not in [v['url'] for v in videos]:
+                        duration_str = f"({int(video['duration'])}s)"
+                        line = f"- [ ] {video['url']} - {video['title']} {duration_str}\n"
+                        f.write(line)
+                        videos.append({
+                            'url': video['url'],
+                            'duration': video['duration'],
+                            'line': line.strip()
+                        })
+        
+        print(f"\nAttempting to download {len(videos)} total videos")
         successful = len(self.progress['completed'])
         failed = len(self.progress['failed'])
         
