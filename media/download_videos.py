@@ -1,9 +1,10 @@
 import os
 import re
 import json
+import time
+import requests
 from pathlib import Path
 import yt_dlp
-import time
 from typing import List, Dict
 from datetime import datetime
 
@@ -16,19 +17,24 @@ class VideoDownloader:
         self.setup_directories()
         self.load_progress()
         self.search_terms = [
-            "helicopter firefighting water drop site:vimeo.com",
-            "skycrane helicopter fire site:dailymotion.com",
-            "firehawk helicopter wildfire site:vimeo.com",
-            "helicopter bambi bucket fire site:dailymotion.com",
-            "aerial firefighting helicopter site:vimeo.com",
-            "firefighting helicopter water drop news",
-            "helicopter wildfire response footage",
-            "aerial firefighting operations video"
+            "helicopter firefighting water drop",
+            "skycrane helicopter fire",
+            "firehawk helicopter wildfire",
+            "helicopter bambi bucket fire",
+            "aerial firefighting helicopter",
+            "firefighting helicopter water drop",
+            "helicopter wildfire response",
+            "aerial firefighting operations"
         ]
         self.video_platforms = {
-            'vimeo': 'https://vimeo.com/search?q=',
-            'dailymotion': 'https://www.dailymotion.com/search/',
-            'archive': 'https://archive.org/details/movies?query='
+            'vimeo': {
+                'base_url': 'https://vimeo.com/search?q=',
+                'video_url': 'https://vimeo.com/'
+            },
+            'dailymotion': {
+                'base_url': 'https://www.dailymotion.com/video/',
+                'video_url': 'https://www.dailymotion.com/video/'
+            }
         }
         
     def search_platform_videos(self) -> List[Dict]:
@@ -40,39 +46,53 @@ class VideoDownloader:
             'no_warnings': True,
             'extract_flat': True,
             'match_filter': lambda info: (
-                float(info.get('duration', 999)) <= 60 and  # Under 1 minute
-                int(info.get('view_count', 0)) > 100  # Reduced view count threshold
-            ),
-            'extractor_args': {
-                'vimeo': {
-                    'filter': 'duration <= 60',
-                },
-                'dailymotion': {
-                    'filter': 'duration <= 60',
-                }
-            }
+                float(info.get('duration', 999)) <= 60  # Under 1 minute
+            )
         }
         
-        for platform, base_url in self.video_platforms.items():
+        for platform, platform_info in self.video_platforms.items():
             print(f"\nSearching {platform} for videos...")
             for term in self.search_terms:
                 try:
-                    search_url = f"{base_url}{term.replace(' ', '+')}"
-                    print(f"Searching for: {term}")
-                    
-                    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                        results = ydl.extract_info(search_url, download=False)
-                        if results and 'entries' in results:
-                            for entry in results['entries']:
-                                if entry and entry.get('duration', 999) <= 60:
+                    if platform == 'vimeo':
+                        search_url = f"{platform_info['base_url']}{term.replace(' ', '+')}"
+                        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                            results = ydl.extract_info(search_url, download=False, process=False)
+                            if results and 'entries' in results:
+                                for entry in results['entries'][:5]:  # Limit to first 5 results per term
+                                    if entry:
+                                        video_url = f"{platform_info['video_url']}{entry['id']}"
+                                        try:
+                                            video_info = ydl.extract_info(video_url, download=False)
+                                            if video_info and video_info.get('duration', 999) <= 60:
+                                                videos.append({
+                                                    'url': video_url,
+                                                    'title': video_info.get('title', 'Untitled'),
+                                                    'duration': video_info.get('duration', 0),
+                                                    'views': video_info.get('view_count', 0),
+                                                    'platform': platform
+                                                })
+                                        except Exception as e:
+                                            print(f"Error processing video {video_url}: {str(e)}")
+                                            continue
+                    elif platform == 'dailymotion':
+                        # Use Dailymotion API endpoint for search
+                        search_url = f"https://api.dailymotion.com/videos?fields=id,title,duration,views_total&search={term.replace(' ', '+')}&limit=5"
+                        import requests
+                        response = requests.get(search_url)
+                        if response.status_code == 200:
+                            data = response.json()
+                            for video in data.get('list', []):
+                                if video.get('duration', 999) <= 60:
+                                    video_url = f"{platform_info['video_url']}{video['id']}"
                                     videos.append({
-                                        'url': entry.get('webpage_url', entry.get('url')),
-                                        'title': entry.get('title', 'Untitled'),
-                                        'duration': entry.get('duration', 0),
-                                        'views': entry.get('view_count', 0),
+                                        'url': video_url,
+                                        'title': video.get('title', 'Untitled'),
+                                        'duration': video.get('duration', 0),
+                                        'views': video.get('views_total', 0),
                                         'platform': platform
                                     })
-                    time.sleep(5)  # Increased sleep between searches
+                    time.sleep(2)  # Sleep between searches
                 except Exception as e:
                     print(f"Error searching {platform} - {term}: {str(e)}")
                     continue
