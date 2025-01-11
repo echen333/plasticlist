@@ -146,9 +146,13 @@ class VideoDownloader:
             'no_warnings': True,
             'extract_flat': False,
             'concurrent_fragment_downloads': 8,
-            'retries': 3,
-            'fragment_retries': 3,
-            'file_access_retries': 3,
+            'retries': 5,
+            'fragment_retries': 5,
+            'file_access_retries': 5,
+            'sleep_interval': 5,
+            'max_sleep_interval': 30,
+            'cookies_from_browser': 'chrome',
+            'cookiesfrombrowser': ['chrome'],
         }
 
         if platform == 'instagram':
