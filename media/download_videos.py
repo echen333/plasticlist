@@ -145,14 +145,20 @@ class VideoDownloader:
             'quiet': True,
             'no_warnings': True,
             'extract_flat': False,
-            'concurrent_fragment_downloads': 8,
-            'retries': 5,
-            'fragment_retries': 5,
-            'file_access_retries': 5,
-            'sleep_interval': 5,
-            'max_sleep_interval': 30,
-            'cookies_from_browser': 'chrome',
-            'cookiesfrombrowser': ['chrome'],
+            'concurrent_fragment_downloads': 1,  # Reduced to avoid rate limiting
+            'retries': 10,
+            'fragment_retries': 10,
+            'file_access_retries': 10,
+            'sleep_interval': 15,  # Increased sleep between retries
+            'max_sleep_interval': 60,
+            'http_headers': {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                'Accept-Language': 'en-us,en;q=0.5',
+                'Sec-Fetch-Mode': 'navigate',
+            },
+            'socket_timeout': 30,
+            'extractor_retries': 5,
         }
 
         if platform == 'instagram':
