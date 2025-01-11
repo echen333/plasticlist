@@ -16,45 +16,68 @@ class VideoDownloader:
         self.setup_directories()
         self.load_progress()
         self.search_terms = [
-            "helicopter firefighting water drop",
-            "skycrane helicopter fire",
-            "firehawk helicopter wildfire",
-            "helicopter bambi bucket fire",
-            "aerial firefighting helicopter"
+            "helicopter firefighting water drop site:vimeo.com",
+            "skycrane helicopter fire site:dailymotion.com",
+            "firehawk helicopter wildfire site:vimeo.com",
+            "helicopter bambi bucket fire site:dailymotion.com",
+            "aerial firefighting helicopter site:vimeo.com",
+            "firefighting helicopter water drop news",
+            "helicopter wildfire response footage",
+            "aerial firefighting operations video"
         ]
+        self.video_platforms = {
+            'vimeo': 'https://vimeo.com/search?q=',
+            'dailymotion': 'https://www.dailymotion.com/search/',
+            'archive': 'https://archive.org/details/movies?query='
+        }
         
-    def search_youtube_videos(self) -> List[Dict]:
-        """Search YouTube for helicopter firefighting videos."""
+    def search_platform_videos(self) -> List[Dict]:
+        """Search multiple platforms for helicopter firefighting videos."""
         videos = []
         ydl_opts = {
             'format': 'mp4',
             'quiet': True,
             'no_warnings': True,
             'extract_flat': True,
-            'default_search': 'ytsearch',
             'match_filter': lambda info: (
                 float(info.get('duration', 999)) <= 60 and  # Under 1 minute
-                int(info.get('view_count', 0)) > 1000  # Popular videos
-            )
+                int(info.get('view_count', 0)) > 100  # Reduced view count threshold
+            ),
+            'extractor_args': {
+                'vimeo': {
+                    'filter': 'duration <= 60',
+                },
+                'dailymotion': {
+                    'filter': 'duration <= 60',
+                }
+            }
         }
         
-        for term in self.search_terms:
-            try:
-                with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                    results = ydl.extract_info(f"ytsearch20:{term}", download=False)
-                    if results and 'entries' in results:
-                        for entry in results['entries']:
-                            if entry:
-                                videos.append({
-                                    'url': f"https://youtube.com/watch?v={entry['id']}",
-                                    'title': entry['title'],
-                                    'duration': entry.get('duration', 0),
-                                    'views': entry.get('view_count', 0)
-                                })
-                time.sleep(2)  # Avoid rate limiting
-            except Exception as e:
-                print(f"Error searching {term}: {str(e)}")
-                continue
+        for platform, base_url in self.video_platforms.items():
+            print(f"\nSearching {platform} for videos...")
+            for term in self.search_terms:
+                try:
+                    search_url = f"{base_url}{term.replace(' ', '+')}"
+                    print(f"Searching for: {term}")
+                    
+                    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                        results = ydl.extract_info(search_url, download=False)
+                        if results and 'entries' in results:
+                            for entry in results['entries']:
+                                if entry and entry.get('duration', 999) <= 60:
+                                    videos.append({
+                                        'url': entry.get('webpage_url', entry.get('url')),
+                                        'title': entry.get('title', 'Untitled'),
+                                        'duration': entry.get('duration', 0),
+                                        'views': entry.get('view_count', 0),
+                                        'platform': platform
+                                    })
+                    time.sleep(5)  # Increased sleep between searches
+                except Exception as e:
+                    print(f"Error searching {platform} - {term}: {str(e)}")
+                    continue
+            
+            print(f"Found {len(videos)} videos on {platform}")
         
         return videos
 
@@ -216,23 +239,28 @@ class VideoDownloader:
         
         # Then search YouTube for more videos
         if len(videos) < 50:
-            print("\nSearching YouTube for additional videos...")
-            youtube_videos = self.search_youtube_videos()
-            print(f"Found {len(youtube_videos)} videos on YouTube")
+            print("\nSearching additional platforms for videos...")
+            platform_videos = self.search_platform_videos()
+            total_new = len(platform_videos)
+            print(f"\nFound {total_new} total videos across all platforms")
             
-            # Add new videos to todo.txt
-            with open(self.todo_file, 'a') as f:
-                f.write("\n## YouTube Videos\n")
-                for video in youtube_videos:
-                    if video['url'] not in [v['url'] for v in videos]:
-                        duration_str = f"({int(video['duration'])}s)"
-                        line = f"- [ ] {video['url']} - {video['title']} {duration_str}\n"
-                        f.write(line)
-                        videos.append({
-                            'url': video['url'],
-                            'duration': video['duration'],
-                            'line': line.strip()
-                        })
+            if total_new > 0:
+                # Add new videos to todo.txt
+                with open(self.todo_file, 'a') as f:
+                    for platform in self.video_platforms.keys():
+                        platform_specific = [v for v in platform_videos if v['platform'] == platform]
+                        if platform_specific:
+                            f.write(f"\n## {platform.title()} Videos\n")
+                            for video in platform_specific:
+                                if video['url'] not in [v['url'] for v in videos]:
+                                    duration_str = f"({int(video['duration'])}s)"
+                                    line = f"- [ ] {video['url']} - {video['title']} {duration_str}\n"
+                                    f.write(line)
+                                    videos.append({
+                                        'url': video['url'],
+                                        'duration': video['duration'],
+                                        'line': line.strip()
+                                    })
         
         print(f"\nAttempting to download {len(videos)} total videos")
         successful = len(self.progress['completed'])
