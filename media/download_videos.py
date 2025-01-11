@@ -87,25 +87,53 @@ class VideoDownloader:
     def parse_todo_list(self):
         """Parse the todo.txt file and extract video URLs."""
         videos = []
+        instagram_urls = []
+        
         with open(self.todo_file, 'r') as f:
-            for line in f:
-                if line.startswith('- [ ]'):
-                    match = re.search(r'https?://[^\s]+', line)
-                    if match:
-                        url = self.format_url(match.group(0))
-                        if not url:
-                            continue
+            content = f.readlines()
+            
+        # First pass: collect all valid URLs
+        for line in content:
+            if line.startswith('- [ ]'):
+                match = re.search(r'https?://[^\s]+', line)
+                if match:
+                    url = self.format_url(match.group(0))
+                    if not url:
+                        continue
+                    
+                    # Skip Instagram URLs
+                    if 'instagram.com' in url:
+                        continue
                         
-                        duration_match = re.search(r'\((\d+):(\d+)\)', line)
-                        if duration_match:
-                            minutes, seconds = map(int, duration_match.groups())
-                            duration = minutes * 60 + seconds
-                            if duration <= 60:
-                                videos.append({
-                                    'url': url,
-                                    'duration': duration,
-                                    'line': line.strip()
-                                })
+                    duration_match = re.search(r'\((\d+):(\d+)\)', line)
+                    if duration_match:
+                        minutes, seconds = map(int, duration_match.groups())
+                        duration = minutes * 60 + seconds
+                        if duration <= 60:
+                            videos.append({
+                                'url': url,
+                                'duration': duration,
+                                'line': line.strip()
+                            })
+        
+        # Clean up todo.txt to remove Instagram section
+        new_content = []
+        in_instagram_section = False
+        for line in content:
+            if '## Instagram Videos' in line:
+                in_instagram_section = True
+                continue
+            if in_instagram_section and line.strip() and not line.startswith('#'):
+                continue
+            if line.startswith('##') and '## Instagram Videos' not in line:
+                in_instagram_section = False
+            if not in_instagram_section:
+                new_content.append(line)
+        
+        # Write back cleaned todo.txt
+        with open(self.todo_file, 'w') as f:
+            f.writelines(new_content)
+        
         return videos
 
     def get_ydl_opts(self, platform):
@@ -172,9 +200,9 @@ class VideoDownloader:
 
     def run(self):
         """Main execution method."""
-        # First try existing todo list
+        # First try existing todo list (excluding Instagram)
         videos = self.parse_todo_list()
-        print(f"Found {len(videos)} videos in todo list")
+        print(f"Found {len(videos)} non-Instagram videos in todo list")
         
         # Then search YouTube for more videos
         if len(videos) < 50:
@@ -200,6 +228,11 @@ class VideoDownloader:
         successful = len(self.progress['completed'])
         failed = len(self.progress['failed'])
         
+        # Prioritize YouTube videos first
+        youtube_videos = [v for v in videos if 'youtube.com' in v['url']]
+        other_videos = [v for v in videos if 'youtube.com' not in v['url']]
+        videos = youtube_videos + other_videos
+        
         for video in videos:
             if video['url'] not in self.progress['completed'] and video['url'] not in self.progress['failed']:
                 if self.download_video(video):
@@ -207,6 +240,19 @@ class VideoDownloader:
                 else:
                     failed += 1
                 print(f"Progress: {successful}/{len(videos)} downloaded, {failed} failed")
+                # Stop if we have enough videos
+                if successful >= 50:
+                    print("\nReached target of 50 videos!")
+                    break
+        
+        print(f"\nDownload complete!")
+        print(f"Successfully downloaded: {successful} videos")
+        print(f"Failed downloads: {failed} videos")
+        
+        if failed > 0:
+            print("\nFailed URLs:")
+            for url in self.progress['failed']:
+                print(f"- {url}")
         
         print(f"\nDownload complete!")
         print(f"Successfully downloaded: {successful} videos")
