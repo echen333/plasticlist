@@ -1,0 +1,6 @@
+.youtube.com	TRUE	/	True	1771185954	PREF	tz=UTC
+.youtube.com	TRUE	/	True	1752177953	__Secure-ROLLOUT_TOKEN	COajqYTj1_7mmQEQxqDK6LvuigMYxqDK6LvuigM%3D
+.youtube.com	TRUE	/	True	1752177954	VISITOR_PRIVACY_METADATA	CgJVUxIEGgAgPQ%3D%3D
+.youtube.com	TRUE	/	True	1752177954	VISITOR_INFO1_LIVE	lWOOxixpuis
+.youtube.com	TRUE	/	True	0	YSC	1g0Un0OJfpo
+.youtube.com	TRUE	/	True	1736627753	GPS	1
