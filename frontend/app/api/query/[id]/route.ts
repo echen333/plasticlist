@@ -1,9 +1,9 @@
 // app/api/query/[id]/route.ts
-import { NextRequest } from 'next/server';
+import { NextRequest } from "next/server";
 
-export const runtime = 'edge';
+export const runtime = "edge";
 
-const API_URL = 'https://plasticlist-production.up.railway.app';
+const API_URL = "https://plasticlist-production-9df0.up.railway.app";
 
 export async function GET(
   request: NextRequest,
@@ -13,19 +13,18 @@ export async function GET(
   const resolvedParams = await context.params;
   const { id } = resolvedParams;
 
-  console.log('GET route called for query id:', id);
-  
+  console.log("GET route called for query id:", id);
+
   try {
     if (!id) {
-      return new Response(
-        JSON.stringify({ error: 'No ID provided' }),
-        { status: 400 }
-      );
+      return new Response(JSON.stringify({ error: "No ID provided" }), {
+        status: 400,
+      });
     }
-    
+
     // 2. Fetch the conversation from your Python backend
     const response = await fetch(`${API_URL}/api/query/${id}`, {
-      method: 'GET',
+      method: "GET",
     });
 
     if (!response.ok) {
@@ -35,14 +34,12 @@ export async function GET(
     const data = await response.json();
     return new Response(JSON.stringify(data), {
       status: 200,
-      headers: { 'Content-Type': 'application/json' }
+      headers: { "Content-Type": "application/json" },
     });
-    
   } catch (error) {
-    console.error('Query fetch error:', error);
-    return new Response(
-      JSON.stringify({ error: 'Failed to fetch query' }),
-      { status: 500 }
-    );
+    console.error("Query fetch error:", error);
+    return new Response(JSON.stringify({ error: "Failed to fetch query" }), {
+      status: 500,
+    });
   }
 }
