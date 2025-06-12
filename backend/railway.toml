@@ -1,0 +1,10 @@
+
+[build]
+builder = "NIXPACKS"
+nixpacksConfigPath = "backend/nixpacks.toml"
+
+[build.nixpacksPlan]
+providers = ["python"]
+
+[deploy]
+numReplicas = 1
