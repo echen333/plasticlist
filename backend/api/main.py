@@ -7,6 +7,7 @@ import time
 import requests
 from anthropic import Anthropic
 from pydantic import BaseModel
+import pinecone
 from pinecone import Pinecone
 from typing import List, AsyncGenerator
 from supabase import create_client
