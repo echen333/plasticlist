@@ -1,8 +1,8 @@
 # PlasticList Search
 
-PlasticList Search is a search interface for the [PlasticList](https://www.plasticlist.org/) project, a research initiative that tested over 100 everyday foods from the Bay Area for the presence of plastic chemicals. The study, conducted by a team of independent researchers, quantified the levels of endocrine-disrupting chemicals (EDCs) and other plastic-related substances in common food items. The accompanying TSV dataset contains extensive data on chemical levels, testing conditions, and safety thresholds.
+_Note_: PlasticList Search is now deprecated due to api costs.
 
-Access PlasticList Search [here](https://frontend-ten-lac-57.vercel.app/) to explore the comprehensive dataset and query detailed information about plastic chemicals in your favorite foods.
+[PlasticList]((https://frontend-ten-lac-57.vercel.app/)) Search is a search interface for the [PlasticList](https://www.plasticlist.org/) project, a research initiative that tested over 100 everyday foods from the Bay Area for the presence of plastic chemicals. Use it to explore the comprehensive dataset and query detailed information about plastic chemicals in your favorite foods.
 
 PlasticList Search is built with **Next.js 15** and **Material-UI** for a responsive frontend and leverages **FastAPI**, **Python**, and **Supabase** for the backend.
 
