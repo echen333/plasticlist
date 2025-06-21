@@ -15,3 +15,15 @@ PlasticList Search is built with **Next.js 15** and **Material-UI** for a respon
 - **Persistent Conversation History:** Maintains a history of user interactions, allowing for seamless continuation of queries and discussions. Also supports automatically generated follow-up queries.
 
 - **Code Boxes:** Provides code snippets and structured responses for better clarity and usability.
+
+## Screenshots
+
+<p align="center">
+  <img alt="Screenshot 1" src="./screenshot_1.png" width="48%">
+</p>
+<p align="center">
+  <img alt="Screenshot 2" src="./screenshot_2.png" width="48%">
+</p>
+<p align="center">
+  <img alt="Screenshot 3" src="./screenshot_3.png" width="48%">
+</p>
